@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="linux的初步入门">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Linux】Linux入门">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="linux的初步入门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/linux%E5%92%8Cunix%E5%85%B3%E7%B3%BB.png">
+<meta property="article:published_time" content="2021-04-08T13:02:18.000Z">
+<meta property="article:modified_time" content="2021-04-09T15:17:28.352Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/linux%E5%92%8Cunix%E5%85%B3%E7%B3%BB.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Linux】Linux入门 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Linux】Linux入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-08 21:02:18" itemprop="dateCreated datePublished" datetime="2021-04-08T21:02:18+08:00">2021-04-08</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-09 23:17:28" itemprop="dateModified" datetime="2021-04-09T23:17:28+08:00">2021-04-09</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>linux的初步入门</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-linux简介"><a href="#1-linux简介" class="headerlink" title="1 linux简介"></a>1 linux简介</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><ul>
+<li><strong>linux是一个开源、免费的操作系统</strong>，其稳定性、安全性、处理多并发已经得到业界的认可，目前很多中型，大型甚至是集群项目都在使用linux，很多软件公司考虑到开发成本都首选linux，在中国软件公司得到广泛的使用</li>
+</ul>
+<ul>
+<li>linux发音：len la s –&gt; 林纳斯（谐音）</li>
+</ul>
+<ul>
+<li>linux吉祥物：企鹅，名字tux</li>
+</ul>
+<h4 id="1-2-主要发行版本"><a href="#1-2-主要发行版本" class="headerlink" title="1.2 主要发行版本"></a>1.2 主要发行版本</h4><ul>
+<li>CentOS</li>
+<li>RedHat</li>
+<li>Ubuntu</li>
+<li>Suse</li>
+<li>红旗Linux</li>
+</ul>
+<h4 id="1-3-学习方向"><a href="#1-3-学习方向" class="headerlink" title="1.3 学习方向"></a>1.3 学习方向</h4><ul>
+<li>（1）linux运维工程师：维护服务器，优化服务器，保证服务器正常运行</li>
+<li>（2）linux嵌入式工程师：在linux嵌入式系统下做开发</li>
+<li>（3）linux下开发项目：将程序部署到linux上</li>
+</ul>
+<h4 id="1-4-应用领域"><a href="#1-4-应用领域" class="headerlink" title="1.4 应用领域"></a>1.4 应用领域</h4><ul>
+<li>个人桌面领域：比较薄弱，不及windows</li>
+<li>服务器领域：最强，linux免费、稳定、高效</li>
+<li>嵌入式领域：linux运行稳定、对网络的支持良好，低成本，可以根据需要进行软件裁剪</li>
+</ul>
+<h4 id="1-5-linux与Unix关系"><a href="#1-5-linux与Unix关系" class="headerlink" title="1.5 linux与Unix关系"></a>1.5 linux与Unix关系</h4><ul>
+<li><code>Ken tompson</code>通过自己写的B语言开发了Unix系统，但由于B语言功能不是非常完善，所以他跟他另一个好友<code>Dennls richers</code>合作开发C语言，然后通过开发的C语言重写Unix系统，Unix正式诞生</li>
+</ul>
+<ul>
+<li>通过Unix系统，开发许多软件，但这些软件都收费并隐藏代码。一名黑客<code>Richard Stallman</code>提出了GNU计划，由<code>Linus Torbalds</code>促进计划，开发出了linux操作系统</li>
+</ul>
+<img src="/blog/2021/04/08/%E3%80%90Linux%E3%80%91Linux%E5%85%A5%E9%97%A8/linux%E5%92%8Cunix%E5%85%B3%E7%B3%BB.png" class="">
+
+<h4 id="1-6-Linux和Windows比较"><a href="#1-6-Linux和Windows比较" class="headerlink" title="1.6 Linux和Windows比较"></a>1.6 Linux和Windows比较</h4><table>
+<thead>
+<tr>
+<th align="center">比较</th>
+<th align="center">Window</th>
+<th align="center">Linux</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">免费与收费</td>
+<td align="center">收费</td>
+<td align="center">免费或少许收费</td>
+</tr>
+<tr>
+<td align="center">软件与支持</td>
+<td align="center">软件的数量和质量都很高，但大部分为收费软件。有微软提供支持和服务</td>
+<td align="center">开源自由软件，用户可以修改定制和再发布，由于基本免费，没有资金支持</td>
+</tr>
+<tr>
+<td align="center">安全性</td>
+<td align="center">经常打补丁</td>
+<td align="center">相比window要更安全</td>
+</tr>
+<tr>
+<td align="center">使用习惯</td>
+<td align="center">图形化，人性化界面，容易上手</td>
+<td align="center">虽然有图形化界面，但相比windows还是有所不足，以命令行使用居多，上手稍难</td>
+</tr>
+<tr>
+<td align="center">可定制性</td>
+<td align="center">封闭性，可定制性差</td>
+<td align="center">开源，可定制性强</td>
+</tr>
+<tr>
+<td align="center">应用场景</td>
+<td align="center">桌面操作系统主要使用windows</td>
+<td align="center">大部分软件和服务运行在linux上</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="2-安装"><a href="#2-安装" class="headerlink" title="2 安装"></a>2 安装</h3><ul>
+<li>VM ware是一个在window下运行的虚拟机软件，它可以分配出虚拟空间，用来安装其他的操作系统</li>
+<li>CentOS是linux发行版本之一</li>
+</ul>
+<ul>
+<li>虚拟机VM ware安装：<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/94cd017d6996">https://www.jianshu.com/p/94cd017d6996</a></li>
+<li>Linux-CentOS安装：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/112122692">https://zhuanlan.zhihu.com/p/112122692</a></li>
+<li>VM tools 安装：</li>
+</ul>
+<h4 id="2-1-网络连接方式"><a href="#2-1-网络连接方式" class="headerlink" title="2.1 网络连接方式"></a>2.1 网络连接方式</h4><ul>
+<li><strong>（1）桥连接</strong>：子虚拟机的网络ip与主机的网络ip使用同一网段，例如主机ip：192.168.0.10，虚拟机ip：192.168.0.20。同一网段的机器能够互相访问</li>
+</ul>
+<ul>
+<li><strong>（2）NAT</strong>：子虚拟机网络ip与主机的网络ip不处于同一网段，linux可以访问外网，但外面的机器无法访问到该linux，只有主机可以</li>
+</ul>
+<ul>
+<li><strong>（3）主机模式</strong>：linux是一个独立的主机，不能访问外网</li>
+</ul>
+<hr>
+<h3 id="3-CentOS目录结构"><a href="#3-CentOS目录结构" class="headerlink" title="3 CentOS目录结构"></a>3 CentOS目录结构</h3><h4 id="3-1-基本介绍"><a href="#3-1-基本介绍" class="headerlink" title="3.1 基本介绍"></a>3.1 基本介绍</h4><ul>
+<li>Linux文件系统采用层级式树状目录结构，在此结构中的最上层是根目录”/“，然后再次目录下创建其他目录</li>
+<li><strong>在linux世界中，一切皆文件</strong></li>
+</ul>
+<h4 id="3-2-目录介绍"><a href="#3-2-目录介绍" class="headerlink" title="3.2 目录介绍"></a>3.2 目录介绍</h4><ul>
+<li><code>/</code>：根目录</li>
+<li><code>/sbin</code>：超级用户能够使用的指令</li>
+<li><code>/lib</code>：系统开机所需要的的基本连接共享库</li>
+<li><code>/dev</code>：类似于windows的设备管理器，把所有的硬件用文件形式存储</li>
+<li><code>/selinux</code>：是一种安全子系统，它能控制程序只能访问特定文件</li>
+<li><code>/tmp</code>：存放一些临时文件</li>
+</ul>
+<ul>
+<li><strong>重点目录：</strong></li>
+<li><code>/bin</code>：里面存放的是常用的终端指令</li>
+<li><code>/home</code>：存放普通用户的主目录，每个用户都有一个对应目录，目录名为账户名</li>
+<li><code>/root</code>：系统管理员目录</li>
+<li><code>/etc</code>：存放系统管理所需配置文件</li>
+<li><code>/usr</code>：用户的很多应用程序和文件都放在这个目录下，类似windows的progam files目录</li>
+<li><code>/boot</code>：存放启动linux的一些核心文件，包括连接文件以及镜像文件</li>
+<li><code>/media</code>：识别设备（U盘，光驱等等），识别之后，把识别的设备挂载到此目录下</li>
+<li><code>/mnt</code>：系统提供该目录是为了让用户临时挂载别的文件系统，可以将外部的存储挂载在/mnt/上</li>
+<li><code>/opt</code>：给主机安装软件所摆放的目录</li>
+<li><code>/usr/local</code>：另一个给主机额外安装软件的安装目录，一般存放通过编译源码方式安装的程序</li>
+<li><code>/var</code>：存放不断扩充的东西，习惯将经常被修改的目录放在这个目录下</li>
+</ul>
+<ul>
+<li><strong>以下目录尽量别动</strong></li>
+<li><code>/proc</code>：一个虚拟的目录，压实系统内存的映射，访问这个目录来获取系统信息</li>
+<li><code>/srv</code>：service缩写，该目录存放一些服务启动之后需要提取的数据</li>
+<li><code>/sys</code>：该目录下安装了linux2.6内核中新出现的一个文件系统</li>
+</ul>
+<hr>
+<h3 id="4-基础命令"><a href="#4-基础命令" class="headerlink" title="4 基础命令"></a>4 基础命令</h3><h4 id="4-1-关机和重启"><a href="#4-1-关机和重启" class="headerlink" title="4.1 关机和重启"></a>4.1 关机和重启</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 关机</span></span><br><span class="line"><span class="string">shutdown</span> <span class="string">-h</span> <span class="string">now</span> </span><br><span class="line"><span class="string">shutdown</span> <span class="string">-h</span> <span class="string">数字</span> <span class="comment"># xx分钟后关机</span></span><br><span class="line"><span class="string">halt</span> </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 重启</span></span><br><span class="line"><span class="string">shutdown</span> <span class="string">-r</span> <span class="string">now</span></span><br><span class="line"><span class="string">reboot</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 保存数据</span></span><br><span class="line"><span class="string">sync</span>  <span class="comment"># 将内存中的数据保存在磁盘上，建议关机或重启前使用</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-用户登录和注销"><a href="#4-2-用户登录和注销" class="headerlink" title="4.2 用户登录和注销"></a>4.2 用户登录和注销</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 切换用户</span></span><br><span class="line"><span class="string">su</span> <span class="string">用户名</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 用户注销</span></span><br><span class="line"><span class="string">logout</span></span><br></pre></td></tr></table></figure>
+
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/08/%E3%80%90MySQL%E3%80%91%E5%8F%98%E9%87%8F-%E5%AD%98%E5%82%A8%E8%BF%87%E7%A8%8B-%E5%87%BD%E6%95%B0-%E6%B5%81%E7%A8%8B%E6%8E%A7%E5%88%B6%E7%BB%93%E6%9E%84/" rel="prev" title="【MySQL】变量&存储过程&函数&流程控制结构">
+      <i class="fa fa-chevron-left"></i> 【MySQL】变量&存储过程&函数&流程控制结构
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/09/%E3%80%90Linux%E3%80%91Linux%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5/" rel="next" title="【Linux】Linux远程连接">
+      【Linux】Linux远程连接 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-linux%E7%AE%80%E4%BB%8B"><span class="nav-text">1 linux简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%B8%BB%E8%A6%81%E5%8F%91%E8%A1%8C%E7%89%88%E6%9C%AC"><span class="nav-text">1.2 主要发行版本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%AD%A6%E4%B9%A0%E6%96%B9%E5%90%91"><span class="nav-text">1.3 学习方向</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%BA%94%E7%94%A8%E9%A2%86%E5%9F%9F"><span class="nav-text">1.4 应用领域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-linux%E4%B8%8EUnix%E5%85%B3%E7%B3%BB"><span class="nav-text">1.5 linux与Unix关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-Linux%E5%92%8CWindows%E6%AF%94%E8%BE%83"><span class="nav-text">1.6 Linux和Windows比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85"><span class="nav-text">2 安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E7%BD%91%E7%BB%9C%E8%BF%9E%E6%8E%A5%E6%96%B9%E5%BC%8F"><span class="nav-text">2.1 网络连接方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-CentOS%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="nav-text">3 CentOS目录结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E7%9B%AE%E5%BD%95%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.2 目录介绍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%9F%BA%E7%A1%80%E5%91%BD%E4%BB%A4"><span class="nav-text">4 基础命令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%85%B3%E6%9C%BA%E5%92%8C%E9%87%8D%E5%90%AF"><span class="nav-text">4.1 关机和重启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E7%94%A8%E6%88%B7%E7%99%BB%E5%BD%95%E5%92%8C%E6%B3%A8%E9%94%80"><span class="nav-text">4.2 用户登录和注销</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

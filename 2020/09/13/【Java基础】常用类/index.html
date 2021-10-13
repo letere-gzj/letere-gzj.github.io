@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Java常用类学习，自己整理的学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java基础】常用类">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Java常用类学习，自己整理的学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/StringDifferent.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/Format.png">
+<meta property="article:published_time" content="2020-09-13T13:23:33.000Z">
+<meta property="article:modified_time" content="2020-09-18T03:55:23.245Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/StringDifferent.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Java基础】常用类 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Java基础】常用类
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-13 21:23:33" itemprop="dateCreated datePublished" datetime="2020-09-13T21:23:33+08:00">2020-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-18 11:55:23" itemprop="dateModified" datetime="2020-09-18T11:55:23+08:00">2020-09-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Java常用类学习，自己整理的学习笔记</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="一、String类"><a href="#一、String类" class="headerlink" title="一、String类"></a>一、String类</h3><h4 id="1-1-String类的使用"><a href="#1-1-String类的使用" class="headerlink" title="1.1 String类的使用"></a>1.1 String类的使用</h4><ul>
+<li>（1）String:字符串，使用一对””引起来表示</li>
+<li>（2）String声明为final的，不可以被继承</li>
+<li>（3）String实现了Serializable接口：表示是字符串是支持序列化的<ul>
+<li>实现了Comparable接口：表示String是可以比较大小的</li>
+</ul>
+</li>
+<li>（4）String内部定义了final char[] value用于存储字符串数据<ul>
+<li>1、新版JDK定义时 final byte[] value数组</li>
+<li>2、当对现有字符串进行连接操作时，需要重写指定内存区域赋值，不能使用原有的value进行赋值</li>
+<li>3、当嗲用String的replace()方法修改指定字符或字符串时，也需要重新指定内存区域赋值 </li>
+</ul>
+</li>
+<li>（5）Sting代表不可变得字符(byte)序列；简称：不可变性<ul>
+<li>当对字符串重新赋值时，需要重写指定内存区域赋值，不能使用原有的value进行赋值。</li>
+</ul>
+</li>
+<li>（6）通过字面量的方法(区别于new)给一个字符串赋值，此时的字符串值声明在字符串常量池中</li>
+<li>（7）字符串常量池中是不会存储相同内容的字符串的</li>
+</ul>
+<hr>
+<h4 id="1-2-String实例化方式"><a href="#1-2-String实例化方式" class="headerlink" title="1.2 String实例化方式"></a>1.2 String实例化方式</h4><ul>
+<li><strong>方式一：通过字面量定义的方式</strong><ul>
+<li>（1）常量与常量的拼接，定义仍然在常量池中</li>
+<li>（2）只要出现变量，结果就在堆空间中</li>
+<li>（3）拼接的结果调用intern()方法，返回值就在常量池中</li>
+</ul>
+</li>
+<li><strong>方式二：通过 new + 构造器的方式</strong></li>
+<li><img src="/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/StringDifferent.png" class="">
+
+</li>
+</ul>
+<hr>
+<h4 id="1-3-String的常用方法"><a href="#1-3-String的常用方法" class="headerlink" title="1.3 String的常用方法"></a>1.3 String的常用方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">length</span><span class="params">()</span>：但会字符串的长度，return value length</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">char</span> <span class="title">charAt</span><span class="params">(<span class="keyword">int</span> index)</span>：返回某索引处的字符return value[index]</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span>：判断是否是空字符串，return value.length </span>== <span class="number">0</span></span><br><span class="line"></span><br><span class="line"><span class="function">String <span class="title">toLowerCase</span><span class="params">()</span>：使用默认语言环境，将String中的所有字符转换成小写</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">toUpperCase</span><span class="params">()</span>：使用默认语言环境，将String中所有字符转换成大写</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">trim</span><span class="params">()</span>：返回字符串的副本，忽略前导空白和尾部空白</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(Object obj)</span>：比较字符串的内容是否相同</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">equalsIgnoreCase</span><span class="params">(String anotherString)</span>：与equals方法类似，忽略大小写</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">concat</span><span class="params">(String str)</span>：将指定字符串连接到此字符串的尾部，等同于使用&quot;+&quot;</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(String antherString)</span>：比较两个字符串的大小</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">subString</span><span class="params">(<span class="keyword">int</span> beginIndex)</span>：返回一个新的字符串，它是此字符串的从beginIndex开始截取，直到末尾</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">subString</span><span class="params">(<span class="keyword">int</span> beginIndex, <span class="keyword">int</span> endIndex)</span>：返回一个新的字符串，它是此字符串的从beginIndex开始截取,到endIndex结束,左闭右开区间</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">eadsWith</span><span class="params">(String suffix)</span>：测试次字符串是否指定的后续结束</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix)</span>：测试次字符串是否以指定的前缀开始</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">startsWith</span><span class="params">(String prefix, <span class="keyword">int</span> toffset)</span>：测试此字符串从指定索引开始的字符串是否指定前缀开始</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">contains</span><span class="params">(CharSequence s)</span>：当且仅当此字符串包含指定的<span class="keyword">char</span>值序列时，返回<span class="keyword">true</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(String str)</span>：返回指定子字符串在此字符串中第一次出现处的索引</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(String str, <span class="keyword">int</span> fromIndex)</span>：返回指定子字符串在此字符串中第一次出现的索引，从指定的索引开始</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lastIndexOf</span><span class="params">(String str)</span>：返回指定字符串中最右边出现处的索引</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">lastIndexOf</span><span class="params">(String str, <span class="keyword">int</span> fromIndex)</span>：返回指定子字符串在此字符串中最后一次出现处的索引，从指定的索引开始反向搜索</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">#注意：indexOf和lastIndexOf方法如果未找到，返回值是-1</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//替换</span></span><br><span class="line"><span class="function">String <span class="title">replace</span><span class="params">(<span class="keyword">char</span> oldChar, <span class="keyword">char</span> newChar)</span>：返回一个新的字符串，它是通过用newChar替换此字符串中出现的所有oldChar得到的</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">replace</span><span class="params">(CharSequence target, CharSequence replacement)</span>：使用指定的字面值替换序列替换此字符串宿友匹配字面值目标序列的子字符串</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">replaceAll</span><span class="params">(String regex, String repacement)</span>：使用给定的replacement替换此字符串所有匹配给定的正则表达式的字符串</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">String <span class="title">replaceFirst</span><span class="params">(String regex, String replacement)</span>：使用给定的replacement替换此字符串匹配给定的正则表达式的第一个字符串</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//匹配</span></span><br><span class="line"><span class="function"><span class="keyword">boolean</span> <span class="title">matches</span><span class="params">(String regex)</span>：告知此字符串是否匹配给定的正则表达式</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//切片</span></span><br><span class="line">String[] split(String regex)：根据给定的正则表达式的匹配拆分此字符串</span><br><span class="line"></span><br><span class="line">String[] split(String regex, <span class="keyword">int</span> limit)：根据匹配给定的正则表达式来拆分此字符串，最多不超过limit个，如果超过了，剩下的全部都放在最后一个元素中</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="1-4-String与其他类型的转换"><a href="#1-4-String与其他类型的转换" class="headerlink" title="1.4 String与其他类型的转换"></a>1.4 String与其他类型的转换</h4><ul>
+<li><strong>String 与 char[]之间的转换</strong><ul>
+<li>String –&gt; char[]：调用String的toCharArray()</li>
+<li>char[] –&gt; String: 调用String的构造器</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>String 与 byte[]之间的转换</strong><ul>
+<li>String –&gt; byte[]：调用String的getBytes() / getBytes(charsetName)</li>
+<li>byte[] –&gt; String：调用String的构造器 new String(byte[]) / new String(byte[], charsetName)</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="二、StringBuffer-和-StringBuilder"><a href="#二、StringBuffer-和-StringBuilder" class="headerlink" title="二、StringBuffer 和 StringBuilder"></a>二、StringBuffer 和 StringBuilder</h3><h4 id="2-1-关于StringBuffer和Stringbuilder的使用"><a href="#2-1-关于StringBuffer和Stringbuilder的使用" class="headerlink" title="2.1 关于StringBuffer和Stringbuilder的使用"></a>2.1 关于StringBuffer和Stringbuilder的使用</h4><ul>
+<li><strong>String 和 StringBuffer 和 StringBuilder之间的区别</strong><ul>
+<li>String：不可变的字符序列；</li>
+<li>StringBuffer：可变的字符序列；线程安全的，效率低；</li>
+<li>StringBuilder：可变的字符序列；JDK5.0线程不安全，效率高；</li>
+</ul>
+</li>
+<li><strong>源码分析</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">String str = <span class="keyword">new</span> String(); </span><br><span class="line"><span class="comment">// char[] value = new char[0]，创造长度为0的字符数组</span></span><br><span class="line"></span><br><span class="line">String str1 =<span class="keyword">new</span> String(<span class="string">&quot;abc&quot;</span>); </span><br><span class="line"><span class="comment">// char[] value = new char[]&#123;&#x27;a&#x27;, &#x27;b&#x27;, &#x27;c&#x27;&#125;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">StringBuffer sb1 = <span class="keyword">new</span> StringBuffer();</span><br><span class="line"><span class="comment">// char[] value = new char[16]，底层默认创建一个长度时16的字符数组</span></span><br><span class="line"></span><br><span class="line">sb1.append(<span class="string">&#x27;a&#x27;</span>); </span><br><span class="line"><span class="comment">// value[0] = &#x27;a&#x27;</span></span><br><span class="line"></span><br><span class="line">sb1.append(<span class="string">&#x27;b&#x27;</span>); </span><br><span class="line"><span class="comment">// value[1] = &#x27;b&#x27;</span></span><br><span class="line"></span><br><span class="line">StringBuffer sb2 = <span class="keyword">new</span> StringBuffer(<span class="string">&quot;abc&quot;</span>); </span><br><span class="line"><span class="comment">// char[] value = new char[&quot;abc&quot;.lenghth +16]</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>问题</strong><ul>
+<li>问题1： System.out.println(sb2.length); <ul>
+<li>输出为3，虽然底层空间不止3，但是方法被重写，只显示非null字符的个数</li>
+</ul>
+</li>
+<li>问题2：扩容<ul>
+<li>如果需要添加的数据底层数组盛不下，那就需要扩容底层的数组。默认情况下，扩容为原来容量的2倍+2，同时将原有的数组中的元素复制到新的数组中。</li>
+<li>指导意义：开发中建议大家使用：StringBuffer(int capacity) 和 StringBuilder(int capacity)来避免扩容</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="2-1-StringBuffer-和-StringBuilder-的常用方法"><a href="#2-1-StringBuffer-和-StringBuilder-的常用方法" class="headerlink" title="2.1 StringBuffer 和 StringBuilder 的常用方法"></a>2.1 StringBuffer 和 StringBuilder 的常用方法</h4><p><strong>StringBuffer 和 StringBuilder的方法名一模一样，只是同步与不同步区别</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">StringBuffer <span class="title">append</span><span class="params">(xxx)</span>：提供了很多的<span class="title">append</span><span class="params">()</span>方法，用于进行字符串拼接</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">StringBuffer <span class="title">delete</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span>：删除指定位置的内容</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">StringBuffer <span class="title">replace</span><span class="params">(<span class="keyword">int</span> statr, <span class="keyword">int</span> end, String str)</span>：把[start, end)位置替换成str</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">StringBuffer <span class="title">insert</span><span class="params">(<span class="keyword">int</span> offset, xxx)</span>：在指定的位置插入xxx</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">StringBuffer <span class="title">reverse</span><span class="params">()</span>：把当前字符序列逆转</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">indexOf</span><span class="params">(String str)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">subString</span><span class="params">(<span class="keyword">int</span> start, <span class="keyword">int</span> end)</span>：返回一个从start开始到end索引结束的左闭右开区间的子字符串</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">length</span><span class="params">()</span>：字符串长度</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">char</span> <span class="title">charAt</span><span class="params">(<span class="keyword">int</span> n)</span>：读取特定的字符</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setCharAt</span><span class="params">(<span class="keyword">int</span> n, <span class="keyword">char</span> ch)</span>：将指定的位置的字符进行更改</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-3-总结"><a href="#2-3-总结" class="headerlink" title="2.3 总结"></a>2.3 总结</h4><ul>
+<li><p>增：append(xxxx)</p>
+</li>
+<li><p>删：delete(int start, int end)</p>
+</li>
+<li><p>查：charAt(int n)</p>
+</li>
+<li><p>改：replace(int statr, int end, String str) / setCharAt(int n, char ch)</p>
+</li>
+<li><p>插：insert(int offset, xxx)</p>
+</li>
+<li><p>长度：length()</p>
+</li>
+<li><p>遍历：for() + charAt() / toString()</p>
+</li>
+<li><p>效率：StringBuilder &gt; StringBuffer &gt; String</p>
+</li>
+</ul>
+<hr>
+<h3 id="三、Date类"><a href="#三、Date类" class="headerlink" title="三、Date类"></a>三、Date类</h3><h4 id="3-1-Date类分类"><a href="#3-1-Date类分类" class="headerlink" title="3.1 Date类分类"></a>3.1 Date类分类</h4><ul>
+<li>java.util.Date</li>
+<li>java.sql.Date<ul>
+<li>sql的Date类是继承于util的Date类</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="3-2-Date类的使用"><a href="#3-2-Date类的使用" class="headerlink" title="3.2 Date类的使用"></a>3.2 Date类的使用</h4><ul>
+<li><strong>两个构造器</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Date date = <span class="keyword">new</span> Date(); ：空参，默认获取本地时间</span><br><span class="line"></span><br><span class="line">Date date = <span class="keyword">new</span> Date(毫秒数); ：毫秒数是从<span class="number">1970</span>年<span class="number">1</span>月<span class="number">1</span>日开始计算的</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>两个常用方法</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">toString()：显示当前的年、月、日、时、分、秒</span><br><span class="line"><span class="comment">//格式为：Sun Sep 13 19:21:19 CST 2020</span></span><br><span class="line"></span><br><span class="line">getTtime()：获取当前Date对象的对象的毫秒数（时间戳）</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-3-两个Date类之间的转换"><a href="#3-3-两个Date类之间的转换" class="headerlink" title="3.3 两个Date类之间的转换"></a>3.3 两个Date类之间的转换</h4><ul>
+<li><strong>java.sql.Date –&gt; java.util.Date</strong><ul>
+<li>多态性，可以使用强转的方式</li>
+</ul>
+</li>
+<li><strong>java.util.Date –&gt; java.sql.Date</strong><ul>
+<li>利用getTime()返回的毫秒数，作为参数传入构造器中</li>
+<li><code>java.sql.Date date = new java.sql.Date(java.util.Date().getTime());</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="3-4-额外拓展"><a href="#3-4-额外拓展" class="headerlink" title="3.4 额外拓展"></a>3.4 额外拓展</h4><ul>
+<li>返回毫秒数的方式也可以用<code>System.CurrentTimeMillis()</code>的方式进行返回</li>
+</ul>
+<hr>
+<h3 id="四、SimpleDateFormat类"><a href="#四、SimpleDateFormat类" class="headerlink" title="四、SimpleDateFormat类"></a>四、SimpleDateFormat类</h3><h4 id="4-1-SimpleDateFormat说明"><a href="#4-1-SimpleDateFormat说明" class="headerlink" title="4.1 SimpleDateFormat说明"></a>4.1 SimpleDateFormat说明</h4><ul>
+<li>simpleDateFormat对日期Date类的格式化和解析</li>
+</ul>
+<hr>
+<h4 id="4-2-SimpleDateFormate使用"><a href="#4-2-SimpleDateFormate使用" class="headerlink" title="4.2 SimpleDateFormate使用"></a>4.2 SimpleDateFormate使用</h4><ul>
+<li>（1）两个构造器</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(); ：使用默认的格式</span><br><span class="line"><span class="comment">//格式为：2020/9/14 下午9:55</span></span><br><span class="line"></span><br><span class="line">SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;自定义格式&quot;</span>); ：使用规定的格式</span><br><span class="line"><span class="comment">//例：&quot;yyyy-MM-dd hh:mm:ss&quot; --&gt; 2020-09-14 10:13:52</span></span><br></pre></td></tr></table></figure>
+<img src="/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/Format.png" class="">
+<ul>
+<li>（2）两个操作<ul>
+<li><strong>格式化：日期 –&gt; 字符串</strong>（将Date对象转变成字符串）<ul>
+<li><code>String newDate = sdf.format(date);</code></li>
+</ul>
+</li>
+<li><strong>解析：字符串 –&gt; 日期</strong>（将SimpleDateFormat对象的格式转变成Date对象）<ul>
+<li><code>Date date = sdf.parse(&quot;2020/9/14 下午9:55&quot;)</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="五、Calendar类"><a href="#五、Calendar类" class="headerlink" title="五、Calendar类"></a>五、Calendar类</h3><h4 id="5-1-说明"><a href="#5-1-说明" class="headerlink" title="5.1 说明"></a>5.1 说明</h4><ul>
+<li>Calendar类称为 日历类，是一个抽象类</li>
+</ul>
+<hr>
+<h4 id="5-2-Calendar使用"><a href="#5-2-Calendar使用" class="headerlink" title="5.2 Calendar使用"></a>5.2 Calendar使用</h4><ul>
+<li><p><strong>1.实例化</strong></p>
+<ul>
+<li>创建子类（GregorianCalendar）的对象，但名字过长，一般不用</li>
+<li>利用Calendar的静态方法getInstance()创建<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Calendar calendar = Calendar.getInstance();</span><br><span class="line"></span><br><span class="line">System.out.println(calendar.getClass());</span><br><span class="line"><span class="comment">//返回：java.util.GregorianCalendar，即跟创建GregorianCalendar效果一样</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+<li><p><strong>2.常用方法</strong></p>
+<ul>
+<li>（1）get()<ul>
+<li><code>int days = calendar.get(Calendar.DAY_OF_MONTH);</code>//获取当月的天数，参数是Calendar内部定义的常量，数量过多，就不列举出来</li>
+</ul>
+</li>
+<li>（2）set()<ul>
+<li><code>calendar.set(Calendar.DAY_OF_MONTH, 22);</code>//修改当月的天数为22，变相修改时间</li>
+</ul>
+</li>
+<li>（3）add()<ul>
+<li><code>calendar.add(Calendar.DAY_OF_MONTH, 3)</code>;//增加天数，增加3天(可以负数)</li>
+</ul>
+</li>
+<li>（4）getTime()<ul>
+<li><code>Date date = calendar.getTime();</code>//Calendar类转变成Date类</li>
+</ul>
+</li>
+<li>（5）setTime()<ul>
+<li><code>calendar.setTime(new Date());</code>//Date类转变成Calendar</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="六、JDK8新增的时间API"><a href="#六、JDK8新增的时间API" class="headerlink" title="六、JDK8新增的时间API"></a>六、JDK8新增的时间API</h3><h4 id="6-1-LocalDate、LocalTime、LocalDateTime"><a href="#6-1-LocalDate、LocalTime、LocalDateTime" class="headerlink" title="6.1 LocalDate、LocalTime、LocalDateTime"></a>6.1 LocalDate、LocalTime、LocalDateTime</h4><ul>
+<li><strong>说明</strong><ul>
+<li>三个API的方法都一样，就Date就只是获取日期，TIme只是获取时间。一般都用LocalDateTime。以下都以LocalDateTime举例</li>
+</ul>
+</li>
+<li><strong>方法</strong><ul>
+<li>实例化1：使用静态方法now()<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">LocalDateTime localDateTime = LocalDateTime.now();</span><br><span class="line"><span class="comment">//获取本地日期和时间</span></span><br></pre></td></tr></table></figure></li>
+<li>实例化2：利用静态方法of()来按指定日期时间创建<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LocalDateTime localDateTime1 = LocalDateTime.of(<span class="number">2020</span>, <span class="number">10</span>, <span class="number">1</span>, <span class="number">13</span>, <span class="number">23</span>, <span class="number">23</span>);</span><br></pre></td></tr></table></figure></li>
+<li>getXxx()：获取想要的数据（例：获取本月中第几天）<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> days = localDateTime1.getDayOfMonth();</span><br></pre></td></tr></table></figure></li>
+<li>withXxx()：修改数据（例：修改本月中的第几天）<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LocalDateTime localDateTime2 = localDateTime1.withDayOfMonth(<span class="number">22</span>);</span><br></pre></td></tr></table></figure></li>
+<li>plusXxx()：加法（例：月份+3）<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LocalDateTime localDateTime3 = localDateTime1.plusMonths(<span class="number">3</span>);</span><br></pre></td></tr></table></figure></li>
+<li>minusXxxx()：减法（例：月份-2）<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">LocalDateTime localDateTime4 = localDateTime1.minusMonths(<span class="number">2</span>);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="6-2-Instant"><a href="#6-2-Instant" class="headerlink" title="6.2 Instant"></a>6.2 Instant</h4><ul>
+<li><strong>说明</strong><ul>
+<li>使用方法类似于java.util.Date</li>
+</ul>
+</li>
+<li><strong>方法</strong><ul>
+<li>实例化1：使用静态方法now()<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Instant instant = Instant.now();</span><br><span class="line"><span class="comment">//注意：获取的时间是本初子午线的时间，有时间差</span></span><br></pre></td></tr></table></figure></li>
+<li>实例化2：使用静态方法ofEpochMilli()，参数为毫秒数（时间戳）<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Instant instant1 = Instant.ofEpochMilli(毫秒数);</span><br></pre></td></tr></table></figure></li>
+<li>获取毫秒数<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> l = instant.toEpochMilli();</span><br></pre></td></tr></table></figure></li>
+<li>添加时间偏移量<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">OffsetDateTime offsetDateTime = instant.atOffset(ZoneOffset.ofHours(<span class="number">8</span>));</span><br><span class="line"><span class="comment">//将时间+8小时，变成中国时间</span></span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="6-3-DateTimeFormatter"><a href="#6-3-DateTimeFormatter" class="headerlink" title="6.3 DateTimeFormatter"></a>6.3 DateTimeFormatter</h4><ul>
+<li><strong>说明</strong><ul>
+<li>使用方法类似于SimpleDateFormat类</li>
+</ul>
+</li>
+<li><strong>方法</strong><ul>
+<li>实例化1：使用预定义格式，如：ISO_LOCAL_DATE_TIME<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;</span><br></pre></td></tr></table></figure></li>
+<li>实例化2：ofLocalizedDateTime()；</li>
+<li>参数：FormatStyle.LONG / FormatStyle.MEDIUM / FormatStyle.SHORT<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DateTimeFormatter formatter1 = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM);</span><br></pre></td></tr></table></figure></li>
+<li>实例化3（推荐）：自定义格式。如：ofPattern(“yyyy-MM-dd hh:mm:ss”)<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern(<span class="string">&quot;yyyy-MM-dd hh:mm:ss&quot;</span>);</span><br></pre></td></tr></table></figure></li>
+<li>格式化：format()&emsp;&emsp;日期 —&gt; 字符串<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">String str1 = formatter.format(LocalDateTime.now());</span><br></pre></td></tr></table></figure></li>
+<li>解析：parse()&emsp;&emsp;字符串 —&gt; 日期<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TemporalAccessor parse = formatter.parse(对应的格式);</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="七、Java比较器"><a href="#七、Java比较器" class="headerlink" title="七、Java比较器"></a>七、Java比较器</h3><h4 id="7-1-分类"><a href="#7-1-分类" class="headerlink" title="7.1 分类"></a>7.1 分类</h4><ul>
+<li>Java比较器通过两个接口来实现，Comparable 和 Comparator。Comparable称为自然排序，而Comparator被称为定制排序</li>
+</ul>
+<hr>
+<h4 id="7-2-Comparable接口的使用"><a href="#7-2-Comparable接口的使用" class="headerlink" title="7.2 Comparable接口的使用"></a>7.2 Comparable接口的使用</h4><ul>
+<li><strong>使用：</strong> <ul>
+<li>类实现Comparable接口，重写compareTo方法，利用<code>Arrays.sort(数组)</code>的方法，会按照重写的compareTo的方法，对数组进行排序。</li>
+</ul>
+</li>
+<li><strong>重写compareTo(obj)规则；</strong><ul>
+<li>如果当前对象this大于形参对象obj，则返回正整数</li>
+<li>如果当前对象this小于形参对象obj，则返回负整数</li>
+<li>如果当前对象this等于形参对象obj，则返回0</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="7-3-Comparator接口的使用"><a href="#7-3-Comparator接口的使用" class="headerlink" title="7.3 Comparator接口的使用"></a>7.3 Comparator接口的使用</h4><ul>
+<li><strong>背景：</strong><ul>
+<li>当元素的类型没有实现java.lang.Comparable接口而有不方便修改代码</li>
+<li>或实现了java.langComparable接口的排序规则不适合当前的操作</li>
+<li>那么可以考虑使用Comparator的对象来排序</li>
+</ul>
+</li>
+<li><strong>使用方法：</strong><ul>
+<li>创建Comparator接口实现类，该类中对compare方法进行重写。然后使用<code>Arrays.sort(数组，Comparator实现类对象)</code>，然后会按照重写的compare的方法对该数组进行排序。</li>
+</ul>
+</li>
+<li><strong>重写compare(Object o1, Object o2)方法规则：</strong><ul>
+<li>如果方法返回正整数，则表示o1比o2大</li>
+<li>如果返回负整数，表示o1比o2小</li>
+<li>如果返回0，表示相等</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="7-4-Comparable接口-和-Comparator的使用的比较"><a href="#7-4-Comparable接口-和-Comparator的使用的比较" class="headerlink" title="7.4 Comparable接口 和 Comparator的使用的比较"></a>7.4 Comparable接口 和 Comparator的使用的比较</h4><ul>
+<li>Comparble 接口的方式一旦一定，保证Comparable接口实现类的对象在任何位置都可以比较大小</li>
+<li>Comparator接口属于临时性的比较</li>
+</ul>
+<hr>
+<h3 id="八、其他常用类"><a href="#八、其他常用类" class="headerlink" title="八、其他常用类"></a>八、其他常用类</h3><h4 id="8-1-System类"><a href="#8-1-System类" class="headerlink" title="8.1 System类"></a>8.1 System类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>System.currentTimeMillis()：获取毫秒数</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>System.exit(<span class="keyword">int</span> status)：退出</span><br><span class="line">	<span class="number">0</span>：正常退出</span><br><span class="line"> 	非<span class="number">0</span>：异常退出</span><br><span class="line">	</span><br><span class="line"><span class="number">3.</span>System.gc():请求系统垃圾回收</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span>System.getProperty(String key)：获取系统中属性名为key属性对应的值</span><br><span class="line">	java.version -- Java运行时环境版本</span><br><span class="line">    java.home -- Java安装目录</span><br><span class="line">    os.name -- 操作系统名字</span><br><span class="line">    os.version -- 操作系统的版本</span><br><span class="line">    user.name -- 用户的账户名称</span><br><span class="line">    user.home -- 用户的主目录</span><br><span class="line">    user.dir -- 用户当前工作目录</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="8-2-Math类"><a href="#8-2-Math类" class="headerlink" title="8.2 Math类"></a>8.2 Math类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1.</span>abs：绝对值</span><br><span class="line"></span><br><span class="line"><span class="number">2.</span>acos, asin, atan, cos, sin, tan ：三角函数</span><br><span class="line"></span><br><span class="line"><span class="number">3.</span>sqrt：平方根</span><br><span class="line"></span><br><span class="line"><span class="number">4.</span>pow(<span class="keyword">double</span> a, <span class="keyword">double</span> b)：a的b次幂</span><br><span class="line"></span><br><span class="line"><span class="number">5.l</span>og ：自然对数</span><br><span class="line"></span><br><span class="line"><span class="number">6.</span>exp ：e为底指数</span><br><span class="line"></span><br><span class="line"><span class="number">7.</span>max(<span class="keyword">double</span> a, <span class="keyword">double</span> b)：求最大</span><br><span class="line"></span><br><span class="line"><span class="number">8.</span>min(<span class="keyword">double</span> a, <span class="keyword">double</span> b)：求最小</span><br><span class="line"></span><br><span class="line"><span class="number">9.</span>random() ：返回<span class="number">0.0</span> 到 <span class="number">1.0</span>的随机数</span><br><span class="line"></span><br><span class="line"><span class="number">10.l</span><span class="function">ong <span class="title">round</span><span class="params">(<span class="keyword">double</span> a)</span> ：<span class="keyword">double</span>型数据a转变成<span class="keyword">long</span>型</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">11.<span class="title">toDegrees</span><span class="params">(<span class="keyword">double</span> angrad)</span> ：弧度--&gt;角度</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">12.<span class="title">toRadians</span><span class="params">(<span class="keyword">double</span> angdeg)</span> ：角度--&gt;弧度</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="8-3-BigInteger类"><a href="#8-3-BigInteger类" class="headerlink" title="8.3 BigInteger类"></a>8.3 BigInteger类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BigInteger可以表示不可变的任意精度的整数</span></span><br><span class="line"><span class="number">1.</span><span class="function"><span class="keyword">public</span> BigInteger <span class="title">abs</span><span class="params">()</span>：返回次BigInteger的绝对值的BigInteger</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">2.BigInteger <span class="title">add</span><span class="params">(BigInteger val)</span>：返回其值为（<span class="keyword">this</span> + val）的BigInteger</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">3.BigInteger <span class="title">subtract</span><span class="params">(BigInteger val)</span>：返回其值为（<span class="keyword">this</span> -val）的BigInteger</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">4.BigInteger <span class="title">multiply</span><span class="params">(BigInteger val)</span>：返回其值为（<span class="keyword">this</span> * val）的BigInteger</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">5.BigInteger <span class="title">divide</span><span class="params">(BigInteger val)</span>：返回其值为（<span class="keyword">this</span> / val）的BigInteger，整数相除只保留整数部分</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">6.BigInteger <span class="title">remainder</span><span class="params">(BigInteger val)</span>：返回其值为（<span class="keyword">this</span> % val）的BigInteger</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">7.BigInteger[] <span class="title">divideAndRemainder</span><span class="params">(BigInteger val)</span>：返回包含<span class="params">(<span class="keyword">this</span> / val)</span>后跟<span class="params">(<span class="keyword">this</span> % val)</span>的两个BigInteger的数组</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">8.BigInteger <span class="title">pow</span><span class="params">(<span class="keyword">int</span> exponent)</span>：返回其值为<span class="params">(<span class="keyword">this</span>^exponent)</span>的BigInteger</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="8-4-BigDecimal"><a href="#8-4-BigDecimal" class="headerlink" title="8.4 BigDecimal"></a>8.4 BigDecimal</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BigDecimal要求数字的精度比Float, Double要高</span></span><br><span class="line"><span class="number">1.</span><span class="function"><span class="keyword">public</span> BigDecimal <span class="title">add</span><span class="params">(BigDecimal augend)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">2.<span class="keyword">public</span> BigDecimal <span class="title">subtract</span><span class="params">(BigDecimal subtrahend)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">3.<span class="keyword">public</span> BigDecimal <span class="title">multiply</span><span class="params">(BigDeciaml multiplicand)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">4.<span class="keyword">public</span> BigDecimal <span class="title">divide</span><span class="params">(BigDecimal divisor, <span class="keyword">int</span> scale, <span class="keyword">int</span> roundingMode)</span></span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/09/09/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="prev" title="【Java基础】多线程">
+      <i class="fa fa-chevron-left"></i> 【Java基础】多线程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/" rel="next" title="【Java基础】枚举类与注解">
+      【Java基础】枚举类与注解 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81String%E7%B1%BB"><span class="nav-text">一、String类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-String%E7%B1%BB%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">1.1 String类的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-String%E5%AE%9E%E4%BE%8B%E5%8C%96%E6%96%B9%E5%BC%8F"><span class="nav-text">1.2 String实例化方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-String%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">1.3 String的常用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-String%E4%B8%8E%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-text">1.4 String与其他类型的转换</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81StringBuffer-%E5%92%8C-StringBuilder"><span class="nav-text">二、StringBuffer 和 StringBuilder</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%85%B3%E4%BA%8EStringBuffer%E5%92%8CStringbuilder%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">2.1 关于StringBuffer和Stringbuilder的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-StringBuffer-%E5%92%8C-StringBuilder-%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">2.1 StringBuffer 和 StringBuilder 的常用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%80%BB%E7%BB%93"><span class="nav-text">2.3 总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81Date%E7%B1%BB"><span class="nav-text">三、Date类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Date%E7%B1%BB%E5%88%86%E7%B1%BB"><span class="nav-text">3.1 Date类分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-Date%E7%B1%BB%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">3.2 Date类的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%B8%A4%E4%B8%AADate%E7%B1%BB%E4%B9%8B%E9%97%B4%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-text">3.3 两个Date类之间的转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E9%A2%9D%E5%A4%96%E6%8B%93%E5%B1%95"><span class="nav-text">3.4 额外拓展</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81SimpleDateFormat%E7%B1%BB"><span class="nav-text">四、SimpleDateFormat类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-SimpleDateFormat%E8%AF%B4%E6%98%8E"><span class="nav-text">4.1 SimpleDateFormat说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-SimpleDateFormate%E4%BD%BF%E7%94%A8"><span class="nav-text">4.2 SimpleDateFormate使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81Calendar%E7%B1%BB"><span class="nav-text">五、Calendar类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E8%AF%B4%E6%98%8E"><span class="nav-text">5.1 说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-Calendar%E4%BD%BF%E7%94%A8"><span class="nav-text">5.2 Calendar使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81JDK8%E6%96%B0%E5%A2%9E%E7%9A%84%E6%97%B6%E9%97%B4API"><span class="nav-text">六、JDK8新增的时间API</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-LocalDate%E3%80%81LocalTime%E3%80%81LocalDateTime"><span class="nav-text">6.1 LocalDate、LocalTime、LocalDateTime</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-Instant"><span class="nav-text">6.2 Instant</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-DateTimeFormatter"><span class="nav-text">6.3 DateTimeFormatter</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%83%E3%80%81Java%E6%AF%94%E8%BE%83%E5%99%A8"><span class="nav-text">七、Java比较器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E5%88%86%E7%B1%BB"><span class="nav-text">7.1 分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-Comparable%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">7.2 Comparable接口的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-Comparator%E6%8E%A5%E5%8F%A3%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">7.3 Comparator接口的使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-Comparable%E6%8E%A5%E5%8F%A3-%E5%92%8C-Comparator%E7%9A%84%E4%BD%BF%E7%94%A8%E7%9A%84%E6%AF%94%E8%BE%83"><span class="nav-text">7.4 Comparable接口 和 Comparator的使用的比较</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E5%85%B6%E4%BB%96%E5%B8%B8%E7%94%A8%E7%B1%BB"><span class="nav-text">八、其他常用类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1-System%E7%B1%BB"><span class="nav-text">8.1 System类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-Math%E7%B1%BB"><span class="nav-text">8.2 Math类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-BigInteger%E7%B1%BB"><span class="nav-text">8.3 BigInteger类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-4-BigDecimal"><span class="nav-text">8.4 BigDecimal</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

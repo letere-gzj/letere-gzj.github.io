@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="赫夫曼树延伸的赫夫曼编码的实现，以及压缩与解压的应用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构和算法】赫夫曼编码">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="赫夫曼树延伸的赫夫曼编码的实现，以及压缩与解压的应用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E6%A0%91.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E8%A1%A8.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E5%85%AC%E4%B8%BB%E8%BF%9E%E6%8E%A5-%E9%BB%91%E7%8C%AB.jpg">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E6%96%87%E4%BB%B6%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B%E7%BB%93%E6%9E%9C.png">
+<meta property="article:published_time" content="2021-05-12T15:33:19.000Z">
+<meta property="article:modified_time" content="2021-05-16T07:11:01.407Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E6%A0%91.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构和算法】赫夫曼编码 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构和算法】赫夫曼编码
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-12 23:33:19" itemprop="dateCreated datePublished" datetime="2021-05-12T23:33:19+08:00">2021-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-16 15:11:01" itemprop="dateModified" datetime="2021-05-16T15:11:01+08:00">2021-05-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>赫夫曼树延伸的赫夫曼编码的实现，以及压缩与解压的应用</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-赫夫曼编码"><a href="#1-赫夫曼编码" class="headerlink" title="1 赫夫曼编码"></a>1 赫夫曼编码</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><ul>
+<li><strong>赫夫曼编码（Huffman Coding）</strong>，又称哈夫曼编码、霍夫曼编码，是一种编码方式，属于一种程序算法</li>
+</ul>
+<ul>
+<li>赫夫曼编码是赫夫曼树在电讯通信中的经典应用之一</li>
+</ul>
+<ul>
+<li>赫夫曼编码广泛地应用于数据文件压缩，其**压缩率通常在20%~90%**之间</li>
+</ul>
+<ul>
+<li>赫夫曼编码是<strong>可变字长编码（VLC）</strong> 的一种。Hufffman与1952年提出一种变法方法，称之为最佳编码</li>
+</ul>
+<h4 id="1-2-其他编码介绍"><a href="#1-2-其他编码介绍" class="headerlink" title="1.2 其他编码介绍"></a>1.2 其他编码介绍</h4><ul>
+<li>（1）<strong>定长编码</strong>：一个文本，例<code>hello world</code>，二进制编码是固定的（通过Ascii码，再转成2进制）</li>
+</ul>
+<ul>
+<li>（2）<strong>可变长编码</strong>：统计一个文本的中字符出现的次数，例<code>hello world</code>，<code>l:3 o:2 h:1 e:1 r:1 d:1  :1</code>，按照赫夫曼树的思想（次数越大，越靠前），进行自定义二进制编码：<code>l:0, o:1, h:10,  e:11, r:100, d:101,  :110</code>来进行压缩，减少二进制编码占的空间</li>
+</ul>
+<ul>
+<li>（3）<strong>前缀编码</strong>：每个字符的编码都只能有一个，不能重复，具有唯一性。例：二进制字符<code>101001</code>，有可能<code>1</code>或<code>10</code>或<code>101</code>是一个字符，出现匹配多义性，就不属于前缀编码</li>
+</ul>
+<h4 id="1-3-实现原理"><a href="#1-3-实现原理" class="headerlink" title="1.3 实现原理"></a>1.3 实现原理</h4><ul>
+<li>（1）以字符<code>hello world</code>字符为例</li>
+</ul>
+<ul>
+<li>（2）跟可变长编码一样，统计各字符出现的次数<code>l:3 o:2 h:1 e:1 r:1 d:1  :1</code></li>
+</ul>
+<ul>
+<li>（3）以次数作为权重，以字符作为数据，来构建一个赫夫曼树</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E6%A0%91.png" class="">
+
+
+<ul>
+<li>（4）以左岔路为0，右岔路为1，对赫夫曼树进行编码，进而获得每个字符对应二进制编码（前缀编码）</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81.png" class="">
+
+
+<ul>
+<li><strong>注意</strong> ：当一个赫夫曼树中出现多个权值相同的节点，根据排序算法的不同，有可能导致赫夫曼树的形状不同，进而导致赫夫曼编码不同，但是因为满足最小wpl，所以最终二进制编码的长度还是一样，不会发生改变</li>
+</ul>
+<h4 id="1-4-代码实现"><a href="#1-4-代码实现" class="headerlink" title="1.4 代码实现"></a>1.4 代码实现</h4><ul>
+<li><strong>前提</strong> ： 赫夫曼编码涉及赫夫曼树的知识，没有了解的，可以翻之前的文章进行了解，涉及赫夫曼树的代码不再过多注释解释</li>
+</ul>
+<ul>
+<li><strong>（1）代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HuffmanTree</span> </span>&#123;</span><br><span class="line">    <span class="comment">//子类 --- 节点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Node</span>&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> weight;</span><br><span class="line">        <span class="keyword">public</span> Character c;</span><br><span class="line">        <span class="keyword">public</span> Node left;</span><br><span class="line">        <span class="keyword">public</span> Node right;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> weight, Character c)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.weight = weight;</span><br><span class="line">            <span class="keyword">this</span>.c = c;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> weight, Character c, Node left, Node right)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(weight, c);</span><br><span class="line">            <span class="keyword">this</span>.left = left;</span><br><span class="line">            <span class="keyword">this</span>.right = right;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Node o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> weight - o.weight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Node[weight = &quot;</span> + weight + <span class="string">&quot;, char = &quot;</span> + c + <span class="string">&#x27;]&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Node root; <span class="comment">//根节点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HuffmanTree</span><span class="params">(<span class="keyword">char</span>[] arr)</span> </span>&#123;</span><br><span class="line">        createTree(arr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建赫夫曼树</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> arr 字符数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">createTree</span><span class="params">(<span class="keyword">char</span>[] arr)</span> </span>&#123;</span><br><span class="line">        List&lt;Node&gt; nodes = toNodeList(arr);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (nodes.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            Collections.sort(nodes);</span><br><span class="line"></span><br><span class="line">            Node left = nodes.remove(<span class="number">0</span>);</span><br><span class="line">            Node right = nodes.remove(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            Node parent = <span class="keyword">new</span> Node(left.weight + right.weight, <span class="keyword">null</span>, left, right);</span><br><span class="line">            nodes.add(parent);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        root = nodes.get(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将char数组转成List&lt;Node&gt;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> arr 字符数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> List&lt;Node&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> List&lt;Node&gt; <span class="title">toNodeList</span><span class="params">(<span class="keyword">char</span>[] arr)</span> </span>&#123;</span><br><span class="line">        Map&lt;Character, Integer&gt; counts  = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">//字符统计集合（key为字符，value为个数）</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//统计字符集合</span></span><br><span class="line">        Integer count;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : arr) &#123;</span><br><span class="line">            <span class="comment">//向Map查询该字符（不存在为null，存在则返回其Integer值）</span></span><br><span class="line">            count = counts.get(c);</span><br><span class="line">            <span class="keyword">if</span> (count == <span class="keyword">null</span>) &#123;</span><br><span class="line">                counts.put(c, <span class="number">1</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                counts.put(c, count+<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//读取Map，并封装为List&lt;Node&gt;集合</span></span><br><span class="line">        List&lt;Node&gt; nodes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;Character, Integer&gt; entry : counts.entrySet()) &#123;</span><br><span class="line">            nodes.add(<span class="keyword">new</span> Node(entry.getValue(), entry.getKey()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> nodes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取哈夫曼编码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Map&lt;Character, String&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;Character, String&gt; <span class="title">getHuffmanCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;树为空！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Map&lt;Character, String&gt; huffmanCodes = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">//赫夫曼编码集合</span></span><br><span class="line">        StringBuilder route = <span class="keyword">new</span> StringBuilder(); <span class="comment">//路径记录</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//递归获取赫夫曼编码，并记录在Map结合中</span></span><br><span class="line">        getCode(huffmanCodes, root, route, <span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> huffmanCodes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 递归获取赫夫曼编码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> huffmanCodes 赫夫曼编码结合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> route 路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> direction 方向（0为左，1为右）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getCode</span><span class="params">(Map&lt;Character, String&gt; huffmanCodes, Node node, StringBuilder route, String direction)</span> </span>&#123;</span><br><span class="line">        StringBuilder newRoute = <span class="keyword">new</span> StringBuilder(route); <span class="comment">//创建新StringBuilder，避免影响传入的数据（避免影响回溯）</span></span><br><span class="line">        newRoute.append(direction); <span class="comment">//拼接路径</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(node != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//判断是否叶子节点</span></span><br><span class="line">            <span class="keyword">if</span> (node.c == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">//向左递归</span></span><br><span class="line">                <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    getCode(huffmanCodes, node.left, newRoute, <span class="string">&quot;0&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//向右递归</span></span><br><span class="line">                <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    getCode(huffmanCodes, node.right, newRoute, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//是叶子节点，则记录该字节，以及路径(编码)</span></span><br><span class="line">                huffmanCodes.put(node.c, newRoute.toString());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">huffmanTreeTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//获取赫夫曼树</span></span><br><span class="line">	<span class="keyword">char</span>[] chars = <span class="string">&quot;hello world&quot;</span>.toCharArray();</span><br><span class="line">	HuffmanTree huffmanTree = <span class="keyword">new</span> HuffmanTree(chars);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取赫夫曼编码表</span></span><br><span class="line">	Map&lt;Character, String&gt; huffmanCode = huffmanTree.getHuffmanCode();</span><br><span class="line">	System.out.println(huffmanCode);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81%E8%A1%A8.png" class="">
+
+<hr>
+<h3 id="2-字符串压缩与解压"><a href="#2-字符串压缩与解压" class="headerlink" title="2 字符串压缩与解压"></a>2 字符串压缩与解压</h3><h4 id="2-1-补码-amp-反码-amp-原码"><a href="#2-1-补码-amp-反码-amp-原码" class="headerlink" title="2.1 补码&amp;反码&amp;原码"></a>2.1 补码&amp;反码&amp;原码</h4><ul>
+<li>反码 = 补码 - 1</li>
+</ul>
+<ul>
+<li>原码 = 反码 除了符号位（第一个数，0为正，1为负），其余都取反</li>
+</ul>
+<h4 id="2-2-介绍"><a href="#2-2-介绍" class="headerlink" title="2.2 介绍"></a>2.2 介绍</h4><ul>
+<li>赫夫曼编码，对原数据的编码就行改变，实现对数据进行压缩。压缩后的数据查询赫夫曼编码表，对数据进行解压，还原数据</li>
+</ul>
+<h4 id="2-3-代码实现"><a href="#2-3-代码实现" class="headerlink" title="2.3 代码实现"></a>2.3 代码实现</h4><ul>
+<li><strong>（1）代码实现</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HuffmanCode</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">char</span>[] chars; <span class="comment">//原字符串的字符数组</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Character, String&gt; huffmanCodeTable; <span class="comment">//赫夫曼编码表</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> lastLen; <span class="comment">//数组最后的bit长度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器（处理字符串，并生赫夫曼编码表）</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HuffmanCode</span><span class="params">(String str)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.chars = str.toCharArray();</span><br><span class="line">        huffmanCodeTable = <span class="keyword">new</span> HuffmanTree(<span class="keyword">this</span>.chars).getHuffmanCode();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 压缩字符串（编码）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> char[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">char</span>[] strZip() &#123;</span><br><span class="line">        <span class="comment">//将字符数组转成对应赫夫曼编码的二进制bit形式字符串</span></span><br><span class="line">        StringBuilder code = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : chars) &#123;</span><br><span class="line">            code.append(huffmanCodeTable.get(c));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将bit形式字符串转成char数组（8位 = 1字节 = 1 char）</span></span><br><span class="line">        <span class="comment">//计算字节数组长度</span></span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">if</span> (code.length() % <span class="number">8</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            len = code.length() / <span class="number">8</span>; <span class="comment">//是8的倍数，长度=除数</span></span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            len = code.length() / <span class="number">8</span> + <span class="number">1</span>; <span class="comment">//非8的倍数，长度=除数+1(除法会向下取整)</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">char</span>[] huffmanCodeChars = <span class="keyword">new</span> <span class="keyword">char</span>[len];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将字符串转字节数组</span></span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (index &lt; len) &#123;</span><br><span class="line">            <span class="comment">//计算截取位置（8位长度）</span></span><br><span class="line">            <span class="keyword">int</span> start = index * <span class="number">8</span>;</span><br><span class="line">            <span class="keyword">int</span> end = start + <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//判断截取长度是否超出，超出则截取剩余的</span></span><br><span class="line">            String subCode;</span><br><span class="line">            <span class="keyword">if</span> (end &gt; code.length()) &#123;</span><br><span class="line">                subCode = code.substring(start);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                subCode = code.substring(start, end);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//将2进制bit转成10进制int，强转为char</span></span><br><span class="line">            huffmanCodeChars[index] = (<span class="keyword">char</span>) Integer.parseInt(subCode, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//记录最后一个元素的长度，方便解压</span></span><br><span class="line">            <span class="keyword">if</span>(index == len-<span class="number">1</span>) &#123;</span><br><span class="line">                lastLen = subCode.length();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//index自增</span></span><br><span class="line">            index ++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> huffmanCodeChars;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解压数据（解码）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> huffmanCodeChars 压缩后字符数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">strUnzip</span><span class="params">(<span class="keyword">char</span>[] huffmanCodeChars)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//将赫夫曼字符数组转成2进制bit字符串</span></span><br><span class="line">        String bitStr = charsToBitString(huffmanCodeChars);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//反转赫夫曼编码表（bit为key，char为value）</span></span><br><span class="line">        Map&lt;String, Character&gt; alterHuffmanCode = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;Character, String&gt; entry : huffmanCodeTable.entrySet()) &#123;</span><br><span class="line">            alterHuffmanCode.put(entry.getValue(), entry.getKey());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>; <span class="comment">//下标</span></span><br><span class="line">        StringBuilder metaStr = <span class="keyword">new</span> StringBuilder(); <span class="comment">//原字符串</span></span><br><span class="line">        String tempStr = <span class="string">&quot;&quot;</span>; <span class="comment">//中间变量</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历字符串</span></span><br><span class="line">        <span class="keyword">while</span> (index &lt; bitStr.length()) &#123;</span><br><span class="line">            tempStr += bitStr.charAt(index);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//匹配反转赫夫曼编码表</span></span><br><span class="line">            <span class="keyword">if</span> (alterHuffmanCode.get(tempStr) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                metaStr.append(alterHuffmanCode.get(tempStr)); <span class="comment">//将识别的字符加入原字符串</span></span><br><span class="line">                tempStr = <span class="string">&quot;&quot;</span>; <span class="comment">//清空中间变量</span></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//index自增</span></span><br><span class="line">            index ++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> metaStr.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将char数组转为bit类型字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> huffmanCodeChars char数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">charsToBitString</span><span class="params">(<span class="keyword">char</span>[] huffmanCodeChars)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> n = huffmanCodeChars.length; <span class="comment">//数组长度</span></span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>; <span class="comment">//数组下标</span></span><br><span class="line">        <span class="keyword">int</span> temp; <span class="comment">//中间变量，存储字符</span></span><br><span class="line">        StringBuilder bitStr = <span class="keyword">new</span> StringBuilder(); <span class="comment">//二进制bit字符串</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历数组</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : huffmanCodeChars) &#123;</span><br><span class="line">            temp = c;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//对数据进行补位</span></span><br><span class="line">            <span class="comment">//256的二进制为1 0000 0000，如果当前字符的二进制为正数，前面的0会被省略，需要进行补位</span></span><br><span class="line">            temp |= <span class="number">256</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//判断是否最后一位，最后一位的长度不一定是8位数</span></span><br><span class="line">            String tempStr = Integer.toBinaryString(temp);</span><br><span class="line">            <span class="keyword">if</span> (index == n-<span class="number">1</span>) &#123;</span><br><span class="line">                bitStr.append(tempStr.substring(tempStr.length() - lastLen)); <span class="comment">//最后一位截取指定长度</span></span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                bitStr.append(tempStr.substring(tempStr.length() - <span class="number">8</span>)); <span class="comment">//其余截取后八位</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bitStr.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">huffmanCodingTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String str = <span class="string">&quot;hello world&quot;</span>; <span class="comment">//原数据</span></span><br><span class="line"></span><br><span class="line">	HuffmanCode huffmanCode = <span class="keyword">new</span> HuffmanCode(str);</span><br><span class="line">	<span class="comment">//压缩数据</span></span><br><span class="line">	<span class="keyword">char</span>[] chars = huffmanCode.strZip();</span><br><span class="line">	System.out.println(chars);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//解压数据</span></span><br><span class="line">	String s = huffmanCode.strUnzip(chars);</span><br><span class="line">	System.out.println(s);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B.png" class="">
+
+<hr>
+<h3 id="3-文件压缩与解压"><a href="#3-文件压缩与解压" class="headerlink" title="3 文件压缩与解压"></a>3 文件压缩与解压</h3><h4 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h4><ul>
+<li>文件的压缩与解压与字符串的压缩与解压差别不大，因为文件一般都是读取为byte[]，所以我们创建赫夫曼树，以及创建赫夫曼编码表时，都是用byte[]数组存储，其他差别不大</li>
+</ul>
+<h4 id="3-2-代码"><a href="#3-2-代码" class="headerlink" title="3.2 代码"></a>3.2 代码</h4><ul>
+<li><strong>（1）赫夫曼树(byte数组)</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HuffmanByteTree</span> </span>&#123;</span><br><span class="line">    <span class="comment">//子类 --- 节点</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Node</span>&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> weight;</span><br><span class="line">        <span class="keyword">public</span> Byte b;</span><br><span class="line">        <span class="keyword">public</span> Node left;</span><br><span class="line">        <span class="keyword">public</span> Node right;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> weight, Byte b)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.weight = weight;</span><br><span class="line">            <span class="keyword">this</span>.b = b;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> weight, Byte b, Node left, Node right)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(weight, b);</span><br><span class="line">            <span class="keyword">this</span>.left = left;</span><br><span class="line">            <span class="keyword">this</span>.right = right;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Node o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> weight - o.weight;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Node[weight = &quot;</span> + weight + <span class="string">&quot;, byte = &quot;</span> + b + <span class="string">&#x27;]&#x27;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//--------------------------------------------------------------------------------------</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Node root; <span class="comment">//根节点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HuffmanByteTree</span><span class="params">(<span class="keyword">byte</span>[] arr)</span> </span>&#123;</span><br><span class="line">        createTree(arr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建赫夫曼树</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> arr 字符数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">createTree</span><span class="params">(<span class="keyword">byte</span>[] arr)</span> </span>&#123;</span><br><span class="line">        List&lt;Node&gt; nodes = toNodeList(arr);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">while</span> (nodes.size() &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            Collections.sort(nodes);</span><br><span class="line"></span><br><span class="line">            Node left = nodes.remove(<span class="number">0</span>);</span><br><span class="line">            Node right = nodes.remove(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">            Node parent = <span class="keyword">new</span> Node(left.weight + right.weight, <span class="keyword">null</span>, left, right);</span><br><span class="line">            nodes.add(parent);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        root = nodes.get(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 将byte数组转成List&lt;Node&gt;</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> arr 字符数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> List&lt;Node&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> List&lt;Node&gt; <span class="title">toNodeList</span><span class="params">(<span class="keyword">byte</span>[] arr)</span> </span>&#123;</span><br><span class="line">        Map&lt;Byte, Integer&gt; counts  = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">//字符统计集合（key为字符，value为个数）</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//统计字符集合</span></span><br><span class="line">        Integer count;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : arr) &#123;</span><br><span class="line">            <span class="comment">//向Map查询该字符（不存在为null，存在则返回其Integer值）</span></span><br><span class="line">            count = counts.get(b);</span><br><span class="line">            <span class="keyword">if</span> (count == <span class="keyword">null</span>) &#123;</span><br><span class="line">                counts.put(b, <span class="number">1</span>);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                counts.put(b, count+<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//读取Map，并封装为List&lt;Node&gt;集合</span></span><br><span class="line">        List&lt;Node&gt; nodes = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;Byte, Integer&gt; entry : counts.entrySet()) &#123;</span><br><span class="line">            nodes.add(<span class="keyword">new</span> Node(entry.getValue(), entry.getKey()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> nodes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取哈夫曼编码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Map&lt;Byte, String&gt;</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Map&lt;Byte, String&gt; <span class="title">getHuffmanCode</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;树为空！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Map&lt;Byte, String&gt; huffmanCodes = <span class="keyword">new</span> HashMap&lt;&gt;(); <span class="comment">//赫夫曼编码集合</span></span><br><span class="line">        StringBuilder route = <span class="keyword">new</span> StringBuilder(); <span class="comment">//路径记录</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//递归获取赫夫曼编码，并记录在Map结合中</span></span><br><span class="line">        getCode(huffmanCodes, root, route, <span class="string">&quot;&quot;</span>);</span><br><span class="line">        <span class="keyword">return</span> huffmanCodes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 递归获取赫夫曼编码</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> huffmanCodes 赫夫曼编码结合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> route 路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> direction 方向（0为左，1为右）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">getCode</span><span class="params">(Map&lt;Byte, String&gt; huffmanCodes, Node node, StringBuilder route, String direction)</span> </span>&#123;</span><br><span class="line">        StringBuilder newRoute = <span class="keyword">new</span> StringBuilder(route); <span class="comment">//创建新StringBuilder，避免影响传入的数据（避免影响回溯）</span></span><br><span class="line">        newRoute.append(direction); <span class="comment">//拼接路径</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(node != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//判断是否叶子节点</span></span><br><span class="line">            <span class="keyword">if</span> (node.b == <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="comment">//向左递归</span></span><br><span class="line">                <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    getCode(huffmanCodes, node.left, newRoute, <span class="string">&quot;0&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//向右递归</span></span><br><span class="line">                <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    getCode(huffmanCodes, node.right, newRoute, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//是叶子节点，则记录该字节，以及路径(编码)</span></span><br><span class="line">                huffmanCodes.put(node.b, newRoute.toString());</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）赫夫曼编码压缩与解压</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HuffmanByteCode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] metaByte; <span class="comment">//原byte数组</span></span><br><span class="line">    <span class="keyword">private</span> Map&lt;Byte, String&gt; huffmanCodeTable; <span class="comment">//赫夫曼编码表</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> lastLen; <span class="comment">//数组最后二进制bit长度</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">HuffmanByteCode</span><span class="params">(String srcFile)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//读取文件</span></span><br><span class="line">        metaByte = inputFile(srcFile);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//获取赫夫曼编码表</span></span><br><span class="line">        HuffmanByteTree huffmanByteTree = <span class="keyword">new</span> HuffmanByteTree(metaByte);</span><br><span class="line">        huffmanCodeTable = huffmanByteTree.getHuffmanCode();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 压缩文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dstFile 压缩文件路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fileZip</span><span class="params">(String dstFile)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//将byte数组转成bit字符串</span></span><br><span class="line">        StringBuilder bitStr = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : metaByte) &#123;</span><br><span class="line">            bitStr.append(huffmanCodeTable.get(b));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//重新截取bit字符，转成byte数组</span></span><br><span class="line">        <span class="comment">//1.计算byte数组长度</span></span><br><span class="line">        <span class="keyword">int</span> len = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">if</span> (bitStr.length() % <span class="number">8</span> == <span class="number">0</span>) &#123;</span><br><span class="line">            len = bitStr.length() / <span class="number">8</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            len = bitStr.length() / <span class="number">8</span> + <span class="number">1</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//2.截取bit字符串转成byte数组</span></span><br><span class="line">        <span class="keyword">byte</span>[] huffmanCodeByte = <span class="keyword">new</span> <span class="keyword">byte</span>[len];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>; <span class="comment">//下标</span></span><br><span class="line">        String tempStr = <span class="string">&quot;&quot;</span>; <span class="comment">//中间变量</span></span><br><span class="line">        <span class="keyword">while</span>(index &lt; len) &#123;</span><br><span class="line">            <span class="keyword">int</span> start = index * <span class="number">8</span>;</span><br><span class="line">            <span class="keyword">int</span> end = start + <span class="number">8</span>;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (end &gt; bitStr.length()) &#123;</span><br><span class="line">                tempStr = bitStr.substring(start);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                tempStr = bitStr.substring(start, end);</span><br><span class="line">            &#125;</span><br><span class="line">            huffmanCodeByte[index] = (<span class="keyword">byte</span>) Integer.parseInt(tempStr, <span class="number">2</span>);</span><br><span class="line"></span><br><span class="line">            <span class="comment">//记录末尾bit长度</span></span><br><span class="line">            <span class="keyword">if</span> (index == len-<span class="number">1</span>) &#123;</span><br><span class="line">                lastLen = tempStr.length();</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//index自增</span></span><br><span class="line">            index ++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//输出文件</span></span><br><span class="line">        outputFile(dstFile, huffmanCodeByte);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">float</span> zipRate = ((<span class="keyword">float</span>) metaByte.length - (<span class="keyword">float</span>) len) / (<span class="keyword">float</span>) metaByte.length * <span class="number">100</span>;</span><br><span class="line">        System.out.println(<span class="string">&quot;压缩成功！&quot;</span>);</span><br><span class="line">        System.out.println(<span class="string">&quot;压缩率为：&quot;</span> + zipRate + <span class="string">&#x27;%&#x27;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 解压文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> zipFile 压缩文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> unzipFile 解压文件路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fileUnzip</span><span class="params">(String zipFile, String unzipFile)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//读取数据</span></span><br><span class="line">        <span class="keyword">byte</span>[] zipByte = inputFile(zipFile);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将byte数组转成bit类型字符串</span></span><br><span class="line">        String bitStr = bytesToString(zipByte);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//反转码表</span></span><br><span class="line">        Map&lt;String, Byte&gt; alterCodeTable = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        <span class="keyword">for</span> (Map.Entry&lt;Byte, String&gt; entry : huffmanCodeTable.entrySet()) &#123;</span><br><span class="line">            alterCodeTable.put(entry.getValue(), entry.getKey());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//根据反转码表获取原byte数组</span></span><br><span class="line">        List&lt;Byte&gt; unzipByte = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        String tempStr = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">while</span> (index &lt; bitStr.length()) &#123;</span><br><span class="line"></span><br><span class="line">            tempStr += bitStr.charAt(index);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (alterCodeTable.get(tempStr) != <span class="keyword">null</span>) &#123;</span><br><span class="line">                unzipByte.add(alterCodeTable.get(tempStr));</span><br><span class="line">                tempStr = <span class="string">&quot;&quot;</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//index自增</span></span><br><span class="line">            index ++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//将List&lt;Byte&gt;转byte[]</span></span><br><span class="line">        <span class="keyword">byte</span>[] fileByte = <span class="keyword">new</span> <span class="keyword">byte</span>[unzipByte.size()];</span><br><span class="line">        index = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span> (Byte b : unzipByte) &#123;</span><br><span class="line">            fileByte[index] = b;</span><br><span class="line">            index ++;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//输出文件</span></span><br><span class="line">        outputFile(unzipFile, fileByte);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * byte数组转bit字符串</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> bytes byte数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> String <span class="title">bytesToString</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        StringBuilder bitStr = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        String tempStr;</span><br><span class="line">        <span class="keyword">int</span> temp;</span><br><span class="line">        <span class="keyword">int</span> index = <span class="number">0</span>; <span class="comment">//下标</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">byte</span> b : bytes) &#123;</span><br><span class="line">            temp = b;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//补位</span></span><br><span class="line">            temp |= <span class="number">256</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//截取</span></span><br><span class="line">            tempStr  = Integer.toBinaryString(temp);</span><br><span class="line">            <span class="keyword">if</span> (index == bytes.length-<span class="number">1</span>) &#123;</span><br><span class="line">                bitStr.append(tempStr.substring(tempStr.length() - lastLen));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                bitStr.append(tempStr.substring(tempStr.length() - <span class="number">8</span>));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bitStr.toString();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 读取文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> srcFile 文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> byte[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">byte</span>[] inputFile(String srcFile) &#123;</span><br><span class="line">        FileInputStream fis = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">byte</span>[] fileByte = <span class="keyword">new</span> <span class="keyword">byte</span>[<span class="number">0</span>];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//创建输入流，并读取</span></span><br><span class="line">            fis = <span class="keyword">new</span> FileInputStream(srcFile);</span><br><span class="line">            fileByte = <span class="keyword">new</span> <span class="keyword">byte</span>[fis.available()];</span><br><span class="line">            fis.read(fileByte);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//关闭流</span></span><br><span class="line">            <span class="keyword">if</span> (fis != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    fis.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> fileByte;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 输出文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> dstFile 文件路径</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> fileByte 数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">outputFile</span><span class="params">(String dstFile, <span class="keyword">byte</span>[] fileByte)</span></span>&#123;</span><br><span class="line">        FileOutputStream fos = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">//创建流并写入数据</span></span><br><span class="line">            fos = <span class="keyword">new</span> FileOutputStream(dstFile);</span><br><span class="line">            fos.write(fileByte);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="comment">//关闭流</span></span><br><span class="line">            <span class="keyword">if</span> (fos != <span class="keyword">null</span>) &#123;</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    fos.close();</span><br><span class="line">                &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E5%85%AC%E4%B8%BB%E8%BF%9E%E6%8E%A5-%E9%BB%91%E7%8C%AB.jpg" class="">
+
+
+<ul>
+<li><strong>（3）测试：对上面的图片进行压缩与解压</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">huffmanCodeByteTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String srcFile = <span class="string">&quot;./src/赫夫曼编码/压缩文件/公主连接-黑猫.jpg&quot;</span>;</span><br><span class="line">	String dstFile = <span class="string">&quot;./src/赫夫曼编码/压缩文件/公主连接-黑猫.zip&quot;</span>;</span><br><span class="line">	String unzipFile = <span class="string">&quot;./src/赫夫曼编码/压缩文件/公主连接-黑猫2.jpg&quot;</span>;</span><br><span class="line"></span><br><span class="line">	HuffmanByteCode huffmanByteCode = <span class="keyword">new</span> HuffmanByteCode(srcFile);</span><br><span class="line">	<span class="comment">//压缩</span></span><br><span class="line">	huffmanByteCode.fileZip(dstFile);</span><br><span class="line">	<span class="comment">//解压</span></span><br><span class="line">	huffmanByteCode.fileUnzip(dstFile, unzipFile);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/%E6%96%87%E4%BB%B6%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B%E7%BB%93%E6%9E%9C.png" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/05/07/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E6%A0%91/" rel="prev" title="【数据结构和算法】赫夫曼树">
+      <i class="fa fa-chevron-left"></i> 【数据结构和算法】赫夫曼树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/" rel="next" title="【数据结构和算法】二叉排序树">
+      【数据结构和算法】二叉排序树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81"><span class="nav-text">1 赫夫曼编码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%85%B6%E4%BB%96%E7%BC%96%E7%A0%81%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.2 其他编码介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="nav-text">1.3 实现原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">1.4 代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AD%97%E7%AC%A6%E4%B8%B2%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B"><span class="nav-text">2 字符串压缩与解压</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E8%A1%A5%E7%A0%81-amp-%E5%8F%8D%E7%A0%81-amp-%E5%8E%9F%E7%A0%81"><span class="nav-text">2.1 补码&amp;反码&amp;原码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.2 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">2.3 代码实现</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%96%87%E4%BB%B6%E5%8E%8B%E7%BC%A9%E4%B8%8E%E8%A7%A3%E5%8E%8B"><span class="nav-text">3 文件压缩与解压</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%BB%A3%E7%A0%81"><span class="nav-text">3.2 代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

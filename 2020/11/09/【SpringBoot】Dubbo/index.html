@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于分布式系统，以及Dubbo的介绍和举例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringBoot】Dubbo">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于分布式系统，以及Dubbo的介绍和举例">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-6.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-7.png">
+<meta property="article:published_time" content="2020-11-09T12:22:49.000Z">
+<meta property="article:modified_time" content="2020-11-09T13:12:03.145Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-2.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringBoot】Dubbo | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringBoot】Dubbo
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-11-09 20:22:49 / 修改时间：21:12:03" itemprop="dateCreated datePublished" datetime="2020-11-09T20:22:49+08:00">2020-11-09</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于分布式系统，以及Dubbo的介绍和举例</p>
+<a id="more"></a>
+
+<h3 id="一、分布式系统"><a href="#一、分布式系统" class="headerlink" title="一、分布式系统"></a>一、分布式系统</h3><ul>
+<li>分布式系统是若干个独立计算机的集合，这些计算机对于用户来说就像是单个相关系统</li>
+</ul>
+<ul>
+<li>分布式系统是由一组通过网络进行通信，为了完成共同的任务而协调工作的的计算机节点组成的系统</li>
+</ul>
+<ul>
+<li>只有单个硬件处理能力无法满足日益增长的计算，存储任务时，才考虑使用分布式系统</li>
+</ul>
+<hr>
+<h3 id="二、RPC"><a href="#二、RPC" class="headerlink" title="二、RPC"></a>二、RPC</h3><h4 id="2-1-RPC介绍"><a href="#2-1-RPC介绍" class="headerlink" title="2.1 RPC介绍"></a>2.1 RPC介绍</h4><ul>
+<li>PRC：【Remote Procedure Call】是指远程过程调用，是一种进程间通信方式，它是一种技术的思想，而不是规范</li>
+</ul>
+<ul>
+<li>它允许程序调用另一个地址空间中的过程或函数，而不用程序员显示编码这个远程调用的细节</li>
+</ul>
+<h4 id="2-2-RPC的两个核心"><a href="#2-2-RPC的两个核心" class="headerlink" title="2.2 RPC的两个核心"></a>2.2 RPC的两个核心</h4><ul>
+<li>通信：两个主机之间的交流</li>
+</ul>
+<ul>
+<li>序列化：数据传输需要转换，方便数据传输</li>
+</ul>
+<hr>
+<h3 id="三、Dubbo及Zookeeper安装"><a href="#三、Dubbo及Zookeeper安装" class="headerlink" title="三、Dubbo及Zookeeper安装"></a>三、Dubbo及Zookeeper安装</h3><h4 id="3-1-Dubbo介绍"><a href="#3-1-Dubbo介绍" class="headerlink" title="3.1 Dubbo介绍"></a>3.1 Dubbo介绍</h4><ul>
+<li>Dubbo 是一款高性能，轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，以及服务自动注册和发现</li>
+</ul>
+<ul>
+<li>Dubbo官网：<a target="_blank" rel="noopener" href="http://dubbo.apache.org/zh-cn/">http://dubbo.apache.org/zh-cn/</a></li>
+</ul>
+<ul>
+<li>Dubbo快速上手：<a target="_blank" rel="noopener" href="http://dubbo.apache.org/zh-cn/docs/2.7/user/quick-start/">http://dubbo.apache.org/zh-cn/docs/2.7/user/quick-start/</a></li>
+</ul>
+<h4 id="3-2-搭建Dubbo环境"><a href="#3-2-搭建Dubbo环境" class="headerlink" title="3.2 搭建Dubbo环境"></a>3.2 搭建Dubbo环境</h4><ul>
+<li>注册中心：官方推荐<code>Multicast</code>，<code>Zookeeper</code>，<code>Redis</code>，<code>Simple</code>，下面主要介绍Zookeeper</li>
+</ul>
+<ul>
+<li>Zookeeper官网：<a target="_blank" rel="noopener" href="https://zookeeper.apache.org/">https://zookeeper.apache.org/</a></li>
+<li>Zookeeper下载地址：<a target="_blank" rel="noopener" href="https://zookeeper.apache.org/releases.html#download">https://zookeeper.apache.org/releases.html#download</a></li>
+</ul>
+<ul>
+<li>下载后解压即可</li>
+</ul>
+<h4 id="3-3-环境测试"><a href="#3-3-环境测试" class="headerlink" title="3.3 环境测试"></a>3.3 环境测试</h4><ul>
+<li>（1）去解压后的bin目录下<code>apache-zookeeper-3.6.2-bin\bin</code>，以管理员身份运行zkServer.cmd，会返现服务器闪退</li>
+</ul>
+<ul>
+<li>（2）编辑cmd，添加暂停pause，查看错误</li>
+</ul>
+<img src="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-2.png" class="">
+
+
+<ul>
+<li>（3）重新运行zkServer.cmd，查看错误</li>
+</ul>
+<img src="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-3.png" class="">
+
+
+<ul>
+<li>（4）复制conf文件夹下的zoo_sample.cfg，改名为zoo.cfg</li>
+</ul>
+<img src="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-4.png" class="">
+
+
+<ul>
+<li>（5）先启动zkServer.cmd服务器，在打开zkCli.cmd客户端，连接成功则环境配置成功</li>
+</ul>
+<img src="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-6.png" class="">
+
+<hr>
+<h3 id="四、SpringBoot整合Dubbo"><a href="#四、SpringBoot整合Dubbo" class="headerlink" title="四、SpringBoot整合Dubbo"></a>四、SpringBoot整合Dubbo</h3><h4 id="4-1-导入依赖"><a href="#4-1-导入依赖" class="headerlink" title="4.1 导入依赖"></a>4.1 导入依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--Dubbo启动器依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.dubbo<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>dubbo-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.7.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--Zookeeper客户端--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.sgroschupf<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zkclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>0.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--Zookeeper服务端--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.zookeeper<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>zookeeper<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.6.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--解决日志冲突--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">exclusions</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">exclusion</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-log4j12<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">exclusion</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">exclusions</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-framework<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.apache.curator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>curator-recipes<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.1.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-2-创建服务端"><a href="#4-2-创建服务端" class="headerlink" title="4.2 创建服务端"></a>4.2 创建服务端</h4><ul>
+<li>（1）创建一个SprigBoot项目，创建Service层接口，以及实现方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">接口</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">TicketService</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">接口实现类</span><br><span class="line"><span class="meta">@DubboService</span> <span class="comment">//在项目启动中就自动注册到注册中心，旧注解为@Service，容易与Spring的注解冲突</span></span><br><span class="line"><span class="meta">@Component</span> <span class="comment">//使用Dubbo后尽量不要使用Service注解</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TicketServiceImpl</span> <span class="keyword">implements</span> <span class="title">TicketService</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getTicket</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;《优惠券》&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（2）配置文件中配置服务端的信息</li>
+</ul>
+<figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">server.port</span>=<span class="string">8081</span></span><br><span class="line"><span class="comment">#注册中心地址</span></span><br><span class="line"><span class="meta">dubbo.registry.address</span>=<span class="string">zookeeper://127.0.0.1:2181</span></span><br><span class="line"><span class="comment">#服务应用名字</span></span><br><span class="line"><span class="meta">dubbo.application.name</span>=<span class="string">provider</span></span><br><span class="line"><span class="comment">#哪些服务被扫描</span></span><br><span class="line"><span class="meta">dubbo.scan.base-packages</span>=<span class="string">com.letere.service</span></span><br></pre></td></tr></table></figure>
+<h4 id="4-3-创建客户端"><a href="#4-3-创建客户端" class="headerlink" title="4.3 创建客户端"></a>4.3 创建客户端</h4><ul>
+<li><p>再重新创建一个SpringBoot项目</p>
+</li>
+<li><p>创建Service层方法，为了实现分布式系统，远程调用方法，使用的“定义路径相同的接口名”方法，将服务端的Service接口，赋值到客户端的Service接口，在自己的Service类中注入并调用</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Service</span> <span class="comment">//交给Spring</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">UserService</span> </span>&#123;</span><br><span class="line">    <span class="comment">//调用provider提供的方法</span></span><br><span class="line">    <span class="meta">@DubboReference</span><span class="comment">//引用 和Autowird一样 （1）引用pom坐标  （2）可以定义路径相同的接口名</span></span><br><span class="line">            TicketService ticketService;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buyTicket</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String ticket = ticketService.getTicket();</span><br><span class="line">        System.out.println(<span class="string">&quot;在注册中心中拿到一张票，为：&quot;</span> + ticket);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>创建一个测试方法，来调用</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">DemoApplicationTests</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    UserService userService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        userService.buyTicket();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-Dubbo测试"><a href="#4-3-Dubbo测试" class="headerlink" title="4.3 Dubbo测试"></a>4.3 Dubbo测试</h4><ul>
+<li>（1）回到Zookeeper的bin目录下，将注册中心服务器zkServer.cmd开启</li>
+</ul>
+<ul>
+<li>（2）先启动SpringBoot服务端，在启动SpringBoot的客户端查看方法调用是否成功</li>
+</ul>
+<img src="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91Dubbo/Dubbo-7.png" class="">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/11/09/%E3%80%90SpringBoot%E3%80%91%E4%BB%BB%E5%8A%A1/" rel="prev" title="【SpringBoot】任务">
+      <i class="fa fa-chevron-left"></i> 【SpringBoot】任务
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/11/15/%E3%80%90%E6%8B%93%E5%B1%95%E3%80%91%E6%A0%91%E5%BD%A2%E7%BB%93%E6%9E%84%E6%95%B0%E6%8D%AE/" rel="next" title="【拓展】树形结构数据">
+      【拓展】树形结构数据 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F"><span class="nav-text">一、分布式系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81RPC"><span class="nav-text">二、RPC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-RPC%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 RPC介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-RPC%E7%9A%84%E4%B8%A4%E4%B8%AA%E6%A0%B8%E5%BF%83"><span class="nav-text">2.2 RPC的两个核心</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81Dubbo%E5%8F%8AZookeeper%E5%AE%89%E8%A3%85"><span class="nav-text">三、Dubbo及Zookeeper安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-Dubbo%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 Dubbo介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%90%AD%E5%BB%BADubbo%E7%8E%AF%E5%A2%83"><span class="nav-text">3.2 搭建Dubbo环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E7%8E%AF%E5%A2%83%E6%B5%8B%E8%AF%95"><span class="nav-text">3.3 环境测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81SpringBoot%E6%95%B4%E5%90%88Dubbo"><span class="nav-text">四、SpringBoot整合Dubbo</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%AF%BC%E5%85%A5%E4%BE%9D%E8%B5%96"><span class="nav-text">4.1 导入依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E5%88%9B%E5%BB%BA%E6%9C%8D%E5%8A%A1%E7%AB%AF"><span class="nav-text">4.2 创建服务端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E5%88%9B%E5%BB%BA%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-text">4.3 创建客户端</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-Dubbo%E6%B5%8B%E8%AF%95"><span class="nav-text">4.3 Dubbo测试</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

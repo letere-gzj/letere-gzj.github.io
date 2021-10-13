@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Maven的简单介绍">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Maven】Maven入门">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Maven的简单介绍">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/MavenDownload.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven3.png">
+<meta property="article:published_time" content="2020-10-20T14:23:32.000Z">
+<meta property="article:modified_time" content="2020-10-20T14:48:48.606Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/MavenDownload.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Maven】Maven入门 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Maven】Maven入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-20 22:23:32 / 修改时间：22:48:48" itemprop="dateCreated datePublished" datetime="2020-10-20T22:23:32+08:00">2020-10-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Maven/" itemprop="url" rel="index"><span itemprop="name">Maven</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Maven的简单介绍</p>
+<a id="more"></a>
+
+<h3 id="一、传统开发和Maven开发"><a href="#一、传统开发和Maven开发" class="headerlink" title="一、传统开发和Maven开发"></a>一、传统开发和Maven开发</h3><h4 id="1-1-传统开发"><a href="#1-1-传统开发" class="headerlink" title="1.1 传统开发"></a>1.1 传统开发</h4><ul>
+<li>（1）很多模块，模块之间有关系，手工管理关系，比较繁琐</li>
+<li>（2）需要很多第三方面的功能，需要很多jar包，要手动从网络上下载</li>
+<li>（3）需要管理jar包版本</li>
+<li>（4）管理文件之间的依赖</li>
+</ul>
+<h4 id="1-2-Maven开发"><a href="#1-2-Maven开发" class="headerlink" title="1.2 Maven开发"></a>1.2 Maven开发</h4><ul>
+<li>（1）maven可以管理jar包</li>
+<li>（2）自动下载jar和他的文档，源代码</li>
+<li>（3）管理jar之间的依赖，自动下载依赖的jar包</li>
+<li>（4）管理你需要的jar版本</li>
+<li>（5）帮你编译程序，把java编译为class</li>
+<li>（6）帮你测试代码是否正确</li>
+<li>（7）帮你打包文件，形成jar文件或war文件</li>
+<li>（8）帮你部署项目</li>
+</ul>
+<hr>
+<h3 id="二、项目构建"><a href="#二、项目构建" class="headerlink" title="二、项目构建"></a>二、项目构建</h3><ul>
+<li>构建是面向过程的，通过一定的步骤，完成项目代码的编译，测试，运行，打包</li>
+</ul>
+<ul>
+<li>支持的构建操作有：<ul>
+<li>（1）清理：把之前编译的东西删除，为新的编译代码做准备</li>
+<li>（2）编译：把程序源代码编译为执行代码，把java编程class文件</li>
+<li>（3）测试：maven可以执行测试程序代码，验证你的功能是否正确</li>
+<li>（4）报告：生成测试结果文件，测试通过没有</li>
+<li>（5）打包：把你的项目中所有的class文件，配置文件的哪个所有资源放在一个压缩文件中。这个压缩文件就是项目的结果文件，java文件为jar扩展名</li>
+<li>（6）安装：把5中生成的jar文件，安装在本地仓库</li>
+<li>（7）把程序安装好可以执行</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>开发中：一般使用前6步，第7步用maven变得更复杂</li>
+</ul>
+<hr>
+<h3 id="三、Maven核心概念"><a href="#三、Maven核心概念" class="headerlink" title="三、Maven核心概念"></a>三、Maven核心概念</h3><ul>
+<li>（1）POM：一个文件 名称是pom.xml，pom（project object model）项目对象模型<ul>
+<li>maven把一个项目当作一个模型使用。控制maven构建项目的过程，来管理jar包</li>
+</ul>
+</li>
+<li>（2）约定的目录结构：maven项目的目录和文件位置是有规定的</li>
+<li>（3）坐标：是一个唯一的字符串，用来表示资源的</li>
+<li>（4）依赖管理：用来管理你的项目可以使用的jar文件</li>
+<li>（5）仓库管理（了解）：你的资源存放的位置</li>
+<li>（6）生命周期（了解）：maven工具构建项目的过程</li>
+<li>（7）插件和目标（了解）：执行maven构建的使用用的工具是插件</li>
+<li>（8）继承</li>
+<li>（9）聚合</li>
+</ul>
+<hr>
+<h3 id="四、maven安装和配置"><a href="#四、maven安装和配置" class="headerlink" title="四、maven安装和配置"></a>四、maven安装和配置</h3><ul>
+<li>（1）maven下载<ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a><ul>
+<li>下载相应的zip包即可</li>
+</ul>
+</li>
+<li>建议使用3.3.9版本，是比较广泛使用版本。跟JDK1.8类似</li>
+<li>3.3.9版本下载地址：<a target="_blank" rel="noopener" href="https://downloads.apache.org/maven/maven-3/3.3.9/binaries/">https://downloads.apache.org/maven/maven-3/3.3.9/binaries/</a></li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/MavenDownload.png" class="">
+
+
+<ul>
+<li>（2）解压安装包，目录介绍<ul>
+<li>bin：执行程序，主要是mvn.cmd</li>
+<li>conf：maven工具本身的配置文件settings.xml</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（3）配置环境变量<ul>
+<li>步骤跟配置JDK一样</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven1.png" class="">
+<img src="/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven2.png" class="">
+
+<ul>
+<li>（4）测试是否安装成功<ul>
+<li>命令行敲打<code>mvn -v</code>，出现下面结果表示安装成功</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/maven3.png" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/" rel="prev" title="【Mybatis】缓存机制">
+      <i class="fa fa-chevron-left"></i> 【Mybatis】缓存机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/21/%E3%80%90Maven%E3%80%91Maven%E7%9A%84%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5/" rel="next" title="【Maven】Maven的核心概念">
+      【Maven】Maven的核心概念 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BC%A0%E7%BB%9F%E5%BC%80%E5%8F%91%E5%92%8CMaven%E5%BC%80%E5%8F%91"><span class="nav-text">一、传统开发和Maven开发</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BC%A0%E7%BB%9F%E5%BC%80%E5%8F%91"><span class="nav-text">1.1 传统开发</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Maven%E5%BC%80%E5%8F%91"><span class="nav-text">1.2 Maven开发</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%A1%B9%E7%9B%AE%E6%9E%84%E5%BB%BA"><span class="nav-text">二、项目构建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81Maven%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-text">三、Maven核心概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81maven%E5%AE%89%E8%A3%85%E5%92%8C%E9%85%8D%E7%BD%AE"><span class="nav-text">四、maven安装和配置</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

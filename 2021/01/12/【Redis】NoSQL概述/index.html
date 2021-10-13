@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="先了解NoSQL的知识，方便后面的Redis学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Redis】NoSQL概述">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/01/12/%E3%80%90Redis%E3%80%91NoSQL%E6%A6%82%E8%BF%B0/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="先了解NoSQL的知识，方便后面的Redis学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-01-12T15:22:03.000Z">
+<meta property="article:modified_time" content="2021-01-12T15:26:49.131Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/01/12/%E3%80%90Redis%E3%80%91NoSQL%E6%A6%82%E8%BF%B0/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Redis】NoSQL概述 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/01/12/%E3%80%90Redis%E3%80%91NoSQL%E6%A6%82%E8%BF%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Redis】NoSQL概述
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-12 23:22:03 / 修改时间：23:26:49" itemprop="dateCreated datePublished" datetime="2021-01-12T23:22:03+08:00">2021-01-12</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>先了解NoSQL的知识，方便后面的Redis学习</p>
+<a id="more"></a>
+<h3 id="1-入门概述"><a href="#1-入门概述" class="headerlink" title="1. 入门概述"></a>1. 入门概述</h3><h4 id="1-1-为什么使用NoSQL"><a href="#1-1-为什么使用NoSQL" class="headerlink" title="1.1 为什么使用NoSQL"></a>1.1 为什么使用NoSQL</h4><p>数据量的激增，传统的关系型数据库无法支撑传统的业务，需要使用NoSQL来解决</p>
+<h4 id="1-2-NoSQL概述"><a href="#1-2-NoSQL概述" class="headerlink" title="1.2 NoSQL概述"></a>1.2 NoSQL概述</h4><p>NoSQL = （not only SQL），意思为“不仅仅是SQL”，泛指非关系型数据库</p>
+<h4 id="1-3-NoSQL特点"><a href="#1-3-NoSQL特点" class="headerlink" title="1.3 NoSQL特点"></a>1.3 NoSQL特点</h4><ul>
+<li>（1）易拓展：数据之间无关系，变得容易拓展</li>
+<li>（2）大数据量高性能：由于NoSQL的数据库结构简单，可以存储大量数据。NoSQL的cache时纪录级，表更新并不会立马失效，性能较好。</li>
+<li>（3）多样灵活的数据模型：NoSQL无需事先建立存储字段，可以随时自定义字段，十分灵活</li>
+</ul>
+<h4 id="1-4-NoSQL使用"><a href="#1-4-NoSQL使用" class="headerlink" title="1.4 NoSQL使用"></a>1.4 NoSQL使用</h4><p>推荐三种NoSQL</p>
+<ul>
+<li>（1）Mongdb：最像关系型数据库的非关系数据库</li>
+<li>（2）Memcache：高速缓存</li>
+<li>（3）Redis：存储数据类型丰富</li>
+</ul>
+<hr>
+<h3 id="2-3V-3高"><a href="#2-3V-3高" class="headerlink" title="2. 3V+3高"></a>2. 3V+3高</h3><h4 id="2-1-大数据时代的3V"><a href="#2-1-大数据时代的3V" class="headerlink" title="2.1 大数据时代的3V"></a>2.1 大数据时代的3V</h4><ul>
+<li>（1）海量Volume</li>
+<li>（2）多样Variety</li>
+<li>（3）实时Velocity</li>
+</ul>
+<h4 id="2-2-互联网需求的3高"><a href="#2-2-互联网需求的3高" class="headerlink" title="2.2 互联网需求的3高"></a>2.2 互联网需求的3高</h4><ul>
+<li>（1）高并发</li>
+<li>（2）高可扩</li>
+<li>（3）高性能</li>
+</ul>
+<hr>
+<h3 id="3-NoSQL数据模型简介"><a href="#3-NoSQL数据模型简介" class="headerlink" title="3. NoSQL数据模型简介"></a>3. NoSQL数据模型简介</h3><p>使用BSON来表示，BSON = Binary JSON，和JSON一样，支持内嵌的文档对象和数组对象</p>
+<ul>
+<li>聚合模型：<ul>
+<li>KV键值对</li>
+<li>BSON</li>
+<li>列族</li>
+<li>图形</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-NoSQL数据库的四大分类"><a href="#4-NoSQL数据库的四大分类" class="headerlink" title="4. NoSQL数据库的四大分类"></a>4. NoSQL数据库的四大分类</h3><ul>
+<li>（1）KV键值对：Berkeley+Redis、Redis+Tair、Memcache+Redis</li>
+<li>（2）文档型数据库（BOSN格式比较多）：CouchDB、MongoDB</li>
+<li>（3）列存储数据库：Cassandra、HBase</li>
+<li>（4）图关系数据库：Neo4J、InfoGrid</li>
+</ul>
+<hr>
+<h3 id="5-分布式数据库中CAP原理"><a href="#5-分布式数据库中CAP原理" class="headerlink" title="5. 分布式数据库中CAP原理"></a>5. 分布式数据库中CAP原理</h3><h4 id="5-1-传统ACID"><a href="#5-1-传统ACID" class="headerlink" title="5.1 传统ACID"></a>5.1 传统ACID</h4><ul>
+<li>A：Atomicity（原子性）</li>
+<li>C：Consistency（一致性）</li>
+<li>I：Isolation（独立性）</li>
+<li>D：Durability（持久性）</li>
+</ul>
+<h4 id="5-2-NoSQL的CAP"><a href="#5-2-NoSQL的CAP" class="headerlink" title="5.2 NoSQL的CAP"></a>5.2 NoSQL的CAP</h4><ul>
+<li>C：Consistency（强一致性）</li>
+<li>A：Availability（可用性）</li>
+<li>P：Partition tolerance（分区容错性）</li>
+</ul>
+<h4 id="5-3-CAP的3进2"><a href="#5-3-CAP的3进2" class="headerlink" title="5.3 CAP的3进2"></a>5.3 CAP的3进2</h4><ul>
+<li>CAP理论在分布式存储系统中，最多只能实现上面两点</li>
+</ul>
+<ul>
+<li>CA：传统数据库</li>
+<li>AP：大多数网站架构的选择</li>
+<li>CP：Redis、MongoDB</li>
+</ul>
+<ul>
+<li>分区容忍性是必须要实现的，所以我们只能在一致性和可用性之间进行权衡，没有NoSQL系统能同时保证这三点</li>
+</ul>
+<h4 id="5-4-BASE"><a href="#5-4-BASE" class="headerlink" title="5.4 BASE"></a>5.4 BASE</h4><ul>
+<li>BASE是为了解决关系数据库强一致性引起的问题而引起的可用性降低而提出的解决方法</li>
+<li>BA：Basically Available（基本可用）</li>
+<li>S：Soft state（软状态）</li>
+<li>E：Eventutally consistent（最终一致）</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E5%AE%9E%E9%AA%8C%EF%BC%9A%E4%BC%A0%E6%95%99%E5%A3%AB%E8%BF%87%E6%B2%B3/" rel="prev" title="【智能算法】实验：传教士过河">
+      <i class="fa fa-chevron-left"></i> 【智能算法】实验：传教士过河
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/12/%E3%80%90Redis%E3%80%91Redis%E5%85%A5%E9%97%A8%E4%BB%8B%E7%BB%8D/" rel="next" title="【Redis】Redis入门介绍">
+      【Redis】Redis入门介绍 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%85%A5%E9%97%A8%E6%A6%82%E8%BF%B0"><span class="nav-text">1. 入门概述</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8NoSQL"><span class="nav-text">1.1 为什么使用NoSQL</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-NoSQL%E6%A6%82%E8%BF%B0"><span class="nav-text">1.2 NoSQL概述</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-NoSQL%E7%89%B9%E7%82%B9"><span class="nav-text">1.3 NoSQL特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-NoSQL%E4%BD%BF%E7%94%A8"><span class="nav-text">1.4 NoSQL使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3V-3%E9%AB%98"><span class="nav-text">2. 3V+3高</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%A4%A7%E6%95%B0%E6%8D%AE%E6%97%B6%E4%BB%A3%E7%9A%843V"><span class="nav-text">2.1 大数据时代的3V</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%BA%92%E8%81%94%E7%BD%91%E9%9C%80%E6%B1%82%E7%9A%843%E9%AB%98"><span class="nav-text">2.2 互联网需求的3高</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-NoSQL%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B%E7%AE%80%E4%BB%8B"><span class="nav-text">3. NoSQL数据模型简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-NoSQL%E6%95%B0%E6%8D%AE%E5%BA%93%E7%9A%84%E5%9B%9B%E5%A4%A7%E5%88%86%E7%B1%BB"><span class="nav-text">4. NoSQL数据库的四大分类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%88%86%E5%B8%83%E5%BC%8F%E6%95%B0%E6%8D%AE%E5%BA%93%E4%B8%ADCAP%E5%8E%9F%E7%90%86"><span class="nav-text">5. 分布式数据库中CAP原理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E4%BC%A0%E7%BB%9FACID"><span class="nav-text">5.1 传统ACID</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-NoSQL%E7%9A%84CAP"><span class="nav-text">5.2 NoSQL的CAP</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-CAP%E7%9A%843%E8%BF%9B2"><span class="nav-text">5.3 CAP的3进2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-BASE"><span class="nav-text">5.4 BASE</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="最短路径算法的介绍和代码实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构和算法】最短路径算法">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="最短路径算法的介绍和代码实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd%E6%B5%8B%E8%AF%95.png">
+<meta property="article:published_time" content="2021-06-16T09:55:55.000Z">
+<meta property="article:modified_time" content="2021-06-18T10:00:39.855Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构和算法】最短路径算法 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构和算法】最短路径算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-16 17:55:55" itemprop="dateCreated datePublished" datetime="2021-06-16T17:55:55+08:00">2021-06-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-18 18:00:39" itemprop="dateModified" datetime="2021-06-18T18:00:39+08:00">2021-06-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>最短路径算法的介绍和代码实现</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-最短路径算法"><a href="#1-最短路径算法" class="headerlink" title="1 最短路径算法"></a>1 最短路径算法</h3><h4 id="1-1-问题"><a href="#1-1-问题" class="headerlink" title="1.1 问题"></a>1.1 问题</h4><img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E9%97%AE%E9%A2%98.png" class="">
+
+<hr>
+<h3 id="2-迪杰斯特拉算法"><a href="#2-迪杰斯特拉算法" class="headerlink" title="2 迪杰斯特拉算法"></a>2 迪杰斯特拉算法</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><blockquote>
+<p><strong>迪杰斯特拉（Dijkstra）算法</strong>：是典型的最短路径算法，用于计算一个顶点到其他顶点的最短路径。它主要特点为一起始点为中心向外层次扩展（广度优先遍历思想），直到全部顶点都被遍历过</p>
+</blockquote>
+<h4 id="2-2-思路"><a href="#2-2-思路" class="headerlink" title="2.2 思路"></a>2.2 思路</h4><ul>
+<li><strong>（1）</strong> 创建两个数组，一个<strong>已访问顶点数组（visitedArr）</strong>，用来记录哪些顶点已被访问；另一个是<strong>最短路径数组（distanceArr）</strong>，记录选定顶点到各个顶点之间的最短路径，数组初始化为-1，表示顶点之间不连通，没有最短路径。</li>
+</ul>
+<ul>
+<li><strong>（2）</strong> 选定一个顶点作为初始顶点（第一次的初始顶点也是选定顶点），记录该顶点为已访问，若该顶点的距离数组为-1，则此顶点是选定顶线，修改为0，表示顶点到自身的距离设置为0</li>
+</ul>
+<ul>
+<li><strong>（3）</strong> 将初始顶点的相邻的未访问顶点记录，先<strong>计算路径</strong>：（选定节点到初始顶点距离 + 初始顶点到相邻未访问顶点距离），比较距离数组中未访问顶点的最短路径。若为-1，则是第一连通，直接距离数据赋值。不为-1，则此顶点之前已被连通，现在的是另一种连通路线，比较路径大小。比已记录的最短路径要小，则修改距离数组。</li>
+</ul>
+<ul>
+<li><strong>（4）</strong> 从距离数组选取路径最短，并且是未访问的顶点，作为新的初始顶点。重复（2）（3）（4）的步骤</li>
+</ul>
+<ul>
+<li><strong>（5）</strong> 直到所有顶点表示为已访问时，结束算法</li>
+</ul>
+<h4 id="2-3-图解"><a href="#2-3-图解" class="headerlink" title="2.3 图解"></a>2.3 图解</h4><ul>
+<li>（1）以此图为例</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra1.png" class="">
+
+
+<ul>
+<li>（2）以G点作为初始顶点，开始算法</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra2.png" class="">
+
+
+<ul>
+<li>（3）以A点继续作为初始顶点，对比相邻未访问顶点的距离</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra3.png" class="">
+
+
+<ul>
+<li>（4）以上面的情况推出得到的结果为：</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra4.png" class="">
+
+<h4 id="2-4-代码"><a href="#2-4-代码" class="headerlink" title="2.4 代码"></a>2.4 代码</h4><ul>
+<li><strong>（1）图类</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 图（邻接矩阵）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-06-09 16:54</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Graph</span> </span>&#123;</span><br><span class="line">    <span class="comment">//顶点集合</span></span><br><span class="line">    <span class="keyword">private</span> String[] vertexes;</span><br><span class="line">    <span class="comment">//邻接矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[][] matrix;</span><br><span class="line">    <span class="comment">//边个数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> edgeCount;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Graph</span><span class="params">(String[] vertexes)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexes = vertexes;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> temp = vertexes.length;</span><br><span class="line">        <span class="keyword">this</span>.matrix = <span class="keyword">new</span> <span class="keyword">int</span>[temp][temp];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 连接顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex1 顶点1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex2 顶点2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> weight 边权重</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(String vertex1, String vertex2, <span class="keyword">int</span> weight)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> index1 = getVertexIndex(vertex1);</span><br><span class="line">        <span class="keyword">int</span> index2 = getVertexIndex(vertex2);</span><br><span class="line"></span><br><span class="line">        matrix[index1][index2] = weight;</span><br><span class="line">        matrix[index2][index1] = weight;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//边个数+1</span></span><br><span class="line">        edgeCount++;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取顶点下标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex 顶点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getVertexIndex</span><span class="params">(String vertex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vertexes.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vertex.equals(vertexes[i])) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取顶点集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String[]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> String[] getVertexes() &#123;</span><br><span class="line">        <span class="keyword">return</span> vertexes;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取邻接矩阵</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int[][]</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">int</span>[][] getMatrix() &#123;</span><br><span class="line">        <span class="keyword">return</span> matrix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取边个数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getEdgeCount</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> edgeCount;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）最短路径问题类</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最短路径问题 - 迪杰斯特拉算法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-06-15 21:31</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShortestPath</span> </span>&#123;</span><br><span class="line">    <span class="comment">//顶点数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String[] vertexArr;</span><br><span class="line">    <span class="comment">//邻接矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>[][] matrix;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShortestPath</span><span class="params">(Graph graph)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexArr = graph.getVertexes();</span><br><span class="line">        <span class="keyword">this</span>.matrix = graph.getMatrix();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 迪杰斯特拉算法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex 初始顶点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dijkstra</span><span class="params">(String vertex)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//已访问顶点数组</span></span><br><span class="line">        <span class="keyword">boolean</span>[] visitedArr = <span class="keyword">new</span> <span class="keyword">boolean</span>[vertexArr.length];</span><br><span class="line"></span><br><span class="line">        <span class="comment">//距离数组（记录初始顶点到每个顶点最短距离）</span></span><br><span class="line">        <span class="keyword">int</span>[] distanceArr = <span class="keyword">new</span> <span class="keyword">int</span>[vertexArr.length];</span><br><span class="line">        Arrays.fill(distanceArr, -<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//前驱顶点数组（记录路线）</span></span><br><span class="line">        <span class="keyword">int</span>[] preVertexArr = <span class="keyword">new</span> <span class="keyword">int</span>[vertexArr.length];</span><br><span class="line">        Arrays.fill(preVertexArr, -<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//初始顶点下标并修改距离数组</span></span><br><span class="line">        <span class="keyword">int</span> startIndex = getVertexIndex(vertex);</span><br><span class="line">        distanceArr[startIndex] = <span class="number">0</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//最短路径长度</span></span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="keyword">int</span> row = startIndex;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//当下一未访问最短路径顶点存在，继续循环（-1表示不存在）</span></span><br><span class="line">        <span class="keyword">while</span> (row != -<span class="number">1</span>) &#123;</span><br><span class="line">            visitedArr[row] = <span class="keyword">true</span>;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//遍历行中元素（列）</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> column=<span class="number">0</span>; column&lt;matrix[row].length; column++) &#123;</span><br><span class="line">                <span class="comment">//是相邻顶点</span></span><br><span class="line">                <span class="keyword">if</span> (matrix[row][column] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="comment">//计算叠加后的路径（选定顶点到初始顶点距离 + 初始顶点到相邻顶点的距离）</span></span><br><span class="line">                    len = distanceArr[row] + matrix[row][column];</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//记录初始顶点到当前相邻顶点的路径</span></span><br><span class="line">                    <span class="comment">//（-1为未访问过，直接赋值，反之跟之前的路径比较是否更短，更短才重新赋值）</span></span><br><span class="line">                    <span class="keyword">if</span> (distanceArr[column] == -<span class="number">1</span>) &#123;</span><br><span class="line">                        distanceArr[column] = len;</span><br><span class="line">                        preVertexArr[column] = row;</span><br><span class="line">                    &#125;<span class="keyword">else</span> <span class="keyword">if</span> (len &lt; distanceArr[column]) &#123;</span><br><span class="line">                        distanceArr[column] = len;</span><br><span class="line">                        preVertexArr[column] = row;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//获取下一个未访问最短路径的顶点</span></span><br><span class="line">            row = getNextVertex(visitedArr, distanceArr);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//打印结果</span></span><br><span class="line">        print(distanceArr, preVertexArr);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取顶点下标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex 顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getVertexIndex</span><span class="params">(String vertex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vertexArr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vertexArr[i].equals(vertex)) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取下一个路径最短的新访问顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> visitedArr 已访问顶点数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> distanceArr 距离数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getNextVertex</span><span class="params">(<span class="keyword">boolean</span>[] visitedArr, <span class="keyword">int</span>[] distanceArr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> min = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">int</span> index = -<span class="number">1</span>;</span><br><span class="line">        <span class="comment">//遍历寻找，最短路径的顶点，作为下一个访问顶点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;visitedArr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (distanceArr[i] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                <span class="comment">//属于未访问顶点</span></span><br><span class="line">                <span class="keyword">if</span> (!visitedArr[i]) &#123;</span><br><span class="line">                    <span class="comment">//赋初值</span></span><br><span class="line">                    <span class="keyword">if</span> (min == <span class="number">0</span>) &#123;</span><br><span class="line">                        min = distanceArr[i];</span><br><span class="line">                        index = i;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//当前路径 &lt; 暂时最短路径，覆盖暂时最短路径，并记录下标</span></span><br><span class="line">                    <span class="keyword">if</span> (distanceArr[i] &lt; min) &#123;</span><br><span class="line">                       min = distanceArr[i];</span><br><span class="line">                       index = i;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> index;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印最短路径信息</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> distanceArr 路径数组</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> preVertexArr 前驱顶点数组</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span>[] distanceArr, <span class="keyword">int</span>[] preVertexArr)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//选择策略</span></span><br><span class="line">        String[] strategies = <span class="keyword">new</span> String[distanceArr.length];</span><br><span class="line">        String strategy;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//利用前驱顶点数组寻找最短路径路线</span></span><br><span class="line">        <span class="keyword">int</span> index;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;preVertexArr.length; i++) &#123;</span><br><span class="line">            strategy = vertexArr[i];</span><br><span class="line">            index = i;</span><br><span class="line">            <span class="keyword">while</span> (preVertexArr[index] != -<span class="number">1</span>) &#123;</span><br><span class="line">                index = preVertexArr[index];</span><br><span class="line">                strategy += <span class="string">&quot; - &quot;</span> + vertexArr[index];</span><br><span class="line">            &#125;</span><br><span class="line">            strategies[i] = strategy;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//打印路线和距离</span></span><br><span class="line">        System.out.println(<span class="string">&quot;路线 : 距离&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;distanceArr.length; i++) &#123;</span><br><span class="line">            System.out.println(strategies[i] + <span class="string">&quot; : &quot;</span> + distanceArr[i]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）代码测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">dijkstraTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//创建图</span></span><br><span class="line">	Graph graph = getData();</span><br><span class="line">	<span class="comment">//创建最短路径问题类</span></span><br><span class="line">	ShortestPath shortestPath = <span class="keyword">new</span> ShortestPath(graph);</span><br><span class="line">	<span class="comment">//调用迪杰斯特拉算法</span></span><br><span class="line">	shortestPath.dijkstra(<span class="string">&quot;G&quot;</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取数据（邻接矩阵）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Graph</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Graph <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String[] vertexes = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="string">&quot;G&quot;</span>&#125;;</span><br><span class="line"></span><br><span class="line">	Graph graph = <span class="keyword">new</span> Graph(vertexes);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="number">5</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="number">7</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">2</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="number">9</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">3</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;C&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="number">8</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;D&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="number">4</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;E&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="number">5</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;E&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">4</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;F&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> graph;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra%E6%B5%8B%E8%AF%95.png" class="">
+
+<hr>
+<h3 id="3-弗洛伊德算法"><a href="#3-弗洛伊德算法" class="headerlink" title="3 弗洛伊德算法"></a>3 弗洛伊德算法</h3><h4 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h4><blockquote>
+<p><strong>弗洛伊德（Floyd）算法</strong>：也是最短路径算法之一。弗洛伊德算法中，每一个顶点都是初始顶点，求出每个顶点到其他顶点的最短路径。这也是弗洛伊德算法的特点，会求出所有顶点到其他顶点的最短路径。</p>
+</blockquote>
+<h4 id="3-2-思路"><a href="#3-2-思路" class="headerlink" title="3.2 思路"></a>3.2 思路</h4><ul>
+<li><strong>（1）</strong> 创建两个二维数组（矩阵），一个是距离矩阵，用来记录每个顶点之间的最短距离。一个是中间关系矩阵，记录一个顶点到另外一个顶点，是经过哪个中间点。</li>
+</ul>
+<ul>
+<li><strong>（2）</strong> 初始化两个矩阵，距离矩阵初始化为图的邻接矩阵，但邻接矩阵用0代表两顶点不连通，距离矩阵使用-1表示。中间关系矩阵，初始化为每一行的中间点为自己</li>
+</ul>
+<ul>
+<li><strong>（3）</strong> 按顺序选第一个顶点作为中间顶点，选出所有可能的情况（两层for循环，分别枚举列出起始点和终点，只要起始点到中间点 和 中间点到终点 的距离矩阵的值都不为-1，即为可以连通），并修改距离矩阵和中间关系矩阵</li>
+</ul>
+<ul>
+<li><strong>（4）</strong> 重复步骤3，直到所有顶点作为中间点的情况都全部列举出来</li>
+</ul>
+<h4 id="3-3-图解"><a href="#3-3-图解" class="headerlink" title="3.3 图解"></a>3.3 图解</h4><ul>
+<li>（1）以此图为例</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/dijkstra1.png" class="">
+
+
+<ul>
+<li>（2）创建两个矩阵（距离矩阵和中间关系矩阵），并初始化</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd1.png" class="">
+
+
+<ul>
+<li>（3）选A点作为中间顶点，列选出所有可能情况，并修改距离矩阵和中间关系矩阵</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd2.png" class="">
+
+
+<ul>
+<li>（4）按照规则得出的最终结果为：</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd3.png" class="">
+
+<h4 id="3-4-代码"><a href="#3-4-代码" class="headerlink" title="3.4 代码"></a>3.4 代码</h4><ul>
+<li><strong>（1）图类，上面迪杰斯特拉算法中有，不多赘述</strong></li>
+</ul>
+<ul>
+<li><strong>（2）弗洛伊德算法</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 最短路径问题 - 弗洛伊德算法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-06-17 22:52</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ShortestPath2</span> </span>&#123;</span><br><span class="line">    <span class="comment">//顶点数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String[] vertexArr;</span><br><span class="line">    <span class="comment">//邻接矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>[][] matrix;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ShortestPath2</span><span class="params">(Graph graph)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexArr = graph.getVertexes();</span><br><span class="line">        <span class="keyword">this</span>.matrix = graph.getMatrix();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 弗洛伊德算法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">floyd</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = vertexArr.length;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//距离矩阵（记录每个点之间的最短距离）</span></span><br><span class="line">        <span class="keyword">int</span>[][] distanceMatrix = Arrays.copyOf(matrix, size);</span><br><span class="line">        <span class="comment">//除了自己到自己距离为0，其余用-1表示两点不连通</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>; j&lt;size; j++) &#123;</span><br><span class="line">                <span class="keyword">if</span> (distanceMatrix[i][j] == <span class="number">0</span>) &#123;</span><br><span class="line">                    distanceMatrix[i][j] = -<span class="number">1</span>;</span><br><span class="line">                    distanceMatrix[j][i] = -<span class="number">1</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//中间关系矩阵（记录每个点之间的中间点）</span></span><br><span class="line">        <span class="keyword">int</span>[][] midRelationMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[size][size];</span><br><span class="line">        <span class="comment">//初始化每行的中间点为自己（例：[0, 0, 0], [1, 1, 1], [2, 2, 2]）</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;size; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;size; j++) &#123;</span><br><span class="line">                midRelationMatrix[i][j] = i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> len;</span><br><span class="line">        <span class="comment">//三次for循环，第一层选中间点，第二层选起始点，第三层选终点</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> midIndex=<span class="number">0</span>; midIndex&lt;size; midIndex++) &#123;</span><br><span class="line">            start:<span class="keyword">for</span> (<span class="keyword">int</span> startIndex=<span class="number">0</span>; startIndex&lt;size; startIndex++) &#123;</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">int</span> endIndex=<span class="number">0</span>; endIndex&lt;size; endIndex++) &#123;</span><br><span class="line">                    <span class="comment">//如果中间点与起始点不连通，直接选出下一个起始点</span></span><br><span class="line">                    <span class="keyword">if</span> (distanceMatrix[midIndex][startIndex] == -<span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="keyword">continue</span> start;</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="comment">//如果中间点与终点不连通，直接选出下一个终点</span></span><br><span class="line">                    <span class="keyword">if</span> (distanceMatrix[midIndex][endIndex] == -<span class="number">1</span>) &#123;</span><br><span class="line">                        <span class="keyword">continue</span>;</span><br><span class="line">                    &#125;</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//都连通，则计算距离（起始点到中间点距离 + 中间点到终点距离）</span></span><br><span class="line">                    len = distanceMatrix[midIndex][startIndex] + distanceMatrix[midIndex][endIndex];</span><br><span class="line"></span><br><span class="line">                    <span class="comment">//此路径为第一次连通 或 此连通路径更短，则更新距离矩阵和中间关系矩阵</span></span><br><span class="line">                    <span class="keyword">if</span> (distanceMatrix[startIndex][endIndex] == -<span class="number">1</span> || len &lt; distanceMatrix[startIndex][endIndex]) &#123;</span><br><span class="line">                        distanceMatrix[startIndex][endIndex] = len;</span><br><span class="line">                        midRelationMatrix[startIndex][endIndex] = midIndex;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//打印结果</span></span><br><span class="line">        print(distanceMatrix, midRelationMatrix);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 结果打印</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> distanceMatrix 距离矩阵</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> midRelationMatrix 中间关系矩阵</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">(<span class="keyword">int</span>[][] distanceMatrix, <span class="keyword">int</span>[][] midRelationMatrix)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> size = distanceMatrix.length;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> startIndex=<span class="number">0</span>; startIndex&lt;size; startIndex++) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;顶点&quot;</span> + vertexArr[startIndex] + <span class="string">&quot;到各顶点的路线与距离：&quot;</span>);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> endIndex=<span class="number">0</span>; endIndex&lt;size; endIndex++) &#123;</span><br><span class="line">                <span class="comment">//（1）打印路线</span></span><br><span class="line">                <span class="comment">//打印起始点</span></span><br><span class="line">                System.out.print(vertexArr[startIndex] + <span class="string">&quot; -&gt; &quot;</span>);</span><br><span class="line">                <span class="comment">//打印中间点</span></span><br><span class="line">                <span class="keyword">int</span> temp = startIndex;</span><br><span class="line">                <span class="keyword">while</span> (midRelationMatrix[temp][endIndex] != temp) &#123;</span><br><span class="line">                    temp = midRelationMatrix[temp][endIndex];</span><br><span class="line">                    System.out.print(vertexArr[temp] + <span class="string">&quot; -&gt; &quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//打印终点</span></span><br><span class="line">                System.out.print(vertexArr[endIndex] + <span class="string">&quot; : &quot;</span>);</span><br><span class="line"></span><br><span class="line">                <span class="comment">//（2）打印距离</span></span><br><span class="line">                System.out.println(distanceMatrix[startIndex][endIndex]);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            System.out.println(<span class="string">&quot;--------------------------------------&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">floydTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Graph graph = getData();</span><br><span class="line"></span><br><span class="line">	ShortestPath2 shortestPath2 = <span class="keyword">new</span> ShortestPath2(graph);</span><br><span class="line"></span><br><span class="line">	shortestPath2.floyd();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取数据（邻接矩阵）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Graph</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Graph <span class="title">getData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String[] vertexes = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="string">&quot;G&quot;</span>&#125;;</span><br><span class="line"></span><br><span class="line">	Graph graph = <span class="keyword">new</span> Graph(vertexes);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="number">5</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="number">7</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">2</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="number">9</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">3</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;C&quot;</span>, <span class="string">&quot;E&quot;</span>, <span class="number">8</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;D&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="number">4</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;E&quot;</span>, <span class="string">&quot;F&quot;</span>, <span class="number">5</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;E&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">4</span>);</span><br><span class="line">	graph.connect(<span class="string">&quot;F&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="number">6</span>);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> graph;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/06/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95/floyd%E6%B5%8B%E8%AF%95.png" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/06/16/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91word%E8%BD%ACpdf/" rel="prev" title="【工作技能】word转pdf">
+      <i class="fa fa-chevron-left"></i> 【工作技能】word转pdf
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/06/19/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E9%A9%AC%E8%B8%8F%E6%A3%8B%E7%9B%98%E7%AE%97%E6%B3%95/" rel="next" title="【数据结构和算法】马踏棋盘算法">
+      【数据结构和算法】马踏棋盘算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%9C%80%E7%9F%AD%E8%B7%AF%E5%BE%84%E7%AE%97%E6%B3%95"><span class="nav-text">1 最短路径算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E9%97%AE%E9%A2%98"><span class="nav-text">1.1 问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%BF%AA%E6%9D%B0%E6%96%AF%E7%89%B9%E6%8B%89%E7%AE%97%E6%B3%95"><span class="nav-text">2 迪杰斯特拉算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%80%9D%E8%B7%AF"><span class="nav-text">2.2 思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%9B%BE%E8%A7%A3"><span class="nav-text">2.3 图解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E4%BB%A3%E7%A0%81"><span class="nav-text">2.4 代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%BC%97%E6%B4%9B%E4%BC%8A%E5%BE%B7%E7%AE%97%E6%B3%95"><span class="nav-text">3 弗洛伊德算法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%80%9D%E8%B7%AF"><span class="nav-text">3.2 思路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%9B%BE%E8%A7%A3"><span class="nav-text">3.3 图解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%BB%A3%E7%A0%81"><span class="nav-text">3.4 代码</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

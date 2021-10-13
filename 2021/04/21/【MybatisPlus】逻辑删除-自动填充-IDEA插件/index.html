@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="逻辑删除，自动填充，IDEA插件整合笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MybatisPlus】逻辑删除&amp;自动填充&amp;IDEA插件">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="逻辑删除，自动填充，IDEA插件整合笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/logicDelete1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/logicDelete2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/autoFill.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/autoFill2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/install.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/mybatisx-jump.gif">
+<meta property="article:published_time" content="2021-04-21T14:52:52.000Z">
+<meta property="article:modified_time" content="2021-04-21T14:55:34.819Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/logicDelete1.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MybatisPlus】逻辑删除&自动填充&IDEA插件 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MybatisPlus】逻辑删除&自动填充&IDEA插件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-21 22:52:52 / 修改时间：22:55:34" itemprop="dateCreated datePublished" datetime="2021-04-21T22:52:52+08:00">2021-04-21</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/MybatisPlus/" itemprop="url" rel="index"><span itemprop="name">MybatisPlus</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>逻辑删除，自动填充，IDEA插件整合笔记</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-逻辑删除"><a href="#1-逻辑删除" class="headerlink" title="1 逻辑删除"></a>1 逻辑删除</h3><h4 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h4><ul>
+<li>所谓逻辑删除，即不是真正在数据库中对数据进行删除，而是通过一个字段控制该数据的状态，来表示是否已删除</li>
+</ul>
+<ul>
+<li>MybatisPlus的逻辑删除操作，实际是替换sql，将所有<code>delete</code>相关的sql，更改为<code>update</code>，来修改删除状态</li>
+<li>将所有的<code>select</code>后面都拼接一个<code>where deleteflag = 未删除状态</code>，来查询未删除的数据</li>
+</ul>
+<h4 id="2-逻辑删除开启"><a href="#2-逻辑删除开启" class="headerlink" title="2 逻辑删除开启"></a>2 逻辑删除开启</h4><ul>
+<li><strong>（1）修改数据库表，添加表示删除状态的字段</strong><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> <span class="keyword">user</span></span><br><span class="line"><span class="keyword">add</span> <span class="keyword">column</span> delete_flag <span class="built_in">int</span> <span class="keyword">default</span> <span class="number">0</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）实体类添加相应属性</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@TableId(type = IdType.AUTO)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TableLogic</span> <span class="comment">//mybatis-plus3.3.0以上可以省略</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> deleteFlag;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）配置yaml开启逻辑删除</strong><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">mybatis-plus:</span></span><br><span class="line">  <span class="attr">global-config:</span></span><br><span class="line">    <span class="attr">db-config:</span></span><br><span class="line">      <span class="attr">logic-delete-field:</span> <span class="string">deleteFlag</span> <span class="comment">#逻辑删除实体类属性名</span></span><br><span class="line">      <span class="attr">logic-delete-value:</span> <span class="number">1</span> <span class="comment">#删除状态值</span></span><br><span class="line">      <span class="attr">logic-not-delete-value:</span> <span class="number">0</span> <span class="comment">#未删除状态值</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SpringMPTest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> UserMapper userMapper;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">logicDeleteTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//删除测试</span></span><br><span class="line">        userMapper.deleteById(<span class="number">1</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//查询测试</span></span><br><span class="line">        userMapper.selectList(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/logicDelete1.png" class="">
+
+<img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/logicDelete2.png" class="">
+
+<hr>
+<h3 id="2-自动填充"><a href="#2-自动填充" class="headerlink" title="2 自动填充"></a>2 自动填充</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><ul>
+<li>有时候，我们希望我们的sql的某些字段不用传参，也能自动补充参数，执行插入或更新操作</li>
+<li>而MybatisPlus提供了自动填充功能，为了我们定义的字段，自动补充参数</li>
+</ul>
+<ul>
+<li>我们也可以在创建表字段的时候设置默认值来达到此效果</li>
+</ul>
+<h4 id="2-2-使用"><a href="#2-2-使用" class="headerlink" title="2.2 使用"></a>2.2 使用</h4><ul>
+<li><strong>（1）新增数据库表字段</strong><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加时间字段</span></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> <span class="keyword">user</span></span><br><span class="line"><span class="keyword">add</span> <span class="keyword">column</span> create_time datetime</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> <span class="keyword">user</span></span><br><span class="line"><span class="keyword">add</span> <span class="keyword">column</span> update_time datetime</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）实体新增相应属性</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="meta">@TableId(type = IdType.AUTO)</span></span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TableLogic</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> deleteFlag;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加fill属性，有DEFAULT（不处理），INSERT（新增时填充），UPDATE（更新时填充），INSERT_UPDATE（新增和更新时填充）</span></span><br><span class="line">    <span class="meta">@TableField(value = &quot;create_time&quot;, fill = FieldFill.INSERT)</span></span><br><span class="line">    <span class="keyword">private</span> Date createTime;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@TableField(value = &quot;update_time&quot;, fill = FieldFill.UPDATE)</span></span><br><span class="line">    <span class="keyword">private</span> Date updateTime;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）创建自动填充处理器</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AutoFillHandler</span> <span class="keyword">implements</span> <span class="title">MetaObjectHandler</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//插入填充</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertFill</span><span class="params">(MetaObject metaObject)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//三种方法都可以，选择其中一种</span></span><br><span class="line">        <span class="comment">//方法一：[metaObject, 实体类属性名, Java类型，填充数值]</span></span><br><span class="line">        <span class="keyword">this</span>.strictInsertFill(metaObject, <span class="string">&quot;createTime&quot;</span>, Date.class, <span class="keyword">new</span> Date());</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方式二：[metaObject，实体类属性名, 函数:带返回值（可用lamda），Java类型]</span></span><br><span class="line">        <span class="keyword">this</span>.strictInsertFill(metaObject, <span class="string">&quot;createTime&quot;</span>, () -&gt; &#123;<span class="keyword">return</span> <span class="keyword">new</span> Date();&#125;, Date.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//方法三：[metaObject, 实体类属性名，填充数值]</span></span><br><span class="line">        <span class="keyword">this</span>.fillStrategy(metaObject, <span class="string">&quot;createTime&quot;</span>, <span class="keyword">new</span> Date());</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//更新填充</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateFill</span><span class="params">(MetaObject metaObject)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//update与insert同理</span></span><br><span class="line">        <span class="keyword">this</span>.strictUpdateFill(metaObject, <span class="string">&quot;updateTime&quot;</span>, Date.class, <span class="keyword">new</span> Date());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">autoFillTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//新增测试</span></span><br><span class="line">	User user = <span class="keyword">new</span> User();</span><br><span class="line">	user.setName(<span class="string">&quot;asaki&quot;</span>);</span><br><span class="line">	user.setAge(<span class="number">18</span>);</span><br><span class="line">	user.setEmail(<span class="string">&quot;asaki@qq.com&quot;</span>);</span><br><span class="line">	userMapper.insert(user);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">	<span class="comment">//更新测试</span></span><br><span class="line">	User user1 = <span class="keyword">new</span> User();</span><br><span class="line">	user1.setName(<span class="string">&quot;C酱&quot;</span>);</span><br><span class="line">	user1.setId(<span class="number">1</span>);</span><br><span class="line">	userMapper.updateById(user1);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/autoFill.png" class="">
+
+
+<img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/autoFill2.png" class="">
+
+<hr>
+<h3 id="3-IDEA插件"><a href="#3-IDEA插件" class="headerlink" title="3 IDEA插件"></a>3 IDEA插件</h3><h4 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h4><ul>
+<li>MybatisPlus为IDEA专门提供一个便利的插件<strong>MybatisX</strong></li>
+</ul>
+<ul>
+<li>通过MyabtisX，我们可以通过Mapper接口，直接跳转到对应的SQL的xml文件中，十分方便</li>
+</ul>
+<h4 id="3-2-插件安装"><a href="#3-2-插件安装" class="headerlink" title="3.2 插件安装"></a>3.2 插件安装</h4><ul>
+<li>File –&gt; Settings –&gt; Plugins ，搜索MybatisX，安装后重启IDEA</li>
+</ul>
+<img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/install.png" class="">
+
+<h4 id="3-3-插件效果"><a href="#3-3-插件效果" class="headerlink" title="3.3 插件效果"></a>3.3 插件效果</h4><img src="/blog/2021/04/21/%E3%80%90MybatisPlus%E3%80%91%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85-IDEA%E6%8F%92%E4%BB%B6/mybatisx-jump.gif" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/20/%E3%80%90MybatisPlus%E3%80%91%E8%87%AA%E5%AE%9A%E4%B9%89SQL%E6%B3%A8%E5%85%A5%E5%99%A8/" rel="prev" title="【MybatisPlus】自定义SQL注入器">
+      <i class="fa fa-chevron-left"></i> 【MybatisPlus】自定义SQL注入器
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/22/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%85%A5%E9%97%A8/" rel="next" title="【数据结构和算法】数据结构入门">
+      【数据结构和算法】数据结构入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4"><span class="nav-text">1 逻辑删除</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4%E5%BC%80%E5%90%AF"><span class="nav-text">2 逻辑删除开启</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%87%AA%E5%8A%A8%E5%A1%AB%E5%85%85"><span class="nav-text">2 自动填充</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8"><span class="nav-text">2.2 使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-IDEA%E6%8F%92%E4%BB%B6"><span class="nav-text">3 IDEA插件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%8F%92%E4%BB%B6%E5%AE%89%E8%A3%85"><span class="nav-text">3.2 插件安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%8F%92%E4%BB%B6%E6%95%88%E6%9E%9C"><span class="nav-text">3.3 插件效果</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

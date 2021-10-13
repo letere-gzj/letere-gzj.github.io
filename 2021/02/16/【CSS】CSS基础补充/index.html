@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="这是CSS样式的深入学习之前CSS样式学习地址：https:&#x2F;&#x2F;letere.gitee.io&#x2F;blog&#x2F;2020&#x2F;11&#x2F;16&#x2F;【JavaWeb】html和css">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CSS】CSS基础补充">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="这是CSS样式的深入学习之前CSS样式学习地址：https:&#x2F;&#x2F;letere.gitee.io&#x2F;blog&#x2F;2020&#x2F;11&#x2F;16&#x2F;【JavaWeb】html和css">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/%E5%B0%8F%E7%B1%B3%E4%BE%A7%E8%BE%B9%E6%A0%8F.png">
+<meta property="article:published_time" content="2021-02-16T02:21:57.000Z">
+<meta property="article:modified_time" content="2021-02-16T02:33:13.997Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/%E5%B0%8F%E7%B1%B3%E4%BE%A7%E8%BE%B9%E6%A0%8F.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【CSS】CSS基础补充 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CSS】CSS基础补充
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-16 10:21:57 / 修改时间：10:33:13" itemprop="dateCreated datePublished" datetime="2021-02-16T10:21:57+08:00">2021-02-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>这是CSS样式的深入学习<br>之前CSS样式学习地址：<a href="https://letere.gitee.io/blog/2020/11/16/%E3%80%90JavaWeb%E3%80%91html%E5%92%8Ccss">https://letere.gitee.io/blog/2020/11/16/【JavaWeb】html和css</a></p>
+<a id="more"></a>
+
+<h3 id="1-CSS文本属性"><a href="#1-CSS文本属性" class="headerlink" title="1 CSS文本属性"></a>1 CSS文本属性</h3><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 文本颜色 */</span></span><br><span class="line"><span class="selector-tag">color</span>: <span class="selector-tag">red</span>; <span class="comment">/* 预设 | 十六进制 | RGB */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 文本水平对齐 */</span></span><br><span class="line"><span class="selector-tag">text-align</span>: </span><br><span class="line">    <span class="selector-tag">left</span>   <span class="comment">/*左对齐*/</span></span><br><span class="line">    <span class="selector-tag">right</span>  <span class="comment">/*右对齐*/</span></span><br><span class="line">    <span class="selector-tag">center</span> <span class="comment">/*居中对齐*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 文本装饰 */</span></span><br><span class="line"><span class="selector-tag">text-decoration</span>: </span><br><span class="line">    <span class="selector-tag">none</span>         <span class="comment">/* 默认，没有装饰 */</span></span><br><span class="line">    <span class="selector-tag">underline</span>    <span class="comment">/* 下划线 */</span></span><br><span class="line">    <span class="selector-tag">overline</span>     <span class="comment">/* 上划线 */</span></span><br><span class="line">    <span class="selector-tag">line-through</span> <span class="comment">/* 删除线 */</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 文本缩进 */</span></span><br><span class="line"><span class="selector-tag">text-indent</span>: <span class="selector-attr">[..px | ..% | ..em]</span> <span class="comment">/*推荐使用em，em相对单位，1单位=1个文字大小，所有文章首行缩进选择2em*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/* 行间距 */</span></span><br><span class="line"><span class="comment">/* 行间距 = 上间距 + 文字高度 + 下间距 */</span></span><br><span class="line"><span class="selector-tag">line-hight</span>: <span class="selector-attr">[..px]</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-CSS的引入"><a href="#2-CSS的引入" class="headerlink" title="2 CSS的引入"></a>2 CSS的引入</h3><h4 id="2-1-内部样式表（嵌入式）"><a href="#2-1-内部样式表（嵌入式）" class="headerlink" title="2.1 内部样式表（嵌入式）"></a>2.1 内部样式表（嵌入式）</h4><ul>
+<li>将所用的CSS样式抽取到一个<code>&lt;style&gt;</code>标签中</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line">  div &#123;</span><br><span class="line">    color: red;</span><br><span class="line">  &#125;</span><br><span class="line"><span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-行内样式表（行内式）"><a href="#2-2-行内样式表（行内式）" class="headerlink" title="2.2 行内样式表（行内式）"></a>2.2 行内样式表（行内式）</h4><ul>
+<li>简单修改一个标签，可以直接在标签添加<code>style=&quot;&quot;</code>进行样式修改</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span> <span class="attr">style</span>=<span class="string">&quot;color: red; font-size: 16px;&quot;</span>&gt;</span>Hello World!<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-外部样式表（链接式）"><a href="#2-3-外部样式表（链接式）" class="headerlink" title="2.3 外部样式表（链接式）"></a>2.3 外部样式表（链接式）</h4><ul>
+<li>当样式比较多时，将样式写进一个.css文件，然后引入到html页面中</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">link</span> <span class="attr">rel</span>=<span class="string">&quot;stylesheet&quot;</span> <span class="attr">href</span>=<span class="string">&quot;css文件路径&quot;</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-Emment语法"><a href="#3-Emment语法" class="headerlink" title="3 Emment语法"></a>3 Emment语法</h3><h4 id="3-1-简介"><a href="#3-1-简介" class="headerlink" title="3.1 简介"></a>3.1 简介</h4><ul>
+<li>Emmet语法是来调高html/css的编写速度</li>
+</ul>
+<h4 id="3-2-使用Emmet快速生成html"><a href="#3-2-使用Emmet快速生成html" class="headerlink" title="3.2 使用Emmet快速生成html"></a>3.2 使用Emmet快速生成html</h4><ul>
+<li>（1）生成标签：<code>标签名</code> + tab</li>
+<li>（2）生成多个标签：<code>标签名*数量</code> + tab</li>
+<li>（3）生成父子级标签：<code>父标签名&gt;子标签名</code> + tab</li>
+<li>（4）生成兄弟关系标签：<code>标签1+标签2</code> + tab</li>
+<li>（5）生成带有类名的标签：<code>标签名.类名</code> + tab</li>
+<li>（6）生成带有id名的标签：<code>标签名#id名</code> + tab</li>
+<li>（7）生成有序号带类名的标签：<code>标签名.类名$*数量</code> + tab<ul>
+<li><code>p.demo$*5</code>，会生成<code>demo1 ---- demo5类名的标签</code></li>
+</ul>
+</li>
+<li>（8）生成标签带有内容：<code>标签名&#123;内容&#125;</code> + tab</li>
+</ul>
+<h4 id="3-3-使用Emment快速生成css"><a href="#3-3-使用Emment快速生成css" class="headerlink" title="3.3 使用Emment快速生成css"></a>3.3 使用Emment快速生成css</h4><ul>
+<li>快速生成都是取首字母的简写方式<ul>
+<li>例：<code>text-align: center</code> == <code>tac + tab</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-复合选择器"><a href="#4-复合选择器" class="headerlink" title="4 复合选择器"></a>4 复合选择器</h3><h4 id="4-1-简介"><a href="#4-1-简介" class="headerlink" title="4.1 简介"></a>4.1 简介</h4><ul>
+<li>根据选择器的类型可以把选择器分为两类：基础选择器和复合选择器</li>
+<li>复合选择器是建立在基础选择器上，对基本选择器进行组合形成的</li>
+<li>复合选择器可以更准确，更高效的选择目标元素</li>
+<li>复合选择器是由两个或多个基础选择器，通过不同的方式组合而成</li>
+<li>常用复合选择器：后代选择器，子选择器，并集选择器，伪类选择器等等</li>
+</ul>
+<h4 id="4-2-后代选择器"><a href="#4-2-后代选择器" class="headerlink" title="4.2 后代选择器"></a>4.2 后代选择器</h4><ul>
+<li>后代选择器有称为包含选择器，可以选择父元素里面子元素</li>
+<li>格式：<code>父元素 子元素 &#123;样式&#125;</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">      <span class="comment">/*只选择出ol下面的li进行样式添加*/</span></span></span><br><span class="line">      ol li &#123;</span><br><span class="line">        color: red;</span><br><span class="line">      &#125; </span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ol</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>我会变色<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ol</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span>我不会变<span class="tag">&lt;/<span class="name">li</span>&gt;</span>  </span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-子选择器"><a href="#4-3-子选择器" class="headerlink" title="4.3 子选择器"></a>4.3 子选择器</h4><ul>
+<li>子选择器也称为子元素选择器，只能选择作为某元素的最近一级子元素。</li>
+<li>格式：<code>父元素 &gt; 子元素 &#123;样式&#125;</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">      <span class="comment">/*只对子元素a标签进行修改*/</span></span></span><br><span class="line">      div &gt; a &#123;</span><br><span class="line">        color: red;</span><br><span class="line">      &#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">a</span>&gt;</span>我是儿子<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">a</span>&gt;</span>我是孙子<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-4-并集选择器"><a href="#4-4-并集选择器" class="headerlink" title="4.4 并集选择器"></a>4.4 并集选择器</h4><ul>
+<li>并集选择器可以选择多组标签，同时为他们定义相同的样式，通常用于集体声明</li>
+<li>并集选择器，可以让任何形式的选择器作为元素</li>
+<li>格式：<code>元素1, 元素2 &#123;样式&#125;</code></li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">      <span class="comment">/*两个标签同时进行修改*/</span></span></span><br><span class="line">      div, </span><br><span class="line">      p &#123;</span><br><span class="line">          color: red;</span><br><span class="line">      &#125;</span><br><span class="line"><span class="css">      <span class="comment">/*格式规范，一般&#x27;,&#x27;之后换下一行再写，不要写在同一行*/</span></span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span>&gt;</span>咕料<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span>&gt;</span>C酱<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="4-5-伪类选择器"><a href="#4-5-伪类选择器" class="headerlink" title="4.5 伪类选择器"></a>4.5 伪类选择器</h4><ul>
+<li>伪类选择器用于向某些选择器添加特殊效果，比如给链接添加特殊效果，或选择第1个，第n个元素</li>
+<li>伪类选择器有链接伪类、结构伪类等等</li>
+<li>格式：<code>标签:参数 &#123;样式&#125;</code></li>
+</ul>
+<ul>
+<li>（1）链接伪类选择器</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:link</span>      <span class="comment">/*选择所有未被访问的链接*/</span></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:visited</span>   <span class="comment">/*选择所有已访问的链接*/</span></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:hover</span>     <span class="comment">/*选择鼠标指针位于其上的链接*/</span></span><br><span class="line"><span class="selector-tag">a</span><span class="selector-pseudo">:active</span>    <span class="comment">/*选择活动链接（鼠标按下未弹起的链接）*/</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>注意事项：<br>  为了保证生效，按照link, visited, hover, active顺序进行书写</li>
+</ul>
+<ul>
+<li>（2）focus焦点伪类选择器</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">input</span><span class="selector-pseudo">:focus</span> <span class="comment">/*当前光标选中的input*/</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-元素显示模式"><a href="#5-元素显示模式" class="headerlink" title="5 元素显示模式"></a>5 元素显示模式</h3><h4 id="5-1-简介"><a href="#5-1-简介" class="headerlink" title="5.1 简介"></a>5.1 简介</h4><ul>
+<li>元素显示模式：元素以什么方式进行显示，比如div自己占一行，比如一行可以放多个span</li>
+<li>html元素分为：块元素和行内元素</li>
+</ul>
+<h4 id="5-2-块元素"><a href="#5-2-块元素" class="headerlink" title="5.2 块元素"></a>5.2 块元素</h4><ul>
+<li>常见块元素：<code>&lt;h1&gt;~&lt;h6&gt;</code>，<code>&lt;p&gt;</code>，<code>&lt;div&gt;</code>，<code>&lt;ul&gt;</code>，<code>&lt;ol&gt;</code>，<code>&lt;li&gt;</code></li>
+</ul>
+<ul>
+<li>块元素特点：<ul>
+<li>自己独占一行</li>
+<li>高度，宽度，外边距，内边距都可以控制</li>
+<li>宽度默认是容器（父级宽度）的100%</li>
+<li>是一个容器，里面可以放行内元素或块元素</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>注意：<ul>
+<li>文字类的元素内不能使用块元素</li>
+<li><code>&lt;p&gt;</code>，<code>&lt;h1&gt;~&lt;h6&gt;</code>里面只能放文字，不能存放其他块元素，尤其是<code>&lt;div&gt;</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="5-3-行内元素"><a href="#5-3-行内元素" class="headerlink" title="5.3 行内元素"></a>5.3 行内元素</h4><ul>
+<li>常见行内元素：<code>&lt;a&gt;</code>，<code>&lt;strong&gt;</code>，<code>&lt;b&gt;</code>，<code>&lt;em&gt;</code>，<code>&lt;del&gt;</code>，<code>&lt;s&gt;</code>，<code>&lt;ins&gt;</code>，<code>&lt;u&gt;</code>，<code>&lt;span&gt;</code>等</li>
+</ul>
+<ul>
+<li>行内元素特点： <ul>
+<li>一行可以显示多个</li>
+<li>高、宽直接设置是无效的</li>
+<li>默认宽度就是它本身内容的宽度</li>
+<li>行内元素只能容纳文本或其他行内元素</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>注意：<ul>
+<li>链接里面不允许再放链接</li>
+<li>特殊情况链接<code>&lt;a&gt;</code>里面是可以放块及元素，但是给<code>&lt;a&gt;</code>转换一下块级模式最安全</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-4-行内块元素"><a href="#5-4-行内块元素" class="headerlink" title="5.4 行内块元素"></a>5.4 行内块元素</h4><ul>
+<li>在行内元素中有几个特殊的标签：<code>&lt;img/&gt;</code>，<code>&lt;input/&gt;</code>, <code>&lt;td&gt;</code>，它们同时具有块元素和行内元素特点</li>
+</ul>
+<ul>
+<li>行内块元素特点：<ul>
+<li>和相邻的行内元素在一行上，但是它们之间或有空白缝隙，一行可以显示多个</li>
+<li>默认宽度就是它本身内容的宽度</li>
+<li>高度，行高，外边距以及内边距都可以控制</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-5-元素显示模式转换"><a href="#5-5-元素显示模式转换" class="headerlink" title="5.5 元素显示模式转换"></a>5.5 元素显示模式转换</h4><ul>
+<li>特殊情况下，我们需要元素模式的转换，简单理解：一个模式的元素需要另外一种模式的特性，比如想要增加链接<code>&lt;a&gt;</code>的触发范围</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">block</span>         <span class="comment">/*将行内元素转变成块元素*/</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">inline</span>        <span class="comment">/*将块元素转变成行内元素*/</span></span><br><span class="line"></span><br><span class="line"><span class="selector-tag">display</span>: <span class="selector-tag">inline-block</span>  <span class="comment">/*转变成行内块元素*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="5-6-案例：小米侧边栏"><a href="#5-6-案例：小米侧边栏" class="headerlink" title="5.6 案例：小米侧边栏"></a>5.6 案例：小米侧边栏</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>小米侧边栏<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line">    a &#123;</span><br><span class="line"><span class="css">      <span class="comment">/*转为块级元素*/</span></span></span><br><span class="line">      display: block;</span><br><span class="line">      width: 230px;</span><br><span class="line">      height: 40px;</span><br><span class="line"><span class="css">      <span class="selector-tag">background-color</span>: <span class="selector-id">#55585a</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*设置文字样式*/</span></span></span><br><span class="line">      font-size: 14px;</span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#fff</span>;</span></span><br><span class="line">      text-decoration: none;</span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*设置文字位置*/</span></span></span><br><span class="line">      text-indent: 2em;</span><br><span class="line"><span class="css">      <span class="selector-tag">line-height</span>: 40<span class="selector-tag">px</span>; <span class="comment">/*行高=高度：达到垂直居中*/</span></span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="selector-tag">background-color</span>: <span class="selector-id">#ff6700</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>手机 电话卡<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>电视 盒子<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>出行 穿戴<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>智能 路由器<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>健康 儿童<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;&quot;</span>&gt;</span>耳机 音响<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/%E5%B0%8F%E7%B1%B3%E4%BE%A7%E8%BE%B9%E6%A0%8F.png" class="">
+
+<hr>
+<h3 id="6-背景"><a href="#6-背景" class="headerlink" title="6 背景"></a>6 背景</h3><h4 id="6-1-背景颜色"><a href="#6-1-背景颜色" class="headerlink" title="6.1 背景颜色"></a>6.1 背景颜色</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">backgroud-color: transparent | color</span><br><span class="line"><span class="comment">/*transparent为透明色*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-背景图片"><a href="#6-2-背景图片" class="headerlink" title="6.2 背景图片"></a>6.2 背景图片</h4><ul>
+<li><code>background-image</code>属性描述了元素的背景图像。实际开发常见于logo或者一些装饰性的小图片，或者是超大的背景图片，有点事非常便于控制文职</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">background-image: none | url(url)</span><br><span class="line"><span class="comment">/*url填写相对路径*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-3-背景平铺"><a href="#6-3-背景平铺" class="headerlink" title="6.3 背景平铺"></a>6.3 背景平铺</h4><ul>
+<li>如果需要在html页面对背景进行平铺，可以使用<code>background-repeat</code>属性</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">background-repeat: repeat | no-repeat | repeat-x | repeat-y</span><br><span class="line"><span class="comment">/*平铺 | 不平铺 | 水平平铺 | 垂直平铺*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-4-背景图片位置"><a href="#6-4-背景图片位置" class="headerlink" title="6.4 背景图片位置"></a>6.4 背景图片位置</h4><ul>
+<li>可以通过<code>background-position</code>属性修改图片在背景中的位置</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">background-position</span>: <span class="selector-tag">x</span> <span class="selector-tag">y</span>;</span><br><span class="line"><span class="comment">/*x坐标和y坐标，可以使用方位名词或者精确单位*/</span></span><br></pre></td></tr></table></figure>
+
+<table>
+<thead>
+<tr>
+<th align="center">参数值</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">精确单位</td>
+<td align="center">百分比、浮点数字或单位标识符组成的长度值</td>
+</tr>
+<tr>
+<td align="center">方位名词</td>
+<td align="center">top、bottom、left、right、center</td>
+</tr>
+</tbody></table>
+<ul>
+<li>注意：<ul>
+<li>如果使用的是方位名词，xy前后顺序没有区别，即<code>top left</code>和<code>left top</code>一样，都是在左上位置</li>
+<li>如果只指定了一个方位名词，另一个省略，默认是<code>center</code></li>
+<li>精确单位和方位名词可以混合使用，但是前后顺序不能改变</li>
+</ul>
+</li>
+</ul>
+<h4 id="6-5-背景图像固定（背景附着）"><a href="#6-5-背景图像固定（背景附着）" class="headerlink" title="6.5 背景图像固定（背景附着）"></a>6.5 背景图像固定（背景附着）</h4><ul>
+<li><code>background-attachment</code>属性设置背景图像是否固定或者随着页面的其余部分滚动</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">background-attachment： scroll | fixed</span><br><span class="line"><span class="comment">/*滚动 | 固定，默认滚动*/</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-6-背景符合写法"><a href="#6-6-背景符合写法" class="headerlink" title="6.6 背景符合写法"></a>6.6 背景符合写法</h4><ul>
+<li>为了简化背景属性的代码，可以通过<code>background</code>来集中写</li>
+<li>可以写背景颜色、背景图片、背景平铺、背景图像滚动、背景图片位置</li>
+<li>书写顺序不固定，但建议按照上面顺序进行书写</li>
+</ul>
+<h4 id="6-7-背景色透明"><a href="#6-7-背景色透明" class="headerlink" title="6.7 背景色透明"></a>6.7 背景色透明</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">background</span>: <span class="selector-tag">rgba</span>(<span class="selector-tag">red</span>, <span class="selector-tag">green</span>, <span class="selector-tag">blue</span>, <span class="selector-tag">alpha</span>);</span><br><span class="line"><span class="comment">/*参数为三原色和不透明度，不透明度在0~1之间选择，0是完全透明，1是不透明*/</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="7-三大特性"><a href="#7-三大特性" class="headerlink" title="7 三大特性"></a>7 三大特性</h3><h4 id="7-1-层叠性"><a href="#7-1-层叠性" class="headerlink" title="7.1 层叠性"></a>7.1 层叠性</h4><ul>
+<li>相同选择器设置相同的样式，此时后面的选择器会覆盖前面选择器的样式。层叠性主要用于解决样式冲突问题</li>
+</ul>
+<ul>
+<li>层叠性原则：<ul>
+<li>样式冲突，遵循就近原则</li>
+<li>样式不冲突，不会层叠</li>
+</ul>
+</li>
+</ul>
+<h4 id="7-2-继承性"><a href="#7-2-继承性" class="headerlink" title="7.2 继承性"></a>7.2 继承性</h4><ul>
+<li>子标签会继承父标签的某些样式，如文本颜色和字号</li>
+<li>子元素可以继承父元素的样式（text-，font-，line-这些元素的开头可以继承，以及color属性）</li>
+</ul>
+<h4 id="7-3-优先级"><a href="#7-3-优先级" class="headerlink" title="7.3 优先级"></a>7.3 优先级</h4><ul>
+<li>当同一个元素指定多个选择器时，就会有优先级的产生</li>
+</ul>
+<ul>
+<li>优先级：!important &gt; 行内样式style &gt; ID选择器 &gt; class选择器/伪类选择器 &gt; 标签选择器 &gt; 继承或*</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*!important使用*/</span></span><br><span class="line"><span class="selector-tag">div</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: red<span class="meta">!important</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="7-4-权重叠加"><a href="#7-4-权重叠加" class="headerlink" title="7.4 权重叠加"></a>7.4 权重叠加</h4><ul>
+<li>复合选择器会有权重叠加的情况</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-tag">ul</span> <span class="selector-tag">li</span> &#123; <span class="comment">/*权重为0.0.0.1 + 0.0.0.1 = 0.0.0.2*/</span></span><br><span class="line">  <span class="attribute">color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="selector-tag">li</span> &#123;</span><br><span class="line">  <span class="attribute">color</span>: green</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>范围越是精确，权重越大</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/02/04/%E3%80%90Docker%E3%80%91Docker%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" rel="prev" title="【Docker】Docker常用命令">
+      <i class="fa fa-chevron-left"></i> 【Docker】Docker常用命令
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/" rel="next" title="【CSS】盒子模型">
+      【CSS】盒子模型 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CSS%E6%96%87%E6%9C%AC%E5%B1%9E%E6%80%A7"><span class="nav-text">1 CSS文本属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-CSS%E7%9A%84%E5%BC%95%E5%85%A5"><span class="nav-text">2 CSS的引入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%86%85%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8%EF%BC%88%E5%B5%8C%E5%85%A5%E5%BC%8F%EF%BC%89"><span class="nav-text">2.1 内部样式表（嵌入式）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E8%A1%8C%E5%86%85%E6%A0%B7%E5%BC%8F%E8%A1%A8%EF%BC%88%E8%A1%8C%E5%86%85%E5%BC%8F%EF%BC%89"><span class="nav-text">2.2 行内样式表（行内式）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%A4%96%E9%83%A8%E6%A0%B7%E5%BC%8F%E8%A1%A8%EF%BC%88%E9%93%BE%E6%8E%A5%E5%BC%8F%EF%BC%89"><span class="nav-text">2.3 外部样式表（链接式）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Emment%E8%AF%AD%E6%B3%95"><span class="nav-text">3 Emment语法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">3.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%BD%BF%E7%94%A8Emmet%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90html"><span class="nav-text">3.2 使用Emmet快速生成html</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BD%BF%E7%94%A8Emment%E5%BF%AB%E9%80%9F%E7%94%9F%E6%88%90css"><span class="nav-text">3.3 使用Emment快速生成css</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%A4%8D%E5%90%88%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">4 复合选择器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">4.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E5%90%8E%E4%BB%A3%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">4.2 后代选择器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E5%AD%90%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">4.3 子选择器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E5%B9%B6%E9%9B%86%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">4.4 并集选择器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-%E4%BC%AA%E7%B1%BB%E9%80%89%E6%8B%A9%E5%99%A8"><span class="nav-text">4.5 伪类选择器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%85%83%E7%B4%A0%E6%98%BE%E7%A4%BA%E6%A8%A1%E5%BC%8F"><span class="nav-text">5 元素显示模式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">5.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E5%9D%97%E5%85%83%E7%B4%A0"><span class="nav-text">5.2 块元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E8%A1%8C%E5%86%85%E5%85%83%E7%B4%A0"><span class="nav-text">5.3 行内元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-%E8%A1%8C%E5%86%85%E5%9D%97%E5%85%83%E7%B4%A0"><span class="nav-text">5.4 行内块元素</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5-%E5%85%83%E7%B4%A0%E6%98%BE%E7%A4%BA%E6%A8%A1%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="nav-text">5.5 元素显示模式转换</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-%E6%A1%88%E4%BE%8B%EF%BC%9A%E5%B0%8F%E7%B1%B3%E4%BE%A7%E8%BE%B9%E6%A0%8F"><span class="nav-text">5.6 案例：小米侧边栏</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%83%8C%E6%99%AF"><span class="nav-text">6 背景</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E8%83%8C%E6%99%AF%E9%A2%9C%E8%89%B2"><span class="nav-text">6.1 背景颜色</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87"><span class="nav-text">6.2 背景图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-%E8%83%8C%E6%99%AF%E5%B9%B3%E9%93%BA"><span class="nav-text">6.3 背景平铺</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-%E8%83%8C%E6%99%AF%E5%9B%BE%E7%89%87%E4%BD%8D%E7%BD%AE"><span class="nav-text">6.4 背景图片位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-5-%E8%83%8C%E6%99%AF%E5%9B%BE%E5%83%8F%E5%9B%BA%E5%AE%9A%EF%BC%88%E8%83%8C%E6%99%AF%E9%99%84%E7%9D%80%EF%BC%89"><span class="nav-text">6.5 背景图像固定（背景附着）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-6-%E8%83%8C%E6%99%AF%E7%AC%A6%E5%90%88%E5%86%99%E6%B3%95"><span class="nav-text">6.6 背景符合写法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-7-%E8%83%8C%E6%99%AF%E8%89%B2%E9%80%8F%E6%98%8E"><span class="nav-text">6.7 背景色透明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E4%B8%89%E5%A4%A7%E7%89%B9%E6%80%A7"><span class="nav-text">7 三大特性</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E5%B1%82%E5%8F%A0%E6%80%A7"><span class="nav-text">7.1 层叠性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-%E7%BB%A7%E6%89%BF%E6%80%A7"><span class="nav-text">7.2 继承性</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-%E4%BC%98%E5%85%88%E7%BA%A7"><span class="nav-text">7.3 优先级</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-%E6%9D%83%E9%87%8D%E5%8F%A0%E5%8A%A0"><span class="nav-text">7.4 权重叠加</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

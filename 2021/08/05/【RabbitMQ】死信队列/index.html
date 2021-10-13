@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="死信队列的介绍以及处理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【RabbitMQ】死信队列">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="死信队列的介绍以及处理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%AD%BB%E4%BF%A1%E6%9E%B6%E6%9E%84%E5%9B%BE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%AD%BB%E4%BF%A1ttl.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E8%B6%85%E5%87%BA%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A61.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E8%B6%85%E5%87%BA%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A62.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E6%8B%92%E7%BB%9D1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E6%8B%92%E7%BB%9D2.png">
+<meta property="article:published_time" content="2021-08-05T02:45:28.000Z">
+<meta property="article:modified_time" content="2021-08-06T07:18:37.240Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%AD%BB%E4%BF%A1%E6%9E%B6%E6%9E%84%E5%9B%BE.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【RabbitMQ】死信队列 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【RabbitMQ】死信队列
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-05 10:45:28" itemprop="dateCreated datePublished" datetime="2021-08-05T10:45:28+08:00">2021-08-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-06 15:18:37" itemprop="dateModified" datetime="2021-08-06T15:18:37+08:00">2021-08-06</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>死信队列的介绍以及处理</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-死信队列"><a href="#1-死信队列" class="headerlink" title="1 死信队列"></a>1 死信队列</h3><h4 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h4><ul>
+<li><strong>死信：</strong> 即无法被消费的信息，由于特殊原因导致队列中的消息无法被消费，此些消息无法进行后续处理，变成死信，例如消费者宕机，无人处理消息</li>
+</ul>
+<hr>
+<h4 id="1-2-产生原因"><a href="#1-2-产生原因" class="headerlink" title="1.2 产生原因"></a>1.2 产生原因</h4><ul>
+<li>（1）消息存活时间（TTL：Time To Live）过期</li>
+<li>（2）队列已满，无法将消息添加进队列中</li>
+<li>（3）消息被拒绝（<code>basic.reject</code>或<code>basic.nack</code>）并且不再放回队列<code>requeue=false</code></li>
+</ul>
+<hr>
+<h3 id="2-死信演示"><a href="#2-死信演示" class="headerlink" title="2 死信演示"></a>2 死信演示</h3><h4 id="2-1-代码架构图"><a href="#2-1-代码架构图" class="headerlink" title="2.1 代码架构图"></a>2.1 代码架构图</h4><img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%AD%BB%E4%BF%A1%E6%9E%B6%E6%9E%84%E5%9B%BE.png" class="">
+
+<h4 id="2-2-TTL过期"><a href="#2-2-TTL过期" class="headerlink" title="2.2 TTL过期"></a>2.2 TTL过期</h4><ul>
+<li><strong>（1）生产者</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 生产者 - 发送两条消息到普通交换机上</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Provider</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// （工具类，具体看之间文章）获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义消息过期时间</span></span><br><span class="line">        AMQP.BasicProperties properties = <span class="keyword">new</span> AMQP.BasicProperties()</span><br><span class="line">                .builder().expiration(String.valueOf(<span class="number">5</span> * <span class="number">1000</span>)).build();</span><br><span class="line">        <span class="comment">// 连续发送10条消息</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">            channel.basicPublish(<span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;456&quot;</span>, properties, String.valueOf(i).getBytes());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;消息发送完毕！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）消费者01</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消费者01 - 负责处理普通队列的消息，并构建整个RabbitMQ的关系</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer01</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        由于关系比较复杂，为了方便启动，将所有交换机和队列关系都在此定义</span></span><br><span class="line"><span class="comment">        然后第一个启动此程序就构建好所有关系</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Consumer01 consumer01 = <span class="keyword">new</span> Consumer01();</span><br><span class="line">        consumer01.buildRelation(channel);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接受消息</span></span><br><span class="line">        System.out.println(<span class="string">&quot;普通队列消费者等待接收消息...&quot;</span>);</span><br><span class="line">        channel.basicConsume(</span><br><span class="line">                <span class="string">&quot;normal_queue&quot;</span>,</span><br><span class="line">                <span class="keyword">true</span>,</span><br><span class="line">                (consumerTag, message) -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;接收消息：&quot;</span> + <span class="keyword">new</span> String(message.getBody()));</span><br><span class="line">                &#125;,</span><br><span class="line">                consumerTag -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息接收中止！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构建交换机和队列之间关系</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> channel 信道</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildRelation</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 定义死信交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义死信队列</span></span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;dead_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;dead_queue&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义普通交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义普通队列</span></span><br><span class="line">        Map&lt;String, Object&gt; argument = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-exchange&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>); <span class="comment">// 关联死信交换机（该队列出现死信后，自动发送到该交换机中）</span></span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-routing-key&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;normal_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, argument);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;normal_queue&quot;</span>, <span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;456&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）消费者02</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消费者02 - 负责处理死信队列的</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer02</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line">        <span class="comment">// 接收消息</span></span><br><span class="line">        System.out.println(<span class="string">&quot;死信队列消费者等待接收消息...&quot;</span>);</span><br><span class="line">        channel.basicConsume(</span><br><span class="line">                <span class="string">&quot;dead_queue&quot;</span>,</span><br><span class="line">                <span class="keyword">true</span>,</span><br><span class="line">                (consumerTag, message) -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;接收消息：&quot;</span> + <span class="keyword">new</span> String(message.getBody()));</span><br><span class="line">                &#125;,</span><br><span class="line">                consumerTag -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息接收中止！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）测试</strong></li>
+<li>先启动消费者01，来构建交换机和队列之间的关系，然后关闭消费者01</li>
+<li>然后启动消费者02，生产者</li>
+<li>因为消费者01没有启动，队列中的消息无法处理，达到过期时间，自动将消息发送到死信交换机</li>
+</ul>
+<img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%AD%BB%E4%BF%A1ttl.png" class="">
+
+<hr>
+<h4 id="2-3-超出队列最大长度"><a href="#2-3-超出队列最大长度" class="headerlink" title="2.3 超出队列最大长度"></a>2.3 超出队列最大长度</h4><ul>
+<li><strong>（1）生产者</strong></li>
+<li>连续发送10条消息<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 生产者 - 发送两条消息到普通交换机上</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Provider</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// （工具类，具体看之前文章）获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 连续发送10条消息</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">            channel.basicPublish(<span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;456&quot;</span>, <span class="keyword">null</span>, String.valueOf(i).getBytes());</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">&quot;消息发送完毕！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）消费者01</strong></li>
+<li>修改队列最大长度为5<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消费者01 - 负责处理普通队列的消息，并构建整个RabbitMQ的关系</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer01</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        由于关系比较复杂，为了方便启动，将所有交换机和队列关系都在此定义</span></span><br><span class="line"><span class="comment">        然后第一个启动此程序就构建好所有关系</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Consumer01 consumer01 = <span class="keyword">new</span> Consumer01();</span><br><span class="line">        consumer01.buildRelation(channel);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接受消息</span></span><br><span class="line">        System.out.println(<span class="string">&quot;普通队列消费者等待接收消息...&quot;</span>);</span><br><span class="line">        channel.basicConsume(</span><br><span class="line">                <span class="string">&quot;normal_queue&quot;</span>,</span><br><span class="line">                <span class="keyword">true</span>,</span><br><span class="line">                (consumerTag, message) -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;接收消息：&quot;</span> + <span class="keyword">new</span> String(message.getBody()));</span><br><span class="line">                &#125;,</span><br><span class="line">                consumerTag -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息接收中止！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构建交换机和队列之间关系</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> channel 信道</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildRelation</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 定义死信交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义死信队列</span></span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;dead_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;dead_queue&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义普通交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义普通队列</span></span><br><span class="line">        Map&lt;String, Object&gt; argument = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-exchange&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>); <span class="comment">// 关联死信交换机（该队列出现死信后，自动发送到该交换机中）</span></span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-routing-key&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line">        argument.put(<span class="string">&quot;x-max-length&quot;</span>, <span class="number">5</span>); <span class="comment">// 修改最大队列长度为5</span></span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;normal_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, argument);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;normal_queue&quot;</span>, <span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;456&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）消费者02</strong></li>
+<li>跟前面一样，不多重复</li>
+</ul>
+<ul>
+<li><strong>（4）测试</strong></li>
+<li>因为<code>normal_queue</code>参数发生变化，需要事前删除该队列，然后启动consumer01，再关闭consumer01，导致消息堆积</li>
+<li>依次启动consumer02，生产者</li>
+</ul>
+<img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E8%B6%85%E5%87%BA%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A61.png" class="">
+
+<img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E8%B6%85%E5%87%BA%E9%98%9F%E5%88%97%E9%95%BF%E5%BA%A62.png" class="">
+
+<hr>
+<h4 id="2-4-消息被拒"><a href="#2-4-消息被拒" class="headerlink" title="2.4 消息被拒"></a>2.4 消息被拒</h4><ul>
+<li><strong>（1）生产者</strong></li>
+<li>跟前面的没有发生变化，不多展示</li>
+</ul>
+<ul>
+<li><strong>（2）消费者01</strong></li>
+<li>将消息改为手动应答，并对消息<code>5</code>进行拒绝应答<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 消费者01 - 负责处理普通队列的消息，并构建整个RabbitMQ的关系</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-08-05 11:10</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Consumer01</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 获取连接</span></span><br><span class="line">        Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">        <span class="comment">// 创建信道</span></span><br><span class="line">        Channel channel = connection.createChannel();</span><br><span class="line"></span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">        由于关系比较复杂，为了方便启动，将所有交换机和队列关系都在此定义</span></span><br><span class="line"><span class="comment">        然后第一个启动此程序就构建好所有关系</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        Consumer01 consumer01 = <span class="keyword">new</span> Consumer01();</span><br><span class="line">        consumer01.buildRelation(channel);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 接受消息（开启手动应答）</span></span><br><span class="line">        System.out.println(<span class="string">&quot;普通队列消费者等待接收消息...&quot;</span>);</span><br><span class="line">        channel.basicConsume(</span><br><span class="line">                <span class="string">&quot;normal_queue&quot;</span>,</span><br><span class="line">                <span class="keyword">false</span>,</span><br><span class="line">                (consumerTag, message) -&gt; &#123;</span><br><span class="line">                    <span class="keyword">if</span> (<span class="keyword">new</span> String(message.getBody()).equals(<span class="string">&quot;5&quot;</span>)) &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;此消息：&quot;</span> + <span class="keyword">new</span> String(message.getBody()) + <span class="string">&quot;，已被拒绝，成为死信&quot;</span>);</span><br><span class="line">                        channel.basicReject(message.getEnvelope().getDeliveryTag(), <span class="keyword">false</span>);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        System.out.println(<span class="string">&quot;接收消息：&quot;</span> + <span class="keyword">new</span> String(message.getBody()));</span><br><span class="line">                        channel.basicAck(message.getEnvelope().getDeliveryTag(), <span class="keyword">false</span>);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;,</span><br><span class="line">                consumerTag -&gt; &#123;</span><br><span class="line">                    System.out.println(<span class="string">&quot;消息接收中止！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 构建交换机和队列之间关系</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> channel 信道</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">buildRelation</span><span class="params">(Channel channel)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        <span class="comment">// 定义死信交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义死信队列</span></span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;dead_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;dead_queue&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 定义普通交换机</span></span><br><span class="line">        channel.exchangeDeclare(<span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;direct&quot;</span>);</span><br><span class="line">        <span class="comment">// 定义普通队列</span></span><br><span class="line">        Map&lt;String, Object&gt; argument = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-exchange&quot;</span>, <span class="string">&quot;dead_exchange&quot;</span>); <span class="comment">// 关联死信交换机（该队列出现死信后，自动发送到该交换机中）</span></span><br><span class="line">        argument.put(<span class="string">&quot;x-dead-letter-routing-key&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line">        channel.queueDeclare(<span class="string">&quot;normal_queue&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, argument);</span><br><span class="line">        <span class="comment">// 交换机与队列进行关联</span></span><br><span class="line">        channel.queueBind(<span class="string">&quot;normal_queue&quot;</span>, <span class="string">&quot;normal_exchange&quot;</span>, <span class="string">&quot;456&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）消费者02</strong></li>
+<li>跟前面一样，不多展示</li>
+</ul>
+<ul>
+<li><strong>（4）测试</strong></li>
+<li>因为<code>normal_queue</code>参数发生变化，需要事先删除，再启动consumer01</li>
+<li>依次启动consumer02，生产者</li>
+</ul>
+<img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E6%8B%92%E7%BB%9D1.png" class="">
+
+<img src="/blog/2021/08/05/%E3%80%90RabbitMQ%E3%80%91%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97/%E6%B6%88%E6%81%AF%E6%8B%92%E7%BB%9D2.png" class="">
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/08/04/%E3%80%90RabbitMQ%E3%80%91%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="prev" title="【RabbitMQ】交换机">
+      <i class="fa fa-chevron-left"></i> 【RabbitMQ】交换机
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/08/09/%E3%80%90RabbitMQ%E3%80%91SpringBoot%E6%95%B4%E5%90%88RabbitMQ/" rel="next" title="【RabbitMQ】SpringBoot整合RabbitMQ">
+      【RabbitMQ】SpringBoot整合RabbitMQ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%AD%BB%E4%BF%A1%E9%98%9F%E5%88%97"><span class="nav-text">1 死信队列</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%A6%82%E5%BF%B5"><span class="nav-text">1.1 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%BA%A7%E7%94%9F%E5%8E%9F%E5%9B%A0"><span class="nav-text">1.2 产生原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%AD%BB%E4%BF%A1%E6%BC%94%E7%A4%BA"><span class="nav-text">2 死信演示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%BB%A3%E7%A0%81%E6%9E%B6%E6%9E%84%E5%9B%BE"><span class="nav-text">2.1 代码架构图</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-TTL%E8%BF%87%E6%9C%9F"><span class="nav-text">2.2 TTL过期</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%B6%85%E5%87%BA%E9%98%9F%E5%88%97%E6%9C%80%E5%A4%A7%E9%95%BF%E5%BA%A6"><span class="nav-text">2.3 超出队列最大长度</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E6%B6%88%E6%81%AF%E8%A2%AB%E6%8B%92"><span class="nav-text">2.4 消息被拒</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

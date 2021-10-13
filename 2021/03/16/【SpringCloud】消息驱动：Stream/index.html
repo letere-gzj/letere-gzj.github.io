@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Stream用于解除各种消息中间件的使用差异，将他们整合为统一接口使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringCloud】消息驱动：Stream">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Stream用于解除各种消息中间件的使用差异，将他们整合为统一接口使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E6%A0%87%E5%87%86MQ%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E5%BC%95%E5%85%A5Stream.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B%E5%A5%97%E8%B7%AF.png">
+<meta property="article:published_time" content="2021-03-16T02:00:39.000Z">
+<meta property="article:modified_time" content="2021-03-16T02:02:13.930Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E6%A0%87%E5%87%86MQ%E6%A8%A1%E5%9E%8B.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringCloud】消息驱动：Stream | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringCloud】消息驱动：Stream
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-16 10:00:39 / 修改时间：10:02:13" itemprop="dateCreated datePublished" datetime="2021-03-16T10:00:39+08:00">2021-03-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Stream用于解除各种消息中间件的使用差异，将他们整合为统一接口使用</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-Stream介绍"><a href="#1-Stream介绍" class="headerlink" title="1 Stream介绍"></a>1 Stream介绍</h3><h4 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h4><ul>
+<li><strong>诞生作用</strong>：屏蔽底层消息中间件的差异，降低切换成本，统一消息的编程模型</li>
+</ul>
+<ul>
+<li><strong>官网</strong>：<a target="_blank" rel="noopener" href="https://spring.io/projects/spring-cloud-stream#learn">https://spring.io/projects/spring-cloud-stream#learn</a></li>
+<li><strong>中文文档</strong>：<a target="_blank" rel="noopener" href="https://m.wang1314.com/doc/webapp/topic/20971999.html">https://m.wang1314.com/doc/webapp/topic/20971999.html</a></li>
+</ul>
+<ul>
+<li>应用程序通过inputs或者outputs来与spring cloud stream中的binder对象交互</li>
+<li>通过我们配置来绑定，而spring cloud stream 的 <code>binder对象负责与消息中间件交互</code></li>
+<li>所以，我们只需要搞清楚如何与spring cloud stream交互就可以方便使用消息驱动的方式</li>
+</ul>
+<ul>
+<li><strong>目前仅支持RabbitMQ、Kafka</strong></li>
+</ul>
+<h4 id="1-2-设计思想"><a href="#1-2-设计思想" class="headerlink" title="1.2 设计思想"></a>1.2 设计思想</h4><img src="/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E6%A0%87%E5%87%86MQ%E6%A8%A1%E5%9E%8B.png" class="">
+<ul>
+<li>生产者/消费者之间靠消息媒介传递信息内容（Message）</li>
+<li>消息必须走特定的通道（Message Channel）</li>
+<li>由（MessageHander）来进行消息接收和转发处理</li>
+</ul>
+<img src="/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E5%BC%95%E5%85%A5Stream.png" class="">
+<ul>
+<li>通过定义绑定器作为中间层，完美实现了<code>应用程序和消息中间件之间的隔离</code></li>
+<li>通过向应用程序暴露统一的Channel通道，使得应用程序不需要再考虑各种不同的消息中间件实现</li>
+</ul>
+<ul>
+<li>Stream中的消息通信方式遵循了发布-订阅模式</li>
+</ul>
+<h4 id="1-3-标准流程套路"><a href="#1-3-标准流程套路" class="headerlink" title="1.3 标准流程套路"></a>1.3 标准流程套路</h4><img src="/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B%E5%A5%97%E8%B7%AF.png" class="">
+<ul>
+<li><strong>Binder</strong>：方便的连接中间件，屏蔽差异</li>
+<li><strong>Channel</strong>：通道，是队列Queue的一种抽象，在消息通讯系统汇总就是实现存储和转发的媒介，通过Channel对队列进行配置</li>
+<li><strong>Source和Sink</strong>：简单的可理解为参照对象时Spring Cloud Stream自身，从Stream发布消息就是输入，接受消息就是输入</li>
+</ul>
+<h4 id="1-4-API和常用注解"><a href="#1-4-API和常用注解" class="headerlink" title="1.4 API和常用注解"></a>1.4 API和常用注解</h4><table>
+<thead>
+<tr>
+<th align="center">组成</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Middleware</td>
+<td align="center">中间件，目前只支持RabbitMQ和Kafka</td>
+</tr>
+<tr>
+<td align="center">Binder</td>
+<td align="center">Binder是应用于消息中间件之间的封装，目前实行了Kafka和RabbitMQ的Binder，通过Binder可以很方便的连接中间，可以动态的改变消息类，这些可以通过配置文件来实现</td>
+</tr>
+<tr>
+<td align="center">@Input</td>
+<td align="center">注解标识输入通道，通过该输入通道接收到的消息进入应用程序</td>
+</tr>
+<tr>
+<td align="center">@Output</td>
+<td align="center">注解标识输出通道，发布的消息将通过该通道离开应用程序</td>
+</tr>
+<tr>
+<td align="center">@StreamListener</td>
+<td align="center">监听队列，用于消费者的队列的消息接收</td>
+</tr>
+<tr>
+<td align="center">@EnableBinding</td>
+<td align="center">指定信道channel和exchange绑定在一起</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="2-消息发送者"><a href="#2-消息发送者" class="headerlink" title="2 消息发送者"></a>2 消息发送者</h3><h4 id="2-1-搭建"><a href="#2-1-搭建" class="headerlink" title="2.1 搭建"></a>2.1 搭建</h4><ul>
+<li>（1）创建项目<code>cloud-stream-rabbit-pub8801</code></li>
+</ul>
+<ul>
+<li>（2）引入依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- web --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- stream-rabbit --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-stream-rabbit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）修改yaml<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8801</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-stream-rabbit-pub</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">binders:</span> <span class="comment"># 在此处配置要绑定的rabbitmq的服务信息；</span></span><br><span class="line">        <span class="attr">defaultRabbit:</span> <span class="comment"># 表示定义的名称，用于于binding整合</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">rabbit</span> <span class="comment"># 消息组件类型</span></span><br><span class="line">          <span class="attr">environment:</span> <span class="comment"># 设置rabbitmq的相关的环境配置</span></span><br><span class="line">            <span class="attr">spring:</span></span><br><span class="line">              <span class="attr">rabbitmq:</span></span><br><span class="line">                <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">                <span class="attr">port:</span> <span class="number">5672</span></span><br><span class="line">                <span class="attr">username:</span> <span class="string">guest</span></span><br><span class="line">                <span class="attr">password:</span> <span class="string">guest</span></span><br><span class="line">      <span class="attr">bindings:</span> <span class="comment"># 服务的整合处理</span></span><br><span class="line">        <span class="attr">output:</span> <span class="comment"># 这个名字是一个通道的名称，OUTPUT表示这是消息的发送方</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">testExchange</span> <span class="comment"># 表示要使用的Exchange名称定义</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span> <span class="comment"># 设置消息类型，本次为json，文本则设置“text/plain”</span></span><br><span class="line">          <span class="attr">binder:</span> <span class="string">defaultRabbit</span> <span class="comment"># 设置要绑定的消息服务的具体设置（爆红没有关系）</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamPubMain8801</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(StreamPubMain8801.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）service层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//接口</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MessageProvider</span> </span>&#123;</span><br><span class="line">    <span class="function">String <span class="title">send</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//-----------------------------------------------------------------------------------</span></span><br><span class="line"><span class="comment">//实现类</span></span><br><span class="line"><span class="meta">@EnableBinding(Source.class)</span> <span class="comment">//定义消息的推送管道</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageProviderImp</span> <span class="keyword">implements</span> <span class="title">MessageProvider</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> MessageChannel output; <span class="comment">//消息发送管道</span></span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">send</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        String serial = UUID.randomUUID().toString();</span><br><span class="line">        output.send(MessageBuilder.withPayload(serial).build()); <span class="comment">//将消息发送到&#x27;发送管道上&#x27;</span></span><br><span class="line">        System.out.println(<span class="string">&quot;serial：&quot;</span> + serial);</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（6）controller层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SendMessageController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Resource</span></span><br><span class="line">    <span class="keyword">private</span> MessageProvider messageProvider;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/sendMessage&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">sendMessage</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> messageProvider.send();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="2-2-测试"><a href="#2-2-测试" class="headerlink" title="2.2 测试"></a>2.2 测试</h4><ul>
+<li>（1）启动<code>cloud-stream-rabbit-pub8801</code>项目，进入rabbitmq页面管理</li>
+</ul>
+<ul>
+<li>（2）查看rabbitmq交换机是否注册成功
+
+
+</li>
+</ul>
+<ul>
+<li>（3）测试接口：<code>http://localhost:8801/sendMessage</code>，进入rabbitmq页面是否接受到消息
+
+</li>
+</ul>
+<hr>
+<h3 id="3-消息接受者"><a href="#3-消息接受者" class="headerlink" title="3 消息接受者"></a>3 消息接受者</h3><h4 id="3-1-搭建"><a href="#3-1-搭建" class="headerlink" title="3.1 搭建"></a>3.1 搭建</h4><ul>
+<li>（1）创建项目<code>cloud-stream-rabbit-sub8802</code></li>
+</ul>
+<ul>
+<li>（2）引入依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- web --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- stream-rabbit --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-stream-rabbit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）修改yaml<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">8802</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-stream-rabbit-sub</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">binders:</span> <span class="comment">#配置要绑定的rabbitmq的服务信息</span></span><br><span class="line">        <span class="attr">defaultRabbit:</span> <span class="comment">#（自定义名称），用于与binding整合</span></span><br><span class="line">          <span class="attr">type:</span> <span class="string">rabbit</span> <span class="comment">#消息中间件类型</span></span><br><span class="line">          <span class="attr">environment:</span> <span class="comment">#环境配置</span></span><br><span class="line">            <span class="attr">spring:</span></span><br><span class="line">              <span class="attr">rabbitmq:</span></span><br><span class="line">                <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">                <span class="attr">port:</span> <span class="number">5672</span></span><br><span class="line">                <span class="attr">username:</span> <span class="string">guest</span></span><br><span class="line">                <span class="attr">password:</span> <span class="string">guest</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">input:</span> <span class="comment">#</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">testExchange</span> <span class="comment"># 表示要使用的Exchange名称定义</span></span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span> <span class="comment"># 设置消息类型</span></span><br><span class="line">          <span class="attr">binder:</span> <span class="string">defaultRabbit</span> <span class="comment">#要绑定的中间件服务</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">StreamSubMain8802</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(StreamSubMain8802.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）Controller<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableBinding(Sink.class)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ReceiveMessageController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String serverPort;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@StreamListener(Sink.INPUT)</span> <span class="comment">//接受消息，并自动执行下面方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">input</span><span class="params">(Message&lt;String&gt; message)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;订阅者：&quot;</span> + serverPort + <span class="string">&quot; --- &quot;</span> + message.getPayload());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="3-2-测试"><a href="#3-2-测试" class="headerlink" title="3.2 测试"></a>3.2 测试</h4><ul>
+<li>（1）先启动<code>cloud-stream-rabbit-pub8801</code>，再启动<code>cloud-stream-rabbit-sub8802</code></li>
+</ul>
+<ul>
+<li>（2）测试8801接受，向中间件发送消息，<a target="_blank" rel="noopener" href="http://localhost:8801/sendMessage">http://localhost:8801/sendMessage</a></li>
+</ul>
+<ul>
+<li>（3）观察8802后台，查看是否监听到消息的发送，并自动执行方法</li>
+</ul>
+<hr>
+<h3 id="4-分组消费和持久化"><a href="#4-分组消费和持久化" class="headerlink" title="4 分组消费和持久化"></a>4 分组消费和持久化</h3><h4 id="4-1-重复消费"><a href="#4-1-重复消费" class="headerlink" title="4.1 重复消费"></a>4.1 重复消费</h4><ul>
+<li>我们先复制一份<code>cloud-stream-rabbit-pub8803</code>，项目内容跟8802一模一样，做一个简单集群</li>
+</ul>
+<ul>
+<li>然后分别运行三个项目，测试发送消息接口，发现8802，8803重复接受到了消息，这不是想要的结果，而是希望轮询接受数据</li>
+</ul>
+<ul>
+<li>生产实际例子：订单系统我们做了集群部署，都会从RabbitMQ中获取订单信息，那如果一个订单同时被两个服务获取，那么就会造成数据错误，我们需要避免这种情况，我们就可以使用Stream中的消息分组来解决</li>
+</ul>
+<h4 id="4-2-分组解决重复消费"><a href="#4-2-分组解决重复消费" class="headerlink" title="4.2 分组解决重复消费"></a>4.2 分组解决重复消费</h4><ul>
+<li><strong>解决原理</strong>：当两个服务的消息中间件分组不一样，就会出现重复消费，共同获取信息。但是如果分组一样，两个服务之间就是竞争关系</li>
+</ul>
+<ul>
+<li><p>修改订阅者的yaml，将两个组名改为一样</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-stream-rabbit-sub</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">stream:</span></span><br><span class="line">      <span class="attr">bindings:</span></span><br><span class="line">        <span class="attr">input:</span> <span class="comment">#</span></span><br><span class="line">          <span class="attr">destination:</span> <span class="string">testExchange</span> </span><br><span class="line">          <span class="attr">content-type:</span> <span class="string">application/json</span> </span><br><span class="line">          <span class="attr">binder:</span> <span class="string">defaultRabbit</span> </span><br><span class="line">          <span class="attr">group:</span> <span class="string">groupA</span>  <span class="comment">#设置分组名</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试访问发送消息接口两次，查看8802、8803后台，发现只有一个消息，实现了轮询效果</p>
+</li>
+</ul>
+<h4 id="4-3-持久化"><a href="#4-3-持久化" class="headerlink" title="4.3 持久化"></a>4.3 持久化</h4><ul>
+<li>如果我们没有手动对yaml配置<code>group</code>属性，若消息发送者在消息接受者未启动时发送消息，则待消息接受者启动后，会出现消息丢失的情况，没有从消息中间件中获取消息。</li>
+</ul>
+<ul>
+<li>如果我们设置了分组，则在启动时会正常获取之前发送的消息</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/" rel="prev" title="【SpringCloud】服务总线：Bus">
+      <i class="fa fa-chevron-left"></i> 【SpringCloud】服务总线：Bus
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E5%88%86%E5%B8%83%E5%BC%8F%E8%AF%B7%E6%B1%82%E9%93%BE%E8%B7%AF%E8%B7%9F%E8%B8%AA%EF%BC%9ASleuth/" rel="next" title="【SpringCloud】分布式请求链路跟踪：Sleuth">
+      【SpringCloud】分布式请求链路跟踪：Sleuth <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Stream%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 Stream介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E8%AE%BE%E8%AE%A1%E6%80%9D%E6%83%B3"><span class="nav-text">1.2 设计思想</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E6%A0%87%E5%87%86%E6%B5%81%E7%A8%8B%E5%A5%97%E8%B7%AF"><span class="nav-text">1.3 标准流程套路</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-API%E5%92%8C%E5%B8%B8%E7%94%A8%E6%B3%A8%E8%A7%A3"><span class="nav-text">1.4 API和常用注解</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%B6%88%E6%81%AF%E5%8F%91%E9%80%81%E8%80%85"><span class="nav-text">2 消息发送者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%90%AD%E5%BB%BA"><span class="nav-text">2.1 搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%B5%8B%E8%AF%95"><span class="nav-text">2.2 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%B6%88%E6%81%AF%E6%8E%A5%E5%8F%97%E8%80%85"><span class="nav-text">3 消息接受者</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%90%AD%E5%BB%BA"><span class="nav-text">3.1 搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%B5%8B%E8%AF%95"><span class="nav-text">3.2 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%88%86%E7%BB%84%E6%B6%88%E8%B4%B9%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">4 分组消费和持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9"><span class="nav-text">4.1 重复消费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E5%88%86%E7%BB%84%E8%A7%A3%E5%86%B3%E9%87%8D%E5%A4%8D%E6%B6%88%E8%B4%B9"><span class="nav-text">4.2 分组解决重复消费</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">4.3 持久化</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

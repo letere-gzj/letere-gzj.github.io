@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于生产者发布消息的相关知识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【RabbitMQ】发布确认">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/08/03/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于生产者发布消息的相关知识">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-03T06:36:09.000Z">
+<meta property="article:modified_time" content="2021-08-04T03:42:53.878Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/08/03/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【RabbitMQ】发布确认 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/08/03/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【RabbitMQ】发布确认
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-03 14:36:09" itemprop="dateCreated datePublished" datetime="2021-08-03T14:36:09+08:00">2021-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-08-04 11:42:53" itemprop="dateModified" datetime="2021-08-04T11:42:53+08:00">2021-08-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于生产者发布消息的相关知识</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-发布确认"><a href="#1-发布确认" class="headerlink" title="1 发布确认"></a>1 发布确认</h3><h4 id="1-1-概念"><a href="#1-1-概念" class="headerlink" title="1.1 概念"></a>1.1 概念</h4><ul>
+<li><strong>发布确认：</strong> 即为在消息持久化的过程中，rabbitmq接收到消息并保存完在磁盘上后，发消息通知生产者消息发送成功，否则生产者会重新发送消息，确保消息持久化不丢失数据</li>
+</ul>
+<hr>
+<h4 id="1-2-发布确认开启"><a href="#1-2-发布确认开启" class="headerlink" title="1.2 发布确认开启"></a>1.2 发布确认开启</h4><ul>
+<li>生产者中的信道方法<code>confirmSelect</code>，即为开启发布确认<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Confirm.<span class="function">SelectOk <span class="title">confirmSelect</span><span class="params">()</span> <span class="keyword">throws</span> IOException</span>;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h4 id="1-3-单个发布确认"><a href="#1-3-单个发布确认" class="headerlink" title="1.3 单个发布确认"></a>1.3 单个发布确认</h4><ul>
+<li>一种同步确认发布方式，即生产者发布一条信息，就得确认一条信息，信息确认完后才往后发其他信息</li>
+<li>优点：保证了信息持久化</li>
+<li>缺点：发布速度特别慢</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 单个发布确认：发一条确认一条</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">singleConfirm</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">	<span class="comment">// 获取连接</span></span><br><span class="line">	Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">	<span class="comment">// 创建信道</span></span><br><span class="line">	Channel channel = connection.createChannel();</span><br><span class="line">	<span class="comment">// 定义队列</span></span><br><span class="line">	channel.queueDeclare(<span class="string">&quot;publish_queue1&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">	<span class="comment">// 开启发布确认</span></span><br><span class="line">	channel.confirmSelect();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">long</span> begin = System.currentTimeMillis();</span><br><span class="line">	<span class="comment">// 发1000条数据</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</span><br><span class="line">		channel.basicPublish(<span class="string">&quot;&quot;</span>, <span class="string">&quot;publish_queue1&quot;</span>, <span class="keyword">null</span>, String.valueOf(i).getBytes());</span><br><span class="line">		<span class="comment">// 确认消息（确认失败重发）</span></span><br><span class="line">		<span class="keyword">if</span> (!channel.waitForConfirms()) &#123;</span><br><span class="line">			i--;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">	System.out.println(<span class="string">&quot;单个发布确认共耗时：&quot;</span> + (end-begin) + <span class="string">&quot;毫秒！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行测试时间（602ms）</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">	Provider provider = <span class="keyword">new</span> Provider();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 单个发布确认（602ms）</span></span><br><span class="line">	provider.singleConfirm();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="1-4-批量发布确认"><a href="#1-4-批量发布确认" class="headerlink" title="1.4 批量发布确认"></a>1.4 批量发布确认</h4><ul>
+<li>跟单个发布确认相反，批量发布确认速度快，但一旦出现异常，就不清楚哪个信息出现异常</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 批量发布确认：暂定发布100条确认一次</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">multiConfirm</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="comment">// 获取连接</span></span><br><span class="line">	Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">	<span class="comment">// 创建信道</span></span><br><span class="line">	Channel channel = connection.createChannel();</span><br><span class="line">	<span class="comment">// 定义队列</span></span><br><span class="line">	channel.queueDeclare(<span class="string">&quot;publish_queue2&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">	<span class="comment">// 开启发布确认</span></span><br><span class="line">	channel.confirmSelect();</span><br><span class="line"></span><br><span class="line">	<span class="keyword">long</span> begin = System.currentTimeMillis();</span><br><span class="line">	<span class="comment">// 发1000条数据</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</span><br><span class="line">		channel.basicPublish(<span class="string">&quot;&quot;</span>, <span class="string">&quot;publish_queue2&quot;</span>, <span class="keyword">null</span>, String.valueOf(i).getBytes());</span><br><span class="line"></span><br><span class="line">		<span class="keyword">if</span> (i+<span class="number">1</span> % <span class="number">100</span> == <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="comment">// 发布确认（确认失败重发100条数据）</span></span><br><span class="line">			<span class="keyword">if</span> (!channel.waitForConfirms()) &#123;</span><br><span class="line">				i -= <span class="number">100</span>;</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">	System.out.println(<span class="string">&quot;批量发布确认共耗时：&quot;</span> + (end-begin) + <span class="string">&quot;毫秒！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行测试时间（64ms）</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">	Provider provider = <span class="keyword">new</span> Provider();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 批量发布确认（64ms）</span></span><br><span class="line">	provider.multiConfirm();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="1-5-异步发布确认"><a href="#1-5-异步发布确认" class="headerlink" title="1.5 异步发布确认"></a>1.5 异步发布确认</h4><ul>
+<li>即发消息和确认消息这两个步骤是异步的，生产者只需要一直发消息即可，哪些消息是确认失败的会稍后通知</li>
+<li>需要准备一个多线程用的Map，来记录kv值，方便查找未确认的消息并重新发送</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 异步发布确认</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">asyncPublic</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">	<span class="comment">// 获取连接</span></span><br><span class="line">	Connection connection = RabbitMQUtil.getConnection();</span><br><span class="line">	<span class="comment">// 创建信道</span></span><br><span class="line">	Channel channel = connection.createChannel();</span><br><span class="line">	<span class="comment">// 定义队列</span></span><br><span class="line">	channel.queueDeclare(<span class="string">&quot;publish_queue3&quot;</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">null</span>);</span><br><span class="line">	<span class="comment">// 开启发布确认</span></span><br><span class="line">	channel.confirmSelect();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 存储发送消息</span></span><br><span class="line">	ConcurrentHashMap&lt;Long, String&gt; map = <span class="keyword">new</span> ConcurrentHashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">	<span class="comment">/*</span></span><br><span class="line"><span class="comment">	消息监听器，监听哪些消息成功，哪些失败</span></span><br><span class="line"><span class="comment">	参数1：发布确认成功回调函数</span></span><br><span class="line"><span class="comment">	参数2：发布确认失败回调函数</span></span><br><span class="line"><span class="comment">	 */</span></span><br><span class="line">	channel.addConfirmListener(</span><br><span class="line">			(deliveryTag, multiple) -&gt; &#123;</span><br><span class="line">				<span class="comment">// 发布成功逻辑代码</span></span><br><span class="line">			&#125;,</span><br><span class="line">			(deliveryTag, multiple) -&gt; &#123;</span><br><span class="line">				<span class="comment">// 重新发送消息</span></span><br><span class="line">				channel.basicPublish(<span class="string">&quot;&quot;</span>, <span class="string">&quot;publish_queue3&quot;</span>, <span class="keyword">null</span>, map.get(deliveryTag).getBytes());</span><br><span class="line">			&#125;</span><br><span class="line">	);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">long</span> begin = System.currentTimeMillis();</span><br><span class="line">	<span class="comment">// 发1000条数据</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">1000</span>; i++) &#123;</span><br><span class="line">		<span class="comment">// 将发送的消息存储到map中</span></span><br><span class="line">		map.put(channel.getNextPublishSeqNo(), String.valueOf(i));</span><br><span class="line">		channel.basicPublish(<span class="string">&quot;&quot;</span>, <span class="string">&quot;publish_queue3&quot;</span>, <span class="keyword">null</span>, String.valueOf(i).getBytes());</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">long</span> end = System.currentTimeMillis();</span><br><span class="line">	System.out.println(<span class="string">&quot;异步发布确认共耗时：&quot;</span> + (end-begin) + <span class="string">&quot;毫秒！&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 运行测试时间（45ms）</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">	Provider provider = <span class="keyword">new</span> Provider();</span><br><span class="line"></span><br><span class="line">	<span class="comment">// 异步发布确认（45ms）</span></span><br><span class="line">	provider.asyncPublic();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97/" rel="prev" title="【RabbitMQ】工作队列">
+      <i class="fa fa-chevron-left"></i> 【RabbitMQ】工作队列
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/08/04/%E3%80%90RabbitMQ%E3%80%91%E4%BA%A4%E6%8D%A2%E6%9C%BA/" rel="next" title="【RabbitMQ】交换机">
+      【RabbitMQ】交换机 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4"><span class="nav-text">1 发布确认</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%A6%82%E5%BF%B5"><span class="nav-text">1.1 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E5%BC%80%E5%90%AF"><span class="nav-text">1.2 发布确认开启</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%8D%95%E4%B8%AA%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4"><span class="nav-text">1.3 单个发布确认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E6%89%B9%E9%87%8F%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4"><span class="nav-text">1.4 批量发布确认</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E5%BC%82%E6%AD%A5%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4"><span class="nav-text">1.5 异步发布确认</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

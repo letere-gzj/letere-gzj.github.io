@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于数据结构中平衡二叉树的介绍和代码实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构和算法】平衡二叉树">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于数据结构中平衡二叉树的介绍和代码实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91%E7%BC%BA%E9%99%B7.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL6.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8D%95%E6%97%8B%E8%BD%AC%E7%BC%BA%E9%99%B71.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8D%95%E6%97%8B%E8%BD%AC%E7%BC%BA%E9%99%B72.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8F%8C%E6%97%8B%E8%BD%AC1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8F%8C%E6%97%8B%E8%BD%AC2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C2.png">
+<meta property="article:published_time" content="2021-05-20T07:32:03.000Z">
+<meta property="article:modified_time" content="2021-05-21T01:34:29.091Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91%E7%BC%BA%E9%99%B7.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构和算法】平衡二叉树 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构和算法】平衡二叉树
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-20 15:32:03" itemprop="dateCreated datePublished" datetime="2021-05-20T15:32:03+08:00">2021-05-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-05-21 09:34:29" itemprop="dateModified" datetime="2021-05-21T09:34:29+08:00">2021-05-21</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于数据结构中平衡二叉树的介绍和代码实现</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-平衡二叉树"><a href="#1-平衡二叉树" class="headerlink" title="1 平衡二叉树"></a>1 平衡二叉树</h3><h4 id="1-1-二叉排序树缺陷"><a href="#1-1-二叉排序树缺陷" class="headerlink" title="1.1 二叉排序树缺陷"></a>1.1 二叉排序树缺陷</h4><blockquote>
+<p>当我们将数组<code>[1, 2, 3, 4, 5, 6, 7]</code>转变成二叉排序树。会出现树变成链表的形式，虽然插入/删除速度改变不大，但搜索查询的速度大大降低了。<br>因此，提出了平衡二叉树的概念（AVL树）</p>
+</blockquote>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91%E7%BC%BA%E9%99%B7.png" class="">
+
+<h4 id="1-2-平衡二叉树介绍"><a href="#1-2-平衡二叉树介绍" class="headerlink" title="1.2 平衡二叉树介绍"></a>1.2 平衡二叉树介绍</h4><blockquote>
+<p><strong>平衡二叉树：</strong> 也称为平衡二叉搜索树（Self-balancing binary search tree），又被称为AVL，可以保证查询效率较高</p>
+</blockquote>
+<blockquote>
+<p><strong>特点：</strong> 树的左右两个子树的高度差的绝对值不超过1，并且左右两个子树都是有个平衡二叉树</p>
+</blockquote>
+<blockquote>
+<p><strong>应用：</strong> 平衡二叉树的常用实现方法有：红黑树、AVL算法、替罪羊树、Treap、伸展树等</p>
+</blockquote>
+<hr>
+<h3 id="2-单旋转"><a href="#2-单旋转" class="headerlink" title="2 单旋转"></a>2 单旋转</h3><h4 id="2-1-单旋转介绍"><a href="#2-1-单旋转介绍" class="headerlink" title="2.1 单旋转介绍"></a>2.1 单旋转介绍</h4><blockquote>
+<p><strong>单旋转：</strong> 分为左旋转和右旋转。当左子树比右子树的高度要低，且高度差&gt;1，就使用左旋转将树转变成平衡二叉树，反之右旋转。</p>
+</blockquote>
+<blockquote>
+<p>左旋转的目的是将根节点的右子节点作为新的根节点，右旋转则以左子节点作为新的根节点</p>
+</blockquote>
+<ul>
+<li>下面以数组<code>[4, 3, 6, 5, 7 ,8]</code>为例，使用单旋转（左旋转）将树转变成平衡二叉树</li>
+<li><strong>（1）创建二叉排序树</strong></li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL1.png" class="">
+
+
+<ul>
+<li><strong>（2）创建一个跟根节点一样的节点</strong></li>
+<li>该节点的左子节点指向根节点的左子节点，其右子节点指向根节点的右子节点的左子节点</li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL2.png" class="">
+
+
+<ul>
+<li><strong>（3）根节点的值更改为其右子节点的值</strong></li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL3.png" class="">
+
+
+<ul>
+<li><strong>（4）根节点右子节点指向右子节点的右子节点，根节点左子节点指向新创建的节点</strong></li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL4.png" class="">
+
+
+<ul>
+<li><strong>（5）整理后树的形状</strong></li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL5.png" class="">
+
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/AVL6.png" class="">
+
+
+<h4 id="2-2-代码"><a href="#2-2-代码" class="headerlink" title="2.2 代码"></a>2.2 代码</h4><ul>
+<li><strong>（1）简单创建二叉排序树</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AVLTree</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子类 - 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Node</span>&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> value;</span><br><span class="line">        <span class="keyword">public</span> Node left;</span><br><span class="line">        <span class="keyword">public</span> Node right;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(value, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> value, Node left, Node right)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.value = value;</span><br><span class="line">            <span class="keyword">this</span>.left = left;</span><br><span class="line">            <span class="keyword">this</span>.right = right;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Node o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value - o.value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Node&#123;value = &quot;</span> + value + <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -----------------------------------------------------------------------</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//根节点</span></span><br><span class="line">    <span class="keyword">private</span> Node root;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Integer value)</span> </span>&#123;</span><br><span class="line">        Node node = <span class="keyword">new</span> Node(value);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            root = node;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//循环寻找合适位置添加数据</span></span><br><span class="line">        Node temp = root;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (temp.value &lt; node.value) &#123;</span><br><span class="line">                <span class="comment">//向右寻找位置</span></span><br><span class="line">                <span class="keyword">if</span> (temp.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    temp = temp.right;</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    temp.right = node;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//向左寻找位置</span></span><br><span class="line">                <span class="keyword">if</span> (temp.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    temp = temp.left;</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    temp.left = node;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 中序遍历</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">infixPrint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;树为空！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        infixRecursion(root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 中序遍历 - 递归本体</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">infixRecursion</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">            infixRecursion(node.left);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(node);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">            infixRecursion(node.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）计算树高度方法</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 获取当前节点树的高度（递归）</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTreeHeight</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//如果节点为null，不能存在树，为0</span></span><br><span class="line">	<span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取该节点左子树高度</span></span><br><span class="line">	<span class="keyword">int</span> leftHeight;</span><br><span class="line">	<span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">		leftHeight = <span class="number">0</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//递归求左子树高度</span></span><br><span class="line">		leftHeight = getTreeHeight(node.left);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//获取该节点右子树高度</span></span><br><span class="line">	<span class="keyword">int</span> rightHeight;</span><br><span class="line">	<span class="keyword">if</span> (node.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">		rightHeight = <span class="number">0</span>;</span><br><span class="line">	&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//递归求右子树高度</span></span><br><span class="line">		rightHeight = getTreeHeight(node.right);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//返回左右子树中的最大值+1（算上该节点，所以+1）作为树的整体高度</span></span><br><span class="line">	<span class="keyword">return</span> Math.max(leftHeight, rightHeight) + <span class="number">1</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）左、右旋转方法</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对当前节点进行左旋转</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">leftRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//（1）创建一个与根节点一样的新节点</span></span><br><span class="line">	Node temp = <span class="keyword">new</span> Node(node.value);</span><br><span class="line">	<span class="comment">//（2）新节点左子节点指向根节点左子节点</span></span><br><span class="line">	temp.left = node.left;</span><br><span class="line">	<span class="comment">//（3）新节点的右子节点指向根节点右子节点的左子节点</span></span><br><span class="line">	temp.right = node.right.left;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//（4）根节点的值 = 根节点右子节点的值</span></span><br><span class="line">	node.value = node.right.value;</span><br><span class="line">	<span class="comment">//（5）根节点的左子节点指向新建的节点</span></span><br><span class="line">	node.left = temp;</span><br><span class="line">	<span class="comment">//（6）根节点的右子节点指向右子节点的右子节点</span></span><br><span class="line">	node.right = node.right.right;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 对当前节点进行右旋转</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rightRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//跟左旋转大致相似，只有左右方向区别，就不再多写注释</span></span><br><span class="line">	Node temp = <span class="keyword">new</span> Node(node.value);</span><br><span class="line">	temp.right = node.right;</span><br><span class="line">	temp.left = node.left.right;</span><br><span class="line"></span><br><span class="line">	node.value = node.left.value;</span><br><span class="line">	node.right = temp;</span><br><span class="line">	node.left = node.left.left;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）递归平衡 二叉树方法</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 平衡二叉树</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">balanceTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	balanceTreeRecursion(root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 平衡二叉树 - 递归本体</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">balanceTreeRecursion</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//从下往上平衡，优先平衡子节点</span></span><br><span class="line">	<span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">		balanceTreeRecursion(node.left);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">		balanceTreeRecursion(node.right);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	balance(node);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 平衡本体方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">balance</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> leftHeight = getTreeHeight(node.left);</span><br><span class="line">	<span class="keyword">int</span> rightHeight = getTreeHeight(node.right);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//两棵树高度差值 &gt; 1，对树使用单旋转</span></span><br><span class="line">	<span class="keyword">if</span> (Math.abs(leftHeight - rightHeight) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">//左子树小，使用左旋转</span></span><br><span class="line">		<span class="keyword">if</span> (leftHeight &lt; rightHeight) &#123;</span><br><span class="line">			leftRotate(node);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//右子树小，使用右旋转</span></span><br><span class="line">		<span class="keyword">if</span> (leftHeight &gt; rightHeight) &#123;</span><br><span class="line">			rightRotate(node);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<hr>
+<h3 id="3-双旋转"><a href="#3-双旋转" class="headerlink" title="3 双旋转"></a>3 双旋转</h3><h4 id="3-1-双旋转介绍"><a href="#3-1-双旋转介绍" class="headerlink" title="3.1 双旋转介绍"></a>3.1 双旋转介绍</h4><blockquote>
+<p><strong>单旋转问题</strong>：在某些特定的情况下，一个节点不是平衡二叉树，但其子树都是属于平衡二叉树，此时对节点进行单旋转，但旋转过后仍然不是平衡二叉树，此时提出双旋转</p>
+</blockquote>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8D%95%E6%97%8B%E8%BD%AC%E7%BC%BA%E9%99%B71.png" class="">
+
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8D%95%E6%97%8B%E8%BD%AC%E7%BC%BA%E9%99%B72.png" class="">
+
+
+<blockquote>
+<p><strong>双旋转</strong>：顾名思义，就是旋转两次的意思。例上图要对根节点使用右旋转，则需要判断一下左子树。左子树满足：<strong>左子树的左子树的高度 &lt; 左子树的右子树高度</strong>，则满足双旋转条件。在对根节点进行右旋转前，先对根节点的左子树进行左旋转，来降低树的高度。同理使用左旋转前，先判断右子树是否满足条件</p>
+</blockquote>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8F%8C%E6%97%8B%E8%BD%AC1.png" class="">
+
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E5%8F%8C%E6%97%8B%E8%BD%AC2.png" class="">
+
+<h4 id="3-2-代码"><a href="#3-2-代码" class="headerlink" title="3.2 代码"></a>3.2 代码</h4><ul>
+<li>双旋转就是在原来平衡节点方法上，<strong>多做一层判断</strong>，来对比子节点的左右子树高度，进而判断是否要使用双旋转</li>
+</ul>
+<ul>
+<li><strong>更新平衡节点方法</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 平衡节点方法</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">balance</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> leftHeight = getTreeHeight(node.left);</span><br><span class="line">	<span class="keyword">int</span> rightHeight = getTreeHeight(node.right);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//两棵树高度差值 &gt; 1，对树使用单旋转</span></span><br><span class="line">	<span class="keyword">int</span> childLeftHeight; <span class="comment">//子节点左右子树高度</span></span><br><span class="line">	<span class="keyword">int</span> childRightHeight;</span><br><span class="line">	<span class="keyword">if</span> (Math.abs(leftHeight - rightHeight) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">//左子树小，使用左旋转</span></span><br><span class="line">		<span class="keyword">if</span> (leftHeight &lt; rightHeight) &#123;</span><br><span class="line">			childLeftHeight = getTreeHeight(node.right.left);</span><br><span class="line">			childRightHeight = getTreeHeight(node.right.right);</span><br><span class="line">			<span class="comment">//判断是否要双旋转</span></span><br><span class="line">			<span class="keyword">if</span> (childLeftHeight &gt; childRightHeight) &#123;</span><br><span class="line">				rightRotate(node.right);</span><br><span class="line">			&#125;</span><br><span class="line">			leftRotate(node);</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//右子树小，使用右旋转</span></span><br><span class="line">		<span class="keyword">if</span> (leftHeight &gt; rightHeight) &#123;</span><br><span class="line">			childLeftHeight = getTreeHeight(node.left.left);</span><br><span class="line">			childRightHeight = getTreeHeight(node.left.right);</span><br><span class="line">			<span class="comment">//判断是否要双旋转</span></span><br><span class="line">			<span class="keyword">if</span> (childLeftHeight &lt; childRightHeight) &#123;</span><br><span class="line">				leftRotate(node.left);</span><br><span class="line">			&#125;</span><br><span class="line">			rightRotate(node);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h3 id="4-总代码"><a href="#4-总代码" class="headerlink" title="4 总代码"></a>4 总代码</h3><ul>
+<li><strong>（1）完整平衡二叉树代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AVLTree</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 子类 - 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> <span class="keyword">implements</span> <span class="title">Comparable</span>&lt;<span class="title">Node</span>&gt;</span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> value;</span><br><span class="line">        <span class="keyword">public</span> Node left;</span><br><span class="line">        <span class="keyword">public</span> Node right;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>(value, <span class="keyword">null</span>, <span class="keyword">null</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> value, Node left, Node right)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.value = value;</span><br><span class="line">            <span class="keyword">this</span>.left = left;</span><br><span class="line">            <span class="keyword">this</span>.right = right;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">compareTo</span><span class="params">(Node o)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> value - o.value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Node&#123;value = &quot;</span> + value + <span class="string">&quot;&#125;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// -----------------------------------------------------------------------</span></span><br><span class="line">    <span class="comment">//根节点</span></span><br><span class="line">    <span class="keyword">private</span> Node root;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加数据</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 值</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Integer value)</span> </span>&#123;</span><br><span class="line">        Node node = <span class="keyword">new</span> Node(value);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            root = node;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//循环寻找合适位置添加数据</span></span><br><span class="line">        Node temp = root;</span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;</span><br><span class="line">            <span class="keyword">if</span> (temp.value &lt; node.value) &#123;</span><br><span class="line">                <span class="comment">//向右寻找位置</span></span><br><span class="line">                <span class="keyword">if</span> (temp.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    temp = temp.right;</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    temp.right = node;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//向左寻找位置</span></span><br><span class="line">                <span class="keyword">if</span> (temp.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    temp = temp.left;</span><br><span class="line">                &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                    temp.left = node;</span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//每添加一个数据，就平衡一次二叉树</span></span><br><span class="line">        balanceTree();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取当前节点树的高度（递归）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getTreeHeight</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//如果节点为null，不存在树，为0</span></span><br><span class="line">        <span class="keyword">if</span> (node == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取该节点左子树高度</span></span><br><span class="line">        <span class="keyword">int</span> leftHeight;</span><br><span class="line">        <span class="keyword">if</span> (node.left == <span class="keyword">null</span>) &#123;</span><br><span class="line">            leftHeight = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//递归求左子树高度</span></span><br><span class="line">            leftHeight = getTreeHeight(node.left);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//获取该节点右子树高度</span></span><br><span class="line">        <span class="keyword">int</span> rightHeight;</span><br><span class="line">        <span class="keyword">if</span> (node.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">            rightHeight = <span class="number">0</span>;</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//递归求右子树高度</span></span><br><span class="line">            rightHeight = getTreeHeight(node.right);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//返回左右子树中的最大值+1（算上该节点，所以+1）作为树的整体高度</span></span><br><span class="line">        <span class="keyword">return</span> Math.max(leftHeight, rightHeight) + <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 平衡二叉树</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">balanceTree</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        balanceTreeRecursion(root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 平衡二叉树 - 递归本体</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">balanceTreeRecursion</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//从下往上平衡，优先平衡子节点</span></span><br><span class="line">        <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">            balanceTreeRecursion(node.left);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">            balanceTreeRecursion(node.right);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        balance(node);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 平衡节点方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">balance</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> leftHeight = getTreeHeight(node.left);</span><br><span class="line">        <span class="keyword">int</span> rightHeight = getTreeHeight(node.right);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//两棵树高度差值 &gt; 1，对树使用单旋转</span></span><br><span class="line">        <span class="keyword">int</span> childLeftHeight;</span><br><span class="line">        <span class="keyword">int</span> childRightHeight;</span><br><span class="line">        <span class="keyword">if</span> (Math.abs(leftHeight - rightHeight) &gt; <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">//左子树小，使用左旋转</span></span><br><span class="line">            <span class="keyword">if</span> (leftHeight &lt; rightHeight) &#123;</span><br><span class="line">                childLeftHeight = getTreeHeight(node.right.left);</span><br><span class="line">                childRightHeight = getTreeHeight(node.right.right);</span><br><span class="line">                <span class="comment">//判断是否要双旋转</span></span><br><span class="line">                <span class="keyword">if</span> (childLeftHeight &gt; childRightHeight) &#123;</span><br><span class="line">                    rightRotate(node.right);</span><br><span class="line">                &#125;</span><br><span class="line">                leftRotate(node);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//右子树小，使用右旋转</span></span><br><span class="line">            <span class="keyword">if</span> (leftHeight &gt; rightHeight) &#123;</span><br><span class="line">                childLeftHeight = getTreeHeight(node.left.left);</span><br><span class="line">                childRightHeight = getTreeHeight(node.left.right);</span><br><span class="line">                <span class="comment">//判断是否要双旋转</span></span><br><span class="line">                <span class="keyword">if</span> (childLeftHeight &lt; childRightHeight) &#123;</span><br><span class="line">                    leftRotate(node.left);</span><br><span class="line">                &#125;</span><br><span class="line">                rightRotate(node);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对当前节点进行左旋转</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">leftRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//（1）创建一个与根节点一样的新节点</span></span><br><span class="line">        Node temp = <span class="keyword">new</span> Node(node.value);</span><br><span class="line">        <span class="comment">//（2）新节点左子节点指向根节点左子节点</span></span><br><span class="line">        temp.left = node.left;</span><br><span class="line">        <span class="comment">//（3）新节点的右子节点指向根节点右子节点的左子节点</span></span><br><span class="line">        temp.right = node.right.left;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//（4）根节点的值 = 根节点右子节点的值</span></span><br><span class="line">        node.value = node.right.value;</span><br><span class="line">        <span class="comment">//（5）根节点的左子节点指向新建的节点</span></span><br><span class="line">        node.left = temp;</span><br><span class="line">        <span class="comment">//（6）根节点的右子节点指向右子节点的右子节点</span></span><br><span class="line">        node.right = node.right.right;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对当前节点进行右旋转</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">rightRotate</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//跟左旋转大致相似，只有左右方向区别，就不再多写注释</span></span><br><span class="line">        Node temp = <span class="keyword">new</span> Node(node.value);</span><br><span class="line">        temp.right = node.right;</span><br><span class="line">        temp.left = node.left.right;</span><br><span class="line"></span><br><span class="line">        node.value = node.left.value;</span><br><span class="line">        node.right = temp;</span><br><span class="line">        node.left = node.left.left;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">	</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     *中序遍历</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">infixPrint</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;树为空！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        infixRecursion(root);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 中序遍历 - 递归本体</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">infixRecursion</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (node.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">            infixRecursion(node.left);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(node);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (node.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">            infixRecursion(node.right);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">avlTreeTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//创建平衡二叉树</span></span><br><span class="line">	AVLTree avlTree = <span class="keyword">new</span> AVLTree();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//循环遍历添加数据</span></span><br><span class="line">	<span class="keyword">int</span>[] arr = <span class="keyword">new</span> <span class="keyword">int</span>[]&#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span> ,<span class="number">6</span>&#125;;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i : arr) &#123;</span><br><span class="line">		avlTree.add(i);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//中序遍历查看是否按顺序</span></span><br><span class="line">	avlTree.infixPrint();</span><br><span class="line">	</span><br><span class="line">	System.out.println(<span class="string">&quot;/------------------------------------/&quot;</span>);</span><br><span class="line">	<span class="comment">//为了明显效果，再写了个前序遍历，查看树结构是否真发生变化（代码没有前序，自己按需自行添加）</span></span><br><span class="line">	avlTree.prePrint();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C.png" class="">
+
+<img src="/blog/2021/05/20/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91/%E6%B5%8B%E8%AF%95%E6%95%88%E6%9E%9C2.png" class="">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/05/19/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91PDF%E5%A4%84%E7%90%86-FreeMarker-xhtmlrenderer/" rel="prev" title="【工作技能】PDF处理-FreeMarker&xhtmlrenderer">
+      <i class="fa fa-chevron-left"></i> 【工作技能】PDF处理-FreeMarker&xhtmlrenderer
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/05/22/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%A4%9A%E5%8F%89%E6%A0%91/" rel="next" title="【数据结构和算法】多叉树">
+      【数据结构和算法】多叉树 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91"><span class="nav-text">1 平衡二叉树</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91%E7%BC%BA%E9%99%B7"><span class="nav-text">1.1 二叉排序树缺陷</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.2 平衡二叉树介绍</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8D%95%E6%97%8B%E8%BD%AC"><span class="nav-text">2 单旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%8D%95%E6%97%8B%E8%BD%AC%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 单旋转介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%BB%A3%E7%A0%81"><span class="nav-text">2.2 代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%8F%8C%E6%97%8B%E8%BD%AC"><span class="nav-text">3 双旋转</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%8F%8C%E6%97%8B%E8%BD%AC%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 双旋转介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%BB%A3%E7%A0%81"><span class="nav-text">3.2 代码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%BB%E4%BB%A3%E7%A0%81"><span class="nav-text">4 总代码</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

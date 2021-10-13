@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于SpringBoot的配置文件使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringBoot】SpringBoot配置">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于SpringBoot的配置文件使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/JSR303Test.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/FileLocation.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/setting1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/auto.png">
+<meta property="article:published_time" content="2020-10-31T06:24:04.000Z">
+<meta property="article:modified_time" content="2020-10-31T07:59:02.532Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/JSR303Test.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringBoot】SpringBoot配置 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringBoot】SpringBoot配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-31 14:24:04 / 修改时间：15:59:02" itemprop="dateCreated datePublished" datetime="2020-10-31T14:24:04+08:00">2020-10-31</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于SpringBoot的配置文件使用</p>
+<a id="more"></a>
+
+<h3 id="一、配置文件"><a href="#一、配置文件" class="headerlink" title="一、配置文件"></a>一、配置文件</h3><ul>
+<li>SpringBoot的配置文件有三种，properties、yml、yaml三种</li>
+</ul>
+<h4 id="1-1-正常配置修改"><a href="#1-1-正常配置修改" class="headerlink" title="1.1 正常配置修改"></a>1.1 正常配置修改</h4><ul>
+<li>（1）properties文件</li>
+</ul>
+<figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">配置端口号：</span><br><span class="line">    server.<span class="keyword">port</span>=8081</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）yaml文件</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">配置端口号：</span></span><br><span class="line">    <span class="attr">server:</span></span><br><span class="line">        <span class="attr">prot:</span> <span class="number">8081</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意：在”:”后面要空一个，再接参数</strong></p>
+<h4 id="1-2-给对象赋值"><a href="#1-2-给对象赋值" class="headerlink" title="1.2 给对象赋值"></a>1.2 给对象赋值</h4><p>创建一个JavaBean对象</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isMan;</span><br><span class="line">    <span class="keyword">private</span> Date birthday;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String,Object&gt; maps;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; lists;</span><br><span class="line">    <span class="keyword">private</span> Dog dog;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（1）properties文件</li>
+</ul>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">配置文件</span><br><span class="line">    <span class="attribute">name</span>=小白</span><br><span class="line">    <span class="attribute">age</span>=1</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@PropertySource(value = &quot;classpath:test.properties&quot;)</span><span class="comment">//加载指定的配置文件</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;name&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;age&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isMan;</span><br><span class="line">    <span class="keyword">private</span> Date birthday;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String,Object&gt; maps;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; lists;</span><br><span class="line">    <span class="keyword">private</span> Dog dog;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）yaml文件<ul>
+<li>yaml文件不仅可以进行简单的赋值</li>
+<li>还可以赋值其他参数，集合、对象、数组…</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">配置文件</span></span><br><span class="line"><span class="attr">person:</span></span><br><span class="line">  <span class="attr">name:</span> <span class="string">莱特雷</span></span><br><span class="line">  <span class="attr">age:</span> <span class="number">22</span></span><br><span class="line">  <span class="attr">boolean:</span> <span class="literal">true</span></span><br><span class="line">  <span class="attr">birthday:</span> <span class="number">2019</span><span class="string">/12/12</span></span><br><span class="line">  <span class="attr">maps:</span> &#123;<span class="attr">key1:</span> <span class="string">value1</span>,<span class="attr">key2:</span> <span class="string">value2</span>&#125;</span><br><span class="line">  <span class="attr">lists:</span> [<span class="string">代码</span>, <span class="string">音乐</span>, <span class="string">看小电影</span>]</span><br><span class="line">  <span class="attr">dog:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">小白</span></span><br><span class="line">    <span class="attr">age:</span> <span class="number">1</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span> <span class="comment">//绑定yaml的person</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isMan;</span><br><span class="line">    <span class="keyword">private</span> Date birthday;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String,Object&gt; maps;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; lists;</span><br><span class="line">    <span class="keyword">private</span> Dog dog;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>总结</strong>：properties的作用非常有限，所以一般都推荐使用yaml作为配置文件</li>
+</ul>
+<h4 id="1-3-yaml文件特有方法"><a href="#1-3-yaml文件特有方法" class="headerlink" title="1.3 yaml文件特有方法"></a>1.3 yaml文件特有方法</h4><ul>
+<li>（1）松散绑定<ul>
+<li>即驼峰命名，配置文件中last-name和类中lastName是可以识别，并复制</li>
+<li>但要保证类中get set方法不出错</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）JSR303数据校验<ul>
+<li>在字段增加一层过滤器，可以保证数据的合法性</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">添加启动器依赖</span><br><span class="line">    <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-validation<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">在JavaBean进行配置</span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;person&quot;)</span></span><br><span class="line"><span class="meta">@Validated</span> <span class="comment">//JSR303数据校验</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Email</span><span class="comment">//规定填写数据为邮箱格式</span></span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> age;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">boolean</span> isMan;</span><br><span class="line">    <span class="keyword">private</span> Date birthday;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String,Object&gt; maps;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; lists;</span><br><span class="line">    <span class="keyword">private</span> Dog dog;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/JSR303Test.png" class="">
+
+<ul>
+<li>具体可设置的参数</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">注解</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">@Null</td>
+<td align="center">被注释的元素必须为null</td>
+</tr>
+<tr>
+<td align="center">@NotNull</td>
+<td align="center">被注释的元素必须不为null</td>
+</tr>
+<tr>
+<td align="center">@AssertTrue</td>
+<td align="center">被注释的元素必须为true</td>
+</tr>
+<tr>
+<td align="center">@AssertFalse</td>
+<td align="center">被注释元素必须为fasle</td>
+</tr>
+<tr>
+<td align="center">@Min(value)</td>
+<td align="center">被注释的元素必须是一个数字，其值必须大于等于指定的最小值</td>
+</tr>
+<tr>
+<td align="center">@Max(value)</td>
+<td align="center">被注释的元素必须是一个数字，其值必须小于等于指定的最大值</td>
+</tr>
+<tr>
+<td align="center">@DecimalMin(value)</td>
+<td align="center">被注释的元素必须是一个数字，其值必须大于等于指定的最小值，小数存在精度</td>
+</tr>
+<tr>
+<td align="center">@DecimalMax(value)</td>
+<td align="center">被注释的元素必须是一个数字，其值必须小于等于指定的最大值，小数存在精度</td>
+</tr>
+<tr>
+<td align="center">@Size(max, min)</td>
+<td align="center">被注释的元素的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td align="center">@Digits (integer, fraction)</td>
+<td align="center">被注释的元素必须是一个数字，其值必须在可接受的范围内</td>
+</tr>
+<tr>
+<td align="center">@Past</td>
+<td align="center">被注释的元素必须是一个过去的日期</td>
+</tr>
+<tr>
+<td align="center">@Future</td>
+<td align="center">被注释的元素必须是一个将来的日期</td>
+</tr>
+<tr>
+<td align="center">@Pattern(regex=)</td>
+<td align="center">被注释的元素必须符合指定的正则表达式</td>
+</tr>
+<tr>
+<td align="center">@Valid</td>
+<td align="center">被注释的元素需要递归验证</td>
+</tr>
+</tbody></table>
+<table>
+<thead>
+<tr>
+<th align="center">注解</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">@Email</td>
+<td align="center">被注释的元素必须是电子邮箱地址</td>
+</tr>
+<tr>
+<td align="center">@Length(min=下限, max=上限)</td>
+<td align="center">被注释的字符串的大小必须在指定的范围内</td>
+</tr>
+<tr>
+<td align="center">@NotEmpty</td>
+<td align="center">被注释的元素的必须非空并且size大于0</td>
+</tr>
+<tr>
+<td align="center">@NotBlank</td>
+<td align="center">被注释的元素必须不为空且不能全部为’ ‘(空字符串)</td>
+</tr>
+<tr>
+<td align="center">@Range(min=最小值, max=最大值)</td>
+<td align="center">被注释的元素必须在合适的范围内</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="二、配置文件的位置"><a href="#二、配置文件的位置" class="headerlink" title="二、配置文件的位置"></a>二、配置文件的位置</h3><img src="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/FileLocation.png" class="">
+
+<hr>
+<h3 id="三、多环境配置"><a href="#三、多环境配置" class="headerlink" title="三、多环境配置"></a>三、多环境配置</h3><ul>
+<li>（1）properties配置<ul>
+<li>一个环境创建一个配置文件<ul>
+<li>文件形式为： application-环境名.properties</li>
+</ul>
+</li>
+<li>在默认配置文件application.properties中<ul>
+<li>使用：spring.profiles.active=环境名，来进行环境切换</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）yaml配置</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#最上面为默认环境</span></span><br><span class="line">    <span class="attr">server:</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">8081</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#选择激活的环境</span></span><br><span class="line">    <span class="attr">spring:</span></span><br><span class="line">      <span class="attr">profiles:</span></span><br><span class="line">        <span class="attr">active:</span> <span class="string">dev</span></span><br><span class="line">    <span class="string">---</span></span><br><span class="line">    <span class="attr">server:</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">8082</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#起环境名</span></span><br><span class="line">    <span class="attr">spring:</span></span><br><span class="line">      <span class="attr">profiles:</span> <span class="string">dev</span></span><br><span class="line"></span><br><span class="line">    <span class="string">---</span></span><br><span class="line">    <span class="attr">server:</span></span><br><span class="line">      <span class="attr">port:</span> <span class="number">8083</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">#起环境名</span></span><br><span class="line">    <span class="attr">spring:</span></span><br><span class="line">      <span class="attr">profiles:</span> <span class="string">test</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#用&quot;---&quot;来分割环境</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="四、可以配置的参数"><a href="#四、可以配置的参数" class="headerlink" title="四、可以配置的参数"></a>四、可以配置的参数</h3><p>由于SpringBoot可以配置的参数过于多，所以不会一一列出来，而是教利用源码查找方法</p>
+<ul>
+<li>（1）IDEA双击”shift”来进行搜索</li>
+</ul>
+<img src="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/setting1.png" class="">
+
+<ul>
+<li>（2）来<code>ServerProperties</code>来进行举例</li>
+</ul>
+<img src="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBoot%E9%85%8D%E7%BD%AE/auto.png" class="">
+
+
+<ul>
+<li><strong>总结</strong> ：可以通过搜索properties寻找可以配置的属性</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/29/%E3%80%90SpringBoot%E3%80%91%E4%BA%86%E8%A7%A3SpringBoot/" rel="prev" title="【SpringBoot】了解SpringBoot">
+      <i class="fa fa-chevron-left"></i> 【SpringBoot】了解SpringBoot
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBootWeb%E5%BC%80%E5%8F%91/" rel="next" title="【SpringBoot】SpringBootWeb开发">
+      【SpringBoot】SpringBootWeb开发 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">一、配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%AD%A3%E5%B8%B8%E9%85%8D%E7%BD%AE%E4%BF%AE%E6%94%B9"><span class="nav-text">1.1 正常配置修改</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E7%BB%99%E5%AF%B9%E8%B1%A1%E8%B5%8B%E5%80%BC"><span class="nav-text">1.2 给对象赋值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-yaml%E6%96%87%E4%BB%B6%E7%89%B9%E6%9C%89%E6%96%B9%E6%B3%95"><span class="nav-text">1.3 yaml文件特有方法</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-text">二、配置文件的位置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%A4%9A%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-text">三、多环境配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E5%8F%AF%E4%BB%A5%E9%85%8D%E7%BD%AE%E7%9A%84%E5%8F%82%E6%95%B0"><span class="nav-text">四、可以配置的参数</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

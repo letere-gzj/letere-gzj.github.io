@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Mybatis的代码生成器使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Mybatis】逆向工程">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Mybatis的代码生成器使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/fileTree1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/running.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/fileTree2.png">
+<meta property="article:published_time" content="2020-10-28T12:06:10.000Z">
+<meta property="article:modified_time" content="2020-10-28T12:43:25.254Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/fileTree1.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Mybatis】逆向工程 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Mybatis】逆向工程
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-28 20:06:10 / 修改时间：20:43:25" itemprop="dateCreated datePublished" datetime="2020-10-28T20:06:10+08:00">2020-10-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Mybatis的代码生成器使用</p>
+<a id="more"></a>
+
+<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><ul>
+<li>逆向工程：也被称作Mybatis Generator（代码生成器）<ul>
+<li>简称：MBG</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>代码生成器可以通过数据库表，来自动生成JavaBean、接口、映射文件，不用自己配置</li>
+</ul>
+<ul>
+<li>代码生成器，要下载相应的jar包：<code>mybatis-generator-core</code><ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://github.com/mybatis/generator/releases">https://github.com/mybatis/generator/releases</a></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Maven：</span><br><span class="line">       <span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.generator<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-generator-maven-plugin<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.4.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>方便学习，可以参考官方使用文档：<a target="_blank" rel="noopener" href="https://www.mybatis.org/generator">https://www.mybatis.org/generator</a></li>
+</ul>
+<hr>
+<h3 id="二、使用方法"><a href="#二、使用方法" class="headerlink" title="二、使用方法"></a>二、使用方法</h3><h4 id="2-1-创建配置文件"><a href="#2-1-创建配置文件" class="headerlink" title="2.1 创建配置文件"></a>2.1 创建配置文件</h4><ul>
+<li>参考官方文档配置文件信息：<a target="_blank" rel="noopener" href="http://mybatis.org/generator/configreference/xmlconfig.html">http://mybatis.org/generator/configreference/xmlconfig.html</a></li>
+<li>复制基本的模板进行修改，具体各个参数，可细看官方文档</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">generatorConfiguration</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">generatorConfiguration</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--数据库驱动位置--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">classPathEntry</span> <span class="attr">location</span>=<span class="string">&quot;D:\DataBase\mysql-connector-java-8.0.21\mysql-connector-java-8.0.21.jar&quot;</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!--代码生成器运行环境：参数看官方</span></span><br><span class="line"><span class="comment">        MyBatis3Simple：创建简单的增删改查方法</span></span><br><span class="line"><span class="comment">        MyBatis3：能创建动态sql语句</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">context</span> <span class="attr">id</span>=<span class="string">&quot;DB2Tables&quot;</span> <span class="attr">targetRuntime</span>=<span class="string">&quot;MyBatis3&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--jdbcConnection：数据库连接--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">jdbcConnection</span> <span class="attr">driverClass</span>=<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span></span></span><br><span class="line"><span class="tag">                        <span class="attr">connectionURL</span>=<span class="string">&quot;jdbc:mysql://localhost:3306/mybatis?serverTimezone=GMT%2B8&quot;</span></span></span><br><span class="line"><span class="tag">                        <span class="attr">userId</span>=<span class="string">&quot;root&quot;</span></span></span><br><span class="line"><span class="tag">                        <span class="attr">password</span>=<span class="string">&quot;123&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">jdbcConnection</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--javaTypeResolver：Java类型解析器</span></span><br><span class="line"><span class="comment">            使用默认即可</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">javaTypeResolver</span> &gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;forceBigDecimals&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">javaTypeResolver</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--指定JavaBean的生成策略：生成JavaBean</span></span><br><span class="line"><span class="comment">            targetPackage=&quot;test.model1&quot;：目标包</span></span><br><span class="line"><span class="comment">            targetProject=&quot;\MGBTestProjecr\src&quot;：目标工程（在IDEA中蓝色的文件夹）</span></span><br><span class="line"><span class="comment">            属性内容可看官方文档</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">javaModelGenerator</span> <span class="attr">targetPackage</span>=<span class="string">&quot;com.letere.bean&quot;</span> <span class="attr">targetProject</span>=<span class="string">&quot;.\src\main\java&quot;</span>&gt;</span><span class="comment">&lt;!--当前工程src包下--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;enableSubPackages&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;trimStrings&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">javaModelGenerator</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--sqlMapGenerator：sql映射文件生成策略（Mapper文件）--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">sqlMapGenerator</span> <span class="attr">targetPackage</span>=<span class="string">&quot;com.letere.mapper&quot;</span>  <span class="attr">targetProject</span>=<span class="string">&quot;.\src\main\java&quot;</span>&gt;</span><span class="comment">&lt;!--当前工程resources目录下--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;enableSubPackages&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">sqlMapGenerator</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--javaClientGenerator：生成mapper接口所在位置与方法--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">javaClientGenerator</span> <span class="attr">type</span>=<span class="string">&quot;XMLMAPPER&quot;</span> <span class="attr">targetPackage</span>=<span class="string">&quot;com.letere.dao&quot;</span>  <span class="attr">targetProject</span>=<span class="string">&quot;.\src\main\java&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;enableSubPackages&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">javaClientGenerator</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">&lt;!--table：关联数据库表，通过数据库表来逆向生成前面所有东西</span></span><br><span class="line"><span class="comment">            tableName：表名</span></span><br><span class="line"><span class="comment">            domainObject：生成JavaBean的名字</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">table</span>  <span class="attr">tableName</span>=<span class="string">&quot;tbl_employee&quot;</span> <span class="attr">domainObjectName</span>=<span class="string">&quot;Employee&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">context</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">generatorConfiguration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>目录结构</li>
+</ul>
+<img src="/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/fileTree1.png" class="">
+
+<h4 id="2-2-使用代码生成器"><a href="#2-2-使用代码生成器" class="headerlink" title="2.2 使用代码生成器"></a>2.2 使用代码生成器</h4><ul>
+<li>代码生成器运行的方式有很多种，可看官方文档：<a target="_blank" rel="noopener" href="http://mybatis.org/generator/running/running.html">http://mybatis.org/generator/running/running.html</a></li>
+</ul>
+<img src="/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/running.png" class="">
+
+<ul>
+<li>下面是以Java运行xml文件的形式来举例</li>
+<li>复制官方基本代码进行修改：<a target="_blank" rel="noopener" href="http://mybatis.org/generator/running/runningWithJava.html">http://mybatis.org/generator/running/runningWithJava.html</a><ul>
+<li>注意代码导包会出现重复包，应选择导入以下包：<ul>
+<li><code>java.io.File;</code></li>
+<li><code>org.mybatis.generator.config.xml.ConfigurationParser;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">测试方法：只需修改配置文件路径即可</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">runningXmlByJava</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">        List&lt;String&gt; warnings = <span class="keyword">new</span> ArrayList&lt;String&gt;();</span><br><span class="line">        <span class="keyword">boolean</span> overwrite = <span class="keyword">true</span>;</span><br><span class="line">        File configFile = <span class="keyword">new</span> File(<span class="string">&quot;src\\main\\resources\\mbg-config.xml&quot;</span>);<span class="comment">//xml配置文件位置</span></span><br><span class="line">        ConfigurationParser cp = <span class="keyword">new</span> ConfigurationParser(warnings);</span><br><span class="line">        Configuration config = cp.parseConfiguration(configFile);</span><br><span class="line">        DefaultShellCallback callback = <span class="keyword">new</span> DefaultShellCallback(overwrite);</span><br><span class="line">        MyBatisGenerator myBatisGenerator = <span class="keyword">new</span> MyBatisGenerator(config, callback, warnings);</span><br><span class="line">        myBatisGenerator.generate(<span class="keyword">null</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>代码运行，会发现在每个包下会自动相应的JavaBean、接口、配置文件</li>
+</ul>
+<img src="/blog/2020/10/28/%E3%80%90Mybatis%E3%80%91%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B/fileTree2.png" class="">
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/26/%E3%80%90SSM%E6%95%B4%E5%90%88%E3%80%91Spring-SpringMVC-Mybatis%E6%A1%86%E6%9E%B6%E6%95%B4%E5%90%88/" rel="prev" title="【SSM整合】Spring+SpringMVC+Mybatis框架整合">
+      <i class="fa fa-chevron-left"></i> 【SSM整合】Spring+SpringMVC+Mybatis框架整合
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/28/%E3%80%90Spring%E3%80%91%E5%A3%B0%E6%98%8E%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="next" title="【Spring】声明式事务">
+      【Spring】声明式事务 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%8B%E7%BB%8D"><span class="nav-text">一、介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">二、使用方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">2.1 创建配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8%E4%BB%A3%E7%A0%81%E7%94%9F%E6%88%90%E5%99%A8"><span class="nav-text">2.2 使用代码生成器</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

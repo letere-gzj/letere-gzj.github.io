@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Redis的复制功能介绍，开发可能不用你配，但必须得懂">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Redis】Redis的复制">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Redis的复制功能介绍，开发可能不用你配，但必须得懂">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step6.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step7.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step8.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/2-step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/2-step2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step6.png">
+<meta property="article:published_time" content="2021-01-15T04:16:24.000Z">
+<meta property="article:modified_time" content="2021-01-15T04:23:27.329Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step1.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Redis】Redis的复制 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Redis】Redis的复制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-15 12:16:24 / 修改时间：12:23:27" itemprop="dateCreated datePublished" datetime="2021-01-15T12:16:24+08:00">2021-01-15</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Redis的复制功能介绍，开发可能不用你配，但必须得懂</p>
+<a id="more"></a>
+
+<h3 id="1-复制介绍"><a href="#1-复制介绍" class="headerlink" title="1. 复制介绍"></a>1. 复制介绍</h3><ul>
+<li>复制，也就是主从复制，主机数据更新后，根据配置和策略，自动同步到备份机的master / slaver机制。</li>
+<li>Master以写为主，Slave以读为主</li>
+</ul>
+<h3 id="2-复制功能的使用"><a href="#2-复制功能的使用" class="headerlink" title="2. 复制功能的使用"></a>2. 复制功能的使用</h3><h4 id="2-1-配从（库）不配主（库）"><a href="#2-1-配从（库）不配主（库）" class="headerlink" title="2.1 配从（库）不配主（库）"></a>2.1 配从（库）不配主（库）</h4><ul>
+<li>（1）从库配置：执行命令<code>slaveof 主库IP 主库端口</code></li>
+</ul>
+<ul>
+<li>（2）注意：<ul>
+<li>每次与master断开之后，都需要重新连接，除非你配置进redis.conf文件</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-配置文件操作"><a href="#2-2-配置文件操作" class="headerlink" title="2.2 配置文件操作"></a>2.2 配置文件操作</h4><ul>
+<li>（1）拷贝多个redis.conf文件，作为从机加载时的配置</li>
+<li>（2）修改端口号：<code>port 63xx</code></li>
+<li>（3）修改进程管道名字：<code>pidfile /var/run/redis_63xx.pid</code></li>
+<li>（4）修改log文件位置和名字： <code>logfile /xx/xx/xx/63xx.log</code></li>
+<li>（5）修改dump.rdb名字： <code>dbfilename dump63xx.rdb</code></li>
+<li>（6）修改dump.rdb的位置：<code>dir /xx/xx/xx</code></li>
+</ul>
+<figure class="highlight 1c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">目录结构</span><br><span class="line">     <span class="string">|master</span></span><br><span class="line">            <span class="string">|redis6379.conf</span></span><br><span class="line">     <span class="string">|</span></span><br><span class="line">     <span class="string">|slave</span></span><br><span class="line">            <span class="string">|redis6380.conf</span></span><br><span class="line">            <span class="string">|redis6381.conf</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>报错解决：<ul>
+<li>方法一：修改存储logfile文件夹和dump.rbd文件夹的权限：<code>sudo chmod 777 /xx/xxx/xxxx</code></li>
+<li>方法二：以管理员权限启动redis<code>sudo redis-cli -p 63xx</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="2-3-常用3招"><a href="#2-3-常用3招" class="headerlink" title="2.3 常用3招"></a>2.3 常用3招</h4><ul>
+<li>（1）一主二仆</li>
+</ul>
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step1.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step2.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step3.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step4.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step5.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step6.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step7.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/step8.png" class="">
+
+<ul>
+<li>（2）薪火相传<ul>
+<li>一个传一个，去中心化，减轻master负担</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/2-step1.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/2-step2.png" class="">
+
+
+<ul>
+<li>（3）反客为主<ul>
+<li>从机可以使用<code>slaveof no one</code>来重新变成主机</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="3-复制原理"><a href="#3-复制原理" class="headerlink" title="3. 复制原理"></a>3. 复制原理</h3><ul>
+<li>Slave启动成功连接到master后会发送一个sync命令</li>
+<li>Master接到命令启动后台的存盘进程，同时收集所有接受到用于修改数据集的命令，在后台进程执行完毕之后，master将传送整个数据文件到slave，以完成一次完全同步</li>
+<li>全量复制：而Slave服务在接收到数据库文件数据后，将其存盘并加载到内存中。</li>
+<li>增量复制：Master继续将新的所有收集到的修改命名一次传给Slave，完成同步</li>
+<li>但是只要是重新连接master，一次完全同步（全量复制）将自动执行</li>
+</ul>
+<hr>
+<h3 id="4-哨兵模式（sentinel）"><a href="#4-哨兵模式（sentinel）" class="headerlink" title="4. 哨兵模式（sentinel）"></a>4. 哨兵模式（sentinel）</h3><h4 id="4-1-介绍"><a href="#4-1-介绍" class="headerlink" title="4.1 介绍"></a>4.1 介绍</h4><ul>
+<li>哨兵模式，是反客为主的自动版，主机一旦挂了，自动从机中选一台作为主机，并其余从机重新绑定此主机。</li>
+<li>可以后台监控主机是否故障，如果故障了根据投票数自动将从库转换为主库</li>
+</ul>
+<h4 id="4-2-使用"><a href="#4-2-使用" class="headerlink" title="4.2 使用"></a>4.2 使用</h4><ul>
+<li>（1）创建一个<code>sentinel.conf</code>文件，文件名不能错误</li>
+<li>（2）填写在里面内容为：<code>entinel monitor [主机名称（随意填）] [IP地址] [端口号] 1</code>，1是让哨兵自动选出新主机。可以填写多个，用来监控多个主机。</li>
+</ul>
+<ul>
+<li>（3）演示</li>
+</ul>
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step1.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step2.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step3.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step4.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step5.png" class="">
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/3-step6.png" class="">
+
+<hr>
+<h3 id="5-复制的缺点"><a href="#5-复制的缺点" class="headerlink" title="5. 复制的缺点"></a>5. 复制的缺点</h3><ul>
+<li>由于所有的写操作都在master上进行，然后同步更新slave上，所以从master同步到slave机器有一定的延迟，当系统很繁忙的时候，延迟问题会更加严重，slave机器数量增加也会使这个问题更加严重</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" rel="prev" title="【Redis】Redis的发布订阅">
+      <i class="fa fa-chevron-left"></i> 【Redis】Redis的发布订阅
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/" rel="next" title="【Redis】Java连接Redis（Jedis）">
+      【Redis】Java连接Redis（Jedis） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%A4%8D%E5%88%B6%E4%BB%8B%E7%BB%8D"><span class="nav-text">1. 复制介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%A4%8D%E5%88%B6%E5%8A%9F%E8%83%BD%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">2. 复制功能的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%85%8D%E4%BB%8E%EF%BC%88%E5%BA%93%EF%BC%89%E4%B8%8D%E9%85%8D%E4%B8%BB%EF%BC%88%E5%BA%93%EF%BC%89"><span class="nav-text">2.1 配从（库）不配主（库）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E6%93%8D%E4%BD%9C"><span class="nav-text">2.2 配置文件操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%B8%B8%E7%94%A83%E6%8B%9B"><span class="nav-text">2.3 常用3招</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%A4%8D%E5%88%B6%E5%8E%9F%E7%90%86"><span class="nav-text">3. 复制原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%93%A8%E5%85%B5%E6%A8%A1%E5%BC%8F%EF%BC%88sentinel%EF%BC%89"><span class="nav-text">4. 哨兵模式（sentinel）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">4.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E4%BD%BF%E7%94%A8"><span class="nav-text">4.2 使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A4%8D%E5%88%B6%E7%9A%84%E7%BC%BA%E7%82%B9"><span class="nav-text">5. 复制的缺点</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

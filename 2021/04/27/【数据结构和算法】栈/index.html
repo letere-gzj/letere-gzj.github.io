@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据结构中栈的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构和算法】栈">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="数据结构中栈的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%85%A5%E6%A0%88%E5%92%8C%E5%87%BA%E6%A0%88.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%87%BA%E6%A0%881.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%87%BA%E6%A0%882.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E8%BF%90%E7%AE%97%E7%BB%93%E6%9E%9C2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E6%B3%A2%E5%85%B0%E8%AE%A1%E7%AE%97.png">
+<meta property="article:published_time" content="2021-04-27T01:18:54.000Z">
+<meta property="article:modified_time" content="2021-04-29T01:15:52.912Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%85%A5%E6%A0%88%E5%92%8C%E5%87%BA%E6%A0%88.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构和算法】栈 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构和算法】栈
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-04-27 09:18:54" itemprop="dateCreated datePublished" datetime="2021-04-27T09:18:54+08:00">2021-04-27</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-04-29 09:15:52" itemprop="dateModified" datetime="2021-04-29T09:15:52+08:00">2021-04-29</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>数据结构中栈的使用</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-栈"><a href="#1-栈" class="headerlink" title="1 栈"></a>1 栈</h3><h4 id="1-1-应用场景"><a href="#1-1-应用场景" class="headerlink" title="1.1 应用场景"></a>1.1 应用场景</h4><ul>
+<li><strong>计算器实现：</strong></li>
+<li>将一个数学算术字符串，例<code>1+2*3+4/5</code>，计算出来其正确结果来</li>
+<li>底层的实现运用到了栈数据结构</li>
+</ul>
+<ul>
+<li><strong>其他场景：</strong></li>
+<li>（1）子程序的调用：在跳往子程序前，会先将下一个指令的地址存储在栈中，直到子程序执行完后再讲地址取出，以回到原来的程序中</li>
+<li>（2）处理递归调用：和子程序的调用类似，只是处理存储下一个指令的地址外，也将参数、区域变量等数据存入栈中</li>
+<li>（3）表达式的转换（中缀表达式转后缀表达式）与求值</li>
+<li>（4）二叉树的遍历</li>
+<li>（5）图形的深度优先搜索法</li>
+</ul>
+<h4 id="1-2-介绍"><a href="#1-2-介绍" class="headerlink" title="1.2 介绍"></a>1.2 介绍</h4><ul>
+<li>栈的英文为<code>Stack</code></li>
+<li>栈是一个先进后出（FILO：First In Last Out）的有序列表</li>
+<li>栈是限制线性表汇元素的插入与删除，只能在线性表的同一段进行的特殊线性表。允许添加与删除的一端，为栈顶（top），固定的另一端为栈底（Bottom）</li>
+</ul>
+<img src="/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%85%A5%E6%A0%88%E5%92%8C%E5%87%BA%E6%A0%88.png" class="">
+
+<h4 id="1-3-代码实现"><a href="#1-3-代码实现" class="headerlink" title="1.3 代码实现"></a>1.3 代码实现</h4><ul>
+<li><strong>（1）思路</strong></li>
+<li>栈底为bottom，永远为0；栈顶为top，是当前数据的index + 1；</li>
+<li>入栈：<code>stack[top] = data； top++;</code>，栈顶赋值，然后再移动栈顶</li>
+<li>出栈：<code>top--; data = stack[top];</code>，栈顶先减一，移动到最新数据的index，在取出数据</li>
+<li>满栈：<code>top == size</code>，栈顶等于栈的大小</li>
+<li>空栈：<code>top == bottom</code>，栈顶 等于 栈底</li>
+</ul>
+<ul>
+<li><strong>（2）代码实现</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ArrayStack</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> size; <span class="comment">//栈的大小</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> top; <span class="comment">//栈顶（最新数据index + 1）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> bottom; <span class="comment">//栈底（永远为0）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[] stack; <span class="comment">//栈</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ArrayStack</span><span class="params">(<span class="keyword">int</span> size)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.size = size;</span><br><span class="line">        stack = <span class="keyword">new</span> <span class="keyword">int</span>[size];</span><br><span class="line">        top = <span class="number">0</span>;</span><br><span class="line">        bottom = <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 入栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//判断是否满栈</span></span><br><span class="line">        <span class="keyword">if</span>(size == top) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;栈已满，无法添加数据&quot;</span>);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            stack[top++] = data; <span class="comment">//先赋值，再top+1</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 出栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">//判断是否空栈</span></span><br><span class="line">        <span class="keyword">if</span>(top == bottom) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;栈为空，没有数据可取！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>; <span class="comment">//暂时以0为取值失败</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> stack[--top]; <span class="comment">//先top-1，在返回数据</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印栈</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(top == bottom) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;栈为空！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> temp = top;</span><br><span class="line">        System.out.println(<span class="string">&quot;数组栈为：&quot;</span>);</span><br><span class="line">        <span class="keyword">while</span> (temp != bottom) &#123;</span><br><span class="line">            temp--;</span><br><span class="line">            System.out.println(stack[temp]);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">arrayStackTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//1. 创建栈并入栈</span></span><br><span class="line">	ArrayStack stack = <span class="keyword">new</span> ArrayStack(<span class="number">3</span>);</span><br><span class="line">	stack.push(<span class="number">1</span>);</span><br><span class="line">	stack.push(<span class="number">2</span>);</span><br><span class="line">	stack.push(<span class="number">3</span>);</span><br><span class="line">	stack.print();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2. 出栈</span></span><br><span class="line">	stack.pop();</span><br><span class="line">	stack.print();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%87%BA%E6%A0%881.png" class="">
+
+
+<h4 id="1-4-拓展：链表实现栈"><a href="#1-4-拓展：链表实现栈" class="headerlink" title="1.4 拓展：链表实现栈"></a>1.4 拓展：链表实现栈</h4><ul>
+<li><p>由于链表的长度没有限制，可以无限添加，所以链表栈<strong>没有满栈</strong>的概念</p>
+</li>
+<li><p><strong>（1）代码实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedListStack</span> </span>&#123;</span><br><span class="line">    <span class="comment">//节点类</span></span><br><span class="line">    <span class="keyword">private</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">int</span> data;</span><br><span class="line">        <span class="keyword">public</span> Node next;</span><br><span class="line"></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">this</span>.data = data;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;Node&#123; data = &quot;</span> + data + <span class="string">&quot; &#125;&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Node headNode; <span class="comment">//头节点</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LinkedListStack</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        headNode = <span class="keyword">new</span> Node(<span class="number">0</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 入栈（头插法）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> data 数据</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">push</span><span class="params">(<span class="keyword">int</span> data)</span> </span>&#123;</span><br><span class="line">        Node node = <span class="keyword">new</span> Node(data);</span><br><span class="line"></span><br><span class="line">        node.next = headNode.next;</span><br><span class="line">        headNode.next = node;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 出栈（返回并删除第一个节点）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">pop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(isEmpty()) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;error：栈为空，没有数据可取！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span> <span class="number">0</span>;  <span class="comment">//暂时以0作为错误返回</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Node temp = headNode.next;</span><br><span class="line">        headNode.next = headNode.next.next;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> temp.data;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印链表栈</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(isEmpty()) &#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;链表为空！&quot;</span>);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        System.out.println(<span class="string">&quot;链表栈为：&quot;</span>);</span><br><span class="line">        Node temp = headNode.next;</span><br><span class="line">        <span class="keyword">while</span> (temp != <span class="keyword">null</span>) &#123;</span><br><span class="line">            System.out.println(temp);</span><br><span class="line">            temp = temp.next;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 判断是否空栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> boolean</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isEmpty</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> headNode.next == <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">linkedListStackTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//1. 创建栈并入栈</span></span><br><span class="line">	LinkedListStack stack = <span class="keyword">new</span> LinkedListStack();</span><br><span class="line">	stack.push(<span class="number">1</span>);</span><br><span class="line">	stack.push(<span class="number">2</span>);</span><br><span class="line">	stack.push(<span class="number">3</span>);</span><br><span class="line">	stack.print();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2. 出栈</span></span><br><span class="line">	stack.pop();</span><br><span class="line">	stack.print();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E5%87%BA%E6%A0%882.png" class="">
+
+<hr>
+<h3 id="2-计算器实现"><a href="#2-计算器实现" class="headerlink" title="2 计算器实现"></a>2 计算器实现</h3><h4 id="2-1-基础版（存在bug）"><a href="#2-1-基础版（存在bug）" class="headerlink" title="2.1 基础版（存在bug）"></a>2.1 基础版（存在bug）</h4><ul>
+<li><strong>（1）思路</strong></li>
+<li>创建两个栈，一个栈用来存数字，一个栈用来存字符</li>
+<li>将字符串转为字符数组，然后遍历字符串</li>
+<li>遍历到数字就加入数字栈</li>
+<li>遍历到操作符，需要进行分析；<ul>
+<li><ol>
+<li>操作符栈为空，直接添加；</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>操作符优先级大于栈顶操作符的优先级，直接添加；</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>操作符优先级小于栈顶操作符的优先级，取出操作符栈顶数据，以及数字栈的两个数据，进行计算，将计算结果push回数字栈，然后才push要新增的操作符</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>遍历完毕后，取操作符进行计算，直到操作符栈为空，则数字栈的结果为最终结果</li>
+</ul>
+<ul>
+<li><strong>（2）代码实现</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Calculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LinkedListStack numStack; <span class="comment">//数字栈（自定义链表栈）</span></span><br><span class="line">    <span class="keyword">private</span> LinkedListStack operateStack; <span class="comment">//操作符号栈（自定义链表栈）</span></span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Calculator</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        numStack = <span class="keyword">new</span> LinkedListStack();</span><br><span class="line">        numStack.push(<span class="number">0</span>); <span class="comment">//防止表达式负数开头</span></span><br><span class="line">        operateStack = <span class="keyword">new</span> LinkedListStack();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算表达式并打印结果</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> express 表达式</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">calculateExpress</span><span class="params">(String express)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//字符串转字符数组</span></span><br><span class="line">        <span class="keyword">char</span>[] chars = express.toCharArray();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历字符数组进行入栈</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> c : chars) &#123;</span><br><span class="line">            <span class="comment">//判断数字or操作符</span></span><br><span class="line">            <span class="keyword">if</span>(c &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; c &lt;= <span class="string">&#x27;9&#x27;</span>) &#123;</span><br><span class="line">                <span class="keyword">int</span> i = Integer.parseInt(String.valueOf(c)); <span class="comment">//字符数字为ascii值，需要转换整型</span></span><br><span class="line">                numStack.push(i);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                pushOperateStack(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//入栈完毕进行计算出栈</span></span><br><span class="line">        <span class="keyword">while</span> (!operateStack.isEmpty()) &#123;</span><br><span class="line">            <span class="keyword">char</span> operate = (<span class="keyword">char</span>) operateStack.pop();</span><br><span class="line">            <span class="keyword">int</span> num1 = numStack.pop();</span><br><span class="line">            <span class="keyword">int</span> num2 = numStack.pop();</span><br><span class="line">            <span class="keyword">int</span> data = calculate(num1, num2, operate);</span><br><span class="line">            numStack.push(data);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//操作符栈为空，直接返回数字栈数据</span></span><br><span class="line">        System.out.printf(<span class="string">&quot;表达式的结果为：%d&quot;</span>, numStack.pop());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 往操作符栈进行入栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> c 字符</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">pushOperateStack</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (operateStack.isEmpty()) &#123;</span><br><span class="line">            <span class="comment">//栈为空，直接入栈</span></span><br><span class="line">            operateStack.push(c);</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//栈非空，判断栈顶符号，与传入符号的优先级</span></span><br><span class="line">            <span class="keyword">char</span> operate = (<span class="keyword">char</span>) operateStack.pop();</span><br><span class="line">            <span class="keyword">if</span> (getPriority(c) &gt; getPriority(operate)) &#123;</span><br><span class="line">                <span class="comment">// 优先级 &gt; 栈顶的操作符，入栈</span></span><br><span class="line">                operateStack.push(operate);</span><br><span class="line">                operateStack.push(c);</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">// 优先级 &lt; 栈顶操作符， 计算栈顶，再入栈</span></span><br><span class="line">                <span class="keyword">int</span> num1 = numStack.pop();</span><br><span class="line">                <span class="keyword">int</span> num2 = numStack.pop();</span><br><span class="line">                <span class="keyword">int</span> data = calculate(num1, num2, operate);</span><br><span class="line">                numStack.push(data);</span><br><span class="line">                operateStack.push(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取操作符的优先级</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> c 操作符</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPriority</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">            <span class="comment">// + 和 - 优先级为 1</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            <span class="comment">// * 和 / 优先级为 2</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;error：非法操作符！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数字计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num1 数字1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num2 数字2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> operate 操作符</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">calculate</span><span class="params">(<span class="keyword">int</span> num1, <span class="keyword">int</span> num2, <span class="keyword">char</span> operate)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> data = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">                data =  num1 + num2;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">                data = num2 - num1;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">                data = num1 * num2;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">                <span class="keyword">if</span> (num1 == <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="keyword">throw</span>  <span class="keyword">new</span> RuntimeException(<span class="string">&quot;error：0不能作为分母！&quot;</span>);</span><br><span class="line">                &#125;</span><br><span class="line">                data = num2 / num1; <span class="comment">//暂时&#x27;/&#x27;以整型接受</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> data;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">calculatorTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	Calculator calculator = <span class="keyword">new</span> Calculator();</span><br><span class="line">	calculator.calculateExpress(<span class="string">&quot;3+2*6-2&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+
+
+
+
+<ul>
+<li><strong>（4）存在bug</strong></li>
+<li>只能计算个位数的数字，否则计算出错</li>
+<li>负数计算存在一定的问题，例：<code>-2*5-5</code>，按道理是计算出-15，但是上述算法无法识别负号之间是相加的，直接变成10-5，然后再0-5，算出-5</li>
+</ul>
+<h4 id="2-2-改进版"><a href="#2-2-改进版" class="headerlink" title="2.2 改进版"></a>2.2 改进版</h4><ul>
+<li><strong>（1）思路</strong></li>
+<li>多位数问题，可以定义一个中间变量，读取的是数字，就存在中间变量中，不立马入栈。直到读取到操作符时，再进行入数字栈。还有最后一个数字后面没有操作符，所以读取字符数组后，还要将中间变量进行入栈</li>
+<li>减法问题：可以将减法改变为加法，加负数的形式</li>
+</ul>
+<ul>
+<li><strong>（2）bug解决</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//        //遍历字符数组进行入栈</span></span><br><span class="line"><span class="comment">//        for(char c : chars) &#123;</span></span><br><span class="line"><span class="comment">//            //判断数字or操作符</span></span><br><span class="line"><span class="comment">//            if(c &gt; &#x27;0&#x27; &amp;&amp; c &lt; &#x27;9&#x27;) &#123;</span></span><br><span class="line"><span class="comment">//                int i = Integer.parseInt(String.valueOf(c)); //字符数字为ascii值，需要转换整型</span></span><br><span class="line"><span class="comment">//                numStack.push(i);</span></span><br><span class="line"><span class="comment">//            &#125;else &#123;</span></span><br><span class="line"><span class="comment">//                pushOperateStack(c);</span></span><br><span class="line"><span class="comment">//            &#125;</span></span><br><span class="line"><span class="comment">//        &#125;</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//改进版</span></span><br><span class="line">        String temp = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">char</span> c : chars) &#123;</span><br><span class="line">            <span class="comment">//判断数字or操作符</span></span><br><span class="line">            <span class="keyword">if</span>(c &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; c &lt;= <span class="string">&#x27;9&#x27;</span>) &#123;</span><br><span class="line">                <span class="comment">//在temp中存储字符，不立刻入栈，解决多位数问题</span></span><br><span class="line">                temp += c;</span><br><span class="line"></span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//入数字栈并清空temp</span></span><br><span class="line">                <span class="keyword">if</span>(temp != <span class="string">&quot;&quot;</span>) &#123;</span><br><span class="line">                    numStack.push(Integer.parseInt(temp));</span><br><span class="line">                    temp = <span class="string">&quot;&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">//如果是减法，转变成加法 +负数的形式</span></span><br><span class="line">                <span class="keyword">if</span> (c == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">                    temp += <span class="string">&#x27;-&#x27;</span>;</span><br><span class="line">                    c = <span class="string">&#x27;+&#x27;</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                pushOperateStack(c);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">		</span><br><span class="line">        <span class="comment">//表达式最后的数字需要从temp中入数字栈</span></span><br><span class="line">        numStack.push(Integer.parseInt(temp));</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<img src="/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E8%BF%90%E7%AE%97%E7%BB%93%E6%9E%9C2.png" class="">
+
+<hr>
+<h3 id="3-前中后缀表达式"><a href="#3-前中后缀表达式" class="headerlink" title="3 前中后缀表达式"></a>3 前中后缀表达式</h3><h4 id="3-1-前缀表达式"><a href="#3-1-前缀表达式" class="headerlink" title="3.1 前缀表达式"></a>3.1 前缀表达式</h4><ul>
+<li><code>3+4x5-6</code>的前缀表达式为：<code>- + x 4 5 3 6</code></li>
+<li>操作符在前面，数字在后面</li>
+<li>优先级高的操作符在后面，对应操作符参与运算的数字放前面</li>
+<li>计算机扫描前序表达式为：<strong>从右到左</strong>，<ul>
+<li>例：所以数字依次进栈为<code>[4 5 3 6]</code>，读取到操作符<code>x</code>，就取数字栈前两个数字，<code>4x5=20</code>，将20放入数字栈<code>[20 3 6]</code>；依次类推，计算得出结果</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-中缀表达式"><a href="#3-2-中缀表达式" class="headerlink" title="3.2 中缀表达式"></a>3.2 中缀表达式</h4><ul>
+<li><code>3+4x5-6</code>的中缀表达式就是我们平时熟悉的表达式<code> 3 + 4 x 5 - 6</code></li>
+<li>我们前面的计算器的演示就是使用中缀表达式来完成</li>
+<li>对于人来说很容易理解，但对于计算机来说不好理解，一般都是转变成后缀表达式进行计算</li>
+</ul>
+<h4 id="3-3-后缀表达式（逆波兰表达式）"><a href="#3-3-后缀表达式（逆波兰表达式）" class="headerlink" title="3.3 后缀表达式（逆波兰表达式）"></a>3.3 后缀表达式（逆波兰表达式）</h4><ul>
+<li><code>3+4x5-6</code>的后缀表达式为：<code>3 4 5 x + 6 -</code></li>
+<li>参与运算的两个数字放前面，操作符放后面</li>
+<li>所以一步步得出<code>4x5 = 4 5 x</code>，<code>3+4x5 = 3 4 5 x +</code>，<code>3+4*5-6 = 3 4 5 * + 6 -</code></li>
+<li>计算机扫描后缀表达式为：<strong>从左到右</strong>，遇到数字就入栈，遇到操作符就计算数字栈前两个数字，再将计算的结果入栈<ul>
+<li>例：数字入栈<code>[5 4 3]</code>，遇到操作符<code>x</code>，去数字栈两数字计算<code>5x4=20</code>，再结果放回栈<code>[20 3]</code>，依次类推，计算出最终结果</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-4-中缀转后缀表达式"><a href="#3-4-中缀转后缀表达式" class="headerlink" title="3.4 中缀转后缀表达式"></a>3.4 中缀转后缀表达式</h4><ul>
+<li>（1）创建两个栈，一个栈S1主要存数字（也会存运算符），另一个栈S2存运算符</li>
+<li>（2）从左到右遍历中缀表达式</li>
+<li>（3）读取到数字，则压入数字栈</li>
+<li>（4）读取到非数字时，进行判断：<ul>
+<li><ol>
+<li>运算符栈S2为空，直接入栈</li>
+</ol>
+</li>
+<li><ol start="2">
+<li>入栈运算符 &gt; 栈顶运算符，直接入栈</li>
+</ol>
+</li>
+<li><ol start="3">
+<li>入栈运算符 &lt; 栈顶运算符，取出栈顶运算符并入栈到数字栈S1，在将运算符入栈S2</li>
+</ol>
+</li>
+<li><ol start="4">
+<li><code>(</code>，遇到左括号直接入栈</li>
+</ol>
+</li>
+<li><ol start="5">
+<li><code>)</code>，遇到右括号，将运算符号出栈S2，并入栈到数字栈S1，直到出栈的数据为<code>(</code>为止</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>（5）所有数据遍历完毕后，判断符号栈S2是否有数据，有就出栈并入栈到数字栈S1，直到空栈为止</li>
+</ul>
+<hr>
+<h3 id="4-逆波兰计算器"><a href="#4-逆波兰计算器" class="headerlink" title="4 逆波兰计算器"></a>4 逆波兰计算器</h3><ul>
+<li>我们用中缀转后缀的形式，创建一个后缀表达式的计算器</li>
+</ul>
+<ul>
+<li><strong>（1）实现代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PolandCalculator</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 中缀表达式转后缀表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> infixExpression 中缀表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> String</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">InfixToSuffix</span><span class="params">(String infixExpression)</span> </span>&#123;</span><br><span class="line">        List&lt;String&gt; numStack = <span class="keyword">new</span> ArrayList&lt;&gt;(); <span class="comment">//数字栈（因为全程无需出栈，所以已一个集合来存储更方便）</span></span><br><span class="line">        Stack&lt;Character&gt; operateStack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">char</span>[] chars = infixExpression.toCharArray();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(chars[<span class="number">0</span>] == <span class="string">&#x27;-&#x27;</span>) &#123;</span><br><span class="line">            <span class="comment">//如果是负数开头，添加一个0入数字栈</span></span><br><span class="line">            numStack.add(String.valueOf(<span class="number">0</span>));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历</span></span><br><span class="line">        <span class="keyword">int</span> count = <span class="number">0</span>; <span class="comment">//记录第一个数字表示</span></span><br><span class="line">        String temp = <span class="string">&quot;&quot;</span>;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">char</span> c : chars) &#123;</span><br><span class="line">            <span class="keyword">if</span> (c &gt;= <span class="string">&#x27;0&#x27;</span> &amp;&amp; c &lt;= <span class="string">&#x27;9&#x27;</span>) &#123;</span><br><span class="line">                temp += c; <span class="comment">//中间变量解决多位数</span></span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">if</span>(temp.length() != <span class="number">0</span>) &#123;</span><br><span class="line">                    <span class="comment">//数字入栈</span></span><br><span class="line">                    numStack.add(temp);</span><br><span class="line">                    temp = <span class="string">&quot;&quot;</span>;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                <span class="comment">//符号入栈</span></span><br><span class="line">                operatePush(operateStack, numStack, c);</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        numStack.add(temp); <span class="comment">//将最后的数字入栈</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//操作符号栈非空，入栈到数字栈</span></span><br><span class="line">        <span class="keyword">while</span> (!operateStack.empty()) &#123;</span><br><span class="line">            numStack.add(String.valueOf(operateStack.pop()));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> numStack;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 非数字符号入栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> operateStack 运算符号栈</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> numStack 数字栈（集合形式）</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> c 符号</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">operatePush</span><span class="params">(Stack&lt;Character&gt; operateStack, List&lt;String&gt; numStack, <span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        String data;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//栈为空 或 栈顶为&#x27;(&#x27; 或 入栈符号为&#x27;(&#x27; 直接入栈即可</span></span><br><span class="line">        <span class="keyword">if</span> (operateStack.empty() || operateStack.peek() == <span class="string">&#x27;(&#x27;</span> || c == <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">            operateStack.push(c);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//入栈的为&#x27;)&#x27;，遍历出栈，并将出栈数据压入符号栈，直到出现&#x27;(&#x27;为止</span></span><br><span class="line">        <span class="keyword">if</span> (c == <span class="string">&#x27;)&#x27;</span>) &#123;</span><br><span class="line">            <span class="keyword">while</span> (operateStack.peek() != <span class="string">&#x27;(&#x27;</span>) &#123;</span><br><span class="line">                numStack.add(String.valueOf(operateStack.pop()));</span><br><span class="line">            &#125;</span><br><span class="line">            operateStack.pop(); <span class="comment">//最后也要将&#x27;(&#x27;出栈</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//非括号符号，比较优先级</span></span><br><span class="line">        <span class="keyword">if</span> (getPriority(c) &gt; getPriority(operateStack.peek())) &#123; ;</span><br><span class="line">            <span class="comment">//入栈符号 &gt; 栈顶符号，直接入栈</span></span><br><span class="line">            operateStack.push(c);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">            <span class="comment">//入栈符号 &lt;= 栈顶符号，出栈并压入数字栈</span></span><br><span class="line">            <span class="comment">//栈不为空 并 入栈符号 &lt;= 栈顶符号 持续出栈</span></span><br><span class="line">            <span class="keyword">while</span> (!operateStack.empty() &amp;&amp; getPriority(c) &lt;= getPriority(operateStack.peek())) &#123;</span><br><span class="line">                numStack.add(String.valueOf(operateStack.pop()));</span><br><span class="line">            &#125;</span><br><span class="line">            operateStack.push(c);</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取操作符优先级</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> c 操作符</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getPriority</span><span class="params">(<span class="keyword">char</span> c)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">switch</span> (c) &#123;</span><br><span class="line">            <span class="comment">// + 和 - 优先级为 1</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;+&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;-&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">1</span>;</span><br><span class="line">            <span class="comment">// * 和 / 优先级为 2</span></span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;*&#x27;</span>:</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&#x27;/&#x27;</span>:</span><br><span class="line">                <span class="keyword">return</span> <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;error：非法操作符！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算后缀表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> suffixExpression 后缀表达式</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Integer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">calSuffixExpression</span><span class="params">(List&lt;String&gt; suffixExpression)</span> </span>&#123;</span><br><span class="line">        Stack&lt;Integer&gt; numStack = <span class="keyword">new</span> Stack&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//遍历元素</span></span><br><span class="line">        <span class="keyword">for</span> (String item : suffixExpression) &#123;</span><br><span class="line">            <span class="comment">//正则表达式匹配数字</span></span><br><span class="line">            <span class="keyword">if</span> (item.matches(<span class="string">&quot;\\d+&quot;</span>)) &#123;</span><br><span class="line">                <span class="comment">//数字，入栈</span></span><br><span class="line">                numStack.push(Integer.valueOf(item));</span><br><span class="line">            &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="comment">//非数字，计算结果，再入栈</span></span><br><span class="line">                Integer num1 = numStack.pop();</span><br><span class="line">                Integer num2 = numStack.pop();</span><br><span class="line"></span><br><span class="line">                <span class="comment">//计算</span></span><br><span class="line">                Integer result = calculate(num1, num2, item);</span><br><span class="line"></span><br><span class="line">                numStack.push(result);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> numStack.pop();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 数字计算</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num1 参数1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> num2 参数2</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> operate 运算符</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Integer</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">calculate</span><span class="params">(Integer num1, Integer num2, String operate)</span> </span>&#123;</span><br><span class="line">        Integer result = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//判断操作符，并进行相应计算</span></span><br><span class="line">        <span class="keyword">switch</span> (operate) &#123;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;+&quot;</span>:</span><br><span class="line">                result = num1 + num2;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;-&quot;</span>:</span><br><span class="line">                result = num2 - num1;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;*&quot;</span>:</span><br><span class="line">                result = num1 * num2;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> <span class="string">&quot;/&quot;</span>:</span><br><span class="line">                result = num2 / num1; <span class="comment">//暂时不考虑浮点型</span></span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">default</span>:</span><br><span class="line">                <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;error：非法操作符！&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">PolandCalculatorTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//计算公式（中缀表达式）</span></span><br><span class="line">	String ids = <span class="string">&quot;-(7-4)-5&quot;</span>; <span class="comment">//结果为-8</span></span><br><span class="line"></span><br><span class="line">	PolandCalculator polandCalculator = <span class="keyword">new</span> PolandCalculator();</span><br><span class="line"></span><br><span class="line">	<span class="comment">//中缀转后缀</span></span><br><span class="line">	List&lt;String&gt; strings = polandCalculator.InfixToSuffix(ids);</span><br><span class="line">	System.out.println(strings);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//计算后缀表达式</span></span><br><span class="line">	Integer integer = polandCalculator.calSuffixExpression(strings);</span><br><span class="line">	System.out.println(integer);</span><br><span class="line">&#125;	</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/04/27/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E6%A0%88/%E6%B3%A2%E5%85%B0%E8%AE%A1%E7%AE%97.png" class="">
+
+<ul>
+<li>此计算器大部分功能都能实现了，但还是有一些bug，例如：小数不能解决，括号内第一个数为负数会计算出错</li>
+<li>此bug解决就不展开说了，中缀转后缀的思想学到了就足够了，有机会可以自行解决</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/25/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E7%8E%AF%E5%BD%A2%E9%93%BE%E8%A1%A8/" rel="prev" title="【数据结构和算法】环形链表">
+      <i class="fa fa-chevron-left"></i> 【数据结构和算法】环形链表
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/29/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E9%80%92%E5%BD%92/" rel="next" title="【数据结构和算法】递归">
+      【数据结构和算法】递归 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%A0%88"><span class="nav-text">1 栈</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%BA%94%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">1.1 应用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.2 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">1.3 代码实现</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E6%8B%93%E5%B1%95%EF%BC%9A%E9%93%BE%E8%A1%A8%E5%AE%9E%E7%8E%B0%E6%A0%88"><span class="nav-text">1.4 拓展：链表实现栈</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E8%AE%A1%E7%AE%97%E5%99%A8%E5%AE%9E%E7%8E%B0"><span class="nav-text">2 计算器实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%9F%BA%E7%A1%80%E7%89%88%EF%BC%88%E5%AD%98%E5%9C%A8bug%EF%BC%89"><span class="nav-text">2.1 基础版（存在bug）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%94%B9%E8%BF%9B%E7%89%88"><span class="nav-text">2.2 改进版</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%89%8D%E4%B8%AD%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">3 前中后缀表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%89%8D%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">3.1 前缀表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E4%B8%AD%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">3.2 中缀表达式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%88%E9%80%86%E6%B3%A2%E5%85%B0%E8%A1%A8%E8%BE%BE%E5%BC%8F%EF%BC%89"><span class="nav-text">3.3 后缀表达式（逆波兰表达式）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E4%B8%AD%E7%BC%80%E8%BD%AC%E5%90%8E%E7%BC%80%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-text">3.4 中缀转后缀表达式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E9%80%86%E6%B3%A2%E5%85%B0%E8%AE%A1%E7%AE%97%E5%99%A8"><span class="nav-text">4 逆波兰计算器</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="利用服务总线配合rabbitmq来达到自动化刷新配置">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringCloud】服务总线：Bus">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="利用服务总线配合rabbitmq来达到自动化刷新配置">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/erlang-download.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/erl.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/rabbitmq-error.png">
+<meta property="article:published_time" content="2021-03-14T12:43:35.000Z">
+<meta property="article:modified_time" content="2021-03-14T14:08:21.732Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/erlang-download.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringCloud】服务总线：Bus | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringCloud】服务总线：Bus
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-14 20:43:35 / 修改时间：22:08:21" itemprop="dateCreated datePublished" datetime="2021-03-14T20:43:35+08:00">2021-03-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>利用服务总线配合rabbitmq来达到自动化刷新配置</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1Bus介绍"><a href="#1Bus介绍" class="headerlink" title="1Bus介绍"></a>1Bus介绍</h3><h4 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h4><ul>
+<li>Spring Cloud Bus能管理和传播分布式系统间的消息，就像一个分布式执行器，可用于广播状态更改、时间推送等，也可以当做微服务间的通信通道</li>
+</ul>
+<h4 id="1-2-概念"><a href="#1-2-概念" class="headerlink" title="1.2 概念"></a>1.2 概念</h4><ul>
+<li><strong>总线</strong>：在微服务架构的系统中，通常会使用<code>轻量级的消息代理</code>来构建一个<code>共用的消息主题</code>，并让系统中所有微服务实例都连接上来。由于<code>该主题中产生的消息会被所有实例监听和消费，所以称它为消息总线</code>。在兴县上的各个实例，都可以方便地广播一些需要让其他连接在该主题花式虐狗的实例都知道的消息。</li>
+</ul>
+<h4 id="1-3-ConfigClien自动更新基本原理"><a href="#1-3-ConfigClien自动更新基本原理" class="headerlink" title="1.3 ConfigClien自动更新基本原理"></a>1.3 ConfigClien自动更新基本原理</h4><ul>
+<li>ConfigClient实例都监听MQ（message quene）中同一个topic（默认SpringCloudBus）。当一个服务刷新数据的时候，它会把这个信息放入Topic中，这样其他监听同一个Topic的服务就能得到该通知，然后去更新自身的配置</li>
+</ul>
+<hr>
+<h3 id="2-RabbitMQ安装下载"><a href="#2-RabbitMQ安装下载" class="headerlink" title="2 RabbitMQ安装下载"></a>2 RabbitMQ安装下载</h3><p>由于本次目的是学习SpringCloud为主，所以下载的版本是Windows版本，但真正使用建议在linux上</p>
+<h4 id="2-1-下载"><a href="#2-1-下载" class="headerlink" title="2.1 下载"></a>2.1 下载</h4><ul>
+<li>erlang语言：<a target="_blank" rel="noopener" href="https://www.erlang.org/downloads">https://www.erlang.org/downloads</a><ul>
+<li>rabbitMQ是使用erlang进行编写，所以需要安装对应的语言解析</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/erlang-download.png" class="">
+
+
+<ul>
+<li>rabbitMQ下载：<a target="_blank" rel="noopener" href="https://www.rabbitmq.com/install-windows.html#downloads">https://www.rabbitmq.com/install-windows.html#downloads</a> </li>
+</ul>
+<h4 id="2-2-安装"><a href="#2-2-安装" class="headerlink" title="2.2 安装"></a>2.2 安装</h4><ul>
+<li>先安装erlang语言包，一路默认安装即可</li>
+<li>记得配置环境变量，电脑 -&gt; 属性 -&gt; 高级 -&gt; 环境变量 -&gt; path -&gt; 编辑 -&gt; 新增安装路径\bin</li>
+</ul>
+<img src="/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/erl.png" class="">
+
+
+<ul>
+<li>安装rabbitMQ，默认安装即可</li>
+<li>切换到安装目录\sbin下，输入命令<code>rabbitmq-plugins enable rabbitmq_management</code></li>
+</ul>
+<p>+若出现以下错误，可使用下方解决方法：</p>
+<img src="/blog/2021/03/14/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E6%80%BB%E7%BA%BF%EF%BC%9ABus/rabbitmq-error.png" class="">
+
+<ul>
+<li>解决方法：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Keyporcelain/article/details/111599763">https://blog.csdn.net/Keyporcelain/article/details/111599763</a></li>
+</ul>
+<hr>
+<h3 id="3-配置消息总线Bus"><a href="#3-配置消息总线Bus" class="headerlink" title="3 配置消息总线Bus"></a>3 配置消息总线Bus</h3><h4 id="3-1-思路选择"><a href="#3-1-思路选择" class="headerlink" title="3.1 思路选择"></a>3.1 思路选择</h4><ul>
+<li>消息总线配置有两种思路，第一种是配置给客户端，另一种是配置给服务配置中心</li>
+<li>因为配置给客户端，打破了客户端的独立性，给器拥有发送消息的能力，此不妥，所以选择配置给服务配置中心</li>
+</ul>
+<h4 id="3-2-服务配置中心配置信息总线"><a href="#3-2-服务配置中心配置信息总线" class="headerlink" title="3.2 服务配置中心配置信息总线"></a>3.2 服务配置中心配置信息总线</h4><ul>
+<li>（1）引入新依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- bus &amp; rabbitmq --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-bus-amqp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- 监控 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-actuator<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（2）修改配置文件<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">5672</span> <span class="comment">#默认端口</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">guest</span> <span class="comment">#默认用户名</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">guest</span> <span class="comment">#默认密码</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 暴露bus舒心配置的端点</span></span><br><span class="line"><span class="attr">management:</span></span><br><span class="line">  <span class="attr">endpoints:</span></span><br><span class="line">    <span class="attr">web:</span></span><br><span class="line">      <span class="attr">exposure:</span></span><br><span class="line">        <span class="attr">include:</span> <span class="string">&#x27;bus-refresh&#x27;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="3-2-客户端篇配置消息总线"><a href="#3-2-客户端篇配置消息总线" class="headerlink" title="3.2 客户端篇配置消息总线"></a>3.2 客户端篇配置消息总线</h4><ul>
+<li>（1）引入依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- bus &amp; rabbitmq --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-bus-amqp<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（2）修改yaml<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">rabbitmq:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="string">localhost</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">5672</span> <span class="comment">#默认端口</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">guest</span> <span class="comment">#默认用户名</span></span><br><span class="line">    <span class="attr">password:</span> <span class="string">guest</span> <span class="comment">#默认密码</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="3-3-测试"><a href="#3-3-测试" class="headerlink" title="3.3 测试"></a>3.3 测试</h4><ul>
+<li>（1）先启动服务端，再启动客户端</li>
+<li>（2）修改仓库中配置文件信息</li>
+<li>（3）向服务端发送刷新指令<ul>
+<li>利用cmd<code>curl -X POST http://localhost:3344/actuator/bus-refresh</code></li>
+</ul>
+</li>
+<li>（4）请求客户端接口，返现数据更新了，通过服务端的消息总线，向其余客户端都发送消息，更新配置信息</li>
+</ul>
+<hr>
+<h3 id="4-动态刷新定点通知"><a href="#4-动态刷新定点通知" class="headerlink" title="4 动态刷新定点通知"></a>4 动态刷新定点通知</h3><p>有时候，不想要全部的客户端都更新，只想要指定的客户端进行更新，所以需要定点通知</p>
+<ul>
+<li>主要发送刷新信息时添加额外参数即可<ul>
+<li><code>http://配置中心/actuator/bus-refresh/目标IP和端口</code>，IP地址可用服务名称来代替</li>
+<li>例：<code>http://localhost:3344/actuator/bus-refresh/cloud-config-client:3355</code></li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%EF%BC%9AConfig/" rel="prev" title="【SpringCloud】服务配置：Config">
+      <i class="fa fa-chevron-left"></i> 【SpringCloud】服务配置：Config
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/16/%E3%80%90SpringCloud%E3%80%91%E6%B6%88%E6%81%AF%E9%A9%B1%E5%8A%A8%EF%BC%9AStream/" rel="next" title="【SpringCloud】消息驱动：Stream">
+      【SpringCloud】消息驱动：Stream <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1Bus%E4%BB%8B%E7%BB%8D"><span class="nav-text">1Bus介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%A6%82%E5%BF%B5"><span class="nav-text">1.2 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-ConfigClien%E8%87%AA%E5%8A%A8%E6%9B%B4%E6%96%B0%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="nav-text">1.3 ConfigClien自动更新基本原理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-RabbitMQ%E5%AE%89%E8%A3%85%E4%B8%8B%E8%BD%BD"><span class="nav-text">2 RabbitMQ安装下载</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%B8%8B%E8%BD%BD"><span class="nav-text">2.1 下载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%AE%89%E8%A3%85"><span class="nav-text">2.2 安装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%85%8D%E7%BD%AE%E6%B6%88%E6%81%AF%E6%80%BB%E7%BA%BFBus"><span class="nav-text">3 配置消息总线Bus</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%80%9D%E8%B7%AF%E9%80%89%E6%8B%A9"><span class="nav-text">3.1 思路选择</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF%E6%80%BB%E7%BA%BF"><span class="nav-text">3.2 服务配置中心配置信息总线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%AF%87%E9%85%8D%E7%BD%AE%E6%B6%88%E6%81%AF%E6%80%BB%E7%BA%BF"><span class="nav-text">3.2 客户端篇配置消息总线</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%B5%8B%E8%AF%95"><span class="nav-text">3.3 测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8A%A8%E6%80%81%E5%88%B7%E6%96%B0%E5%AE%9A%E7%82%B9%E9%80%9A%E7%9F%A5"><span class="nav-text">4 动态刷新定点通知</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

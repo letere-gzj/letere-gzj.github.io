@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mybatis缓存机制学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Mybatis】缓存机制">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Mybatis缓存机制学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/level1Cache.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/level2Cache.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/ehcache.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/ehcache2.png">
+<meta property="article:published_time" content="2020-10-20T11:49:10.000Z">
+<meta property="article:modified_time" content="2020-10-20T13:41:39.676Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/level1Cache.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Mybatis】缓存机制 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Mybatis】缓存机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-20 19:49:10 / 修改时间：21:41:39" itemprop="dateCreated datePublished" datetime="2020-10-20T19:49:10+08:00">2020-10-20</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Mybatis缓存机制学习笔记</p>
+<a id="more"></a>
+
+<h3 id="一、介绍"><a href="#一、介绍" class="headerlink" title="一、介绍"></a>一、介绍</h3><ul>
+<li>Mybatis包含一个非常强大的查询缓存机制，它可以非常方便地配置和定制，缓存可以极大提升查询效率</li>
+</ul>
+<ul>
+<li>Mybatis默认包含两级缓存<ul>
+<li>一级缓存（本地缓存）和二级缓存（全局缓存）<ul>
+<li>1、默认情况下，只有一级缓存开启</li>
+<li>2、二级缓存需要手动开启和配置</li>
+<li>3、为了提高拓展性。Mybatis定义了缓存接口Cache，我们可以通过实现Cache接口来定义二级缓存</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="二、一级缓存"><a href="#二、一级缓存" class="headerlink" title="二、一级缓存"></a>二、一级缓存</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><ul>
+<li>一级缓存（本地缓存），也被称为sqlSession级别的缓存，一级缓存是一致开启的无法关闭。</li>
+<li>在与数据库同一次会话期间，查询到的数据会放在本地缓存中</li>
+<li>以后如果需要获取相同的数据，会支架从缓存中拿，没必要再去查询数据库</li>
+</ul>
+<h4 id="2-2-演示实例"><a href="#2-2-演示实例" class="headerlink" title="2.2 演示实例"></a>2.2 演示实例</h4><ul>
+<li>前期准备：<ul>
+<li>为了能够更好展现缓存的效果，要导入Mybatis下的<strong>log4j-1.2.17.jar</strong>日志包</li>
+<li>并把日志包的配置文件<strong>log4j.xml</strong>放在src目录下</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">日志包配置文件</span><br><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">log4j</span>:configuration <span class="meta-keyword">SYSTEM</span> <span class="meta-string">&quot;log4j.dtd&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="tag">&lt;<span class="name">log4j:configuration</span> <span class="attr">xmlns:log4j</span>=<span class="string">&quot;http://jakarta.apache.org/log4j/&quot;</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">appender</span> <span class="attr">name</span>=<span class="string">&quot;STDOUT&quot;</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.log4j.ConsoleAppender&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;Encoding&quot;</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">layout</span> <span class="attr">class</span>=<span class="string">&quot;org.apache.log4j.PatternLayout&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">param</span> <span class="attr">name</span>=<span class="string">&quot;ConversionPattern&quot;</span> <span class="attr">value</span>=<span class="string">&quot;%-5p %d&#123;MM-dd HH:mm:ss,SSS&#125; %m  (%F:%L) \n&quot;</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;/<span class="name">layout</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">appender</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">&quot;java.sql&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">level</span> <span class="attr">value</span>=<span class="string">&quot;debug&quot;</span> /&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">logger</span> <span class="attr">name</span>=<span class="string">&quot;org.apache.ibatis&quot;</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">level</span> <span class="attr">value</span>=<span class="string">&quot;info&quot;</span> /&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">logger</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">root</span>&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">level</span> <span class="attr">value</span>=<span class="string">&quot;debug&quot;</span> /&gt;</span></span><br><span class="line">   <span class="tag">&lt;<span class="name">appender-ref</span> <span class="attr">ref</span>=<span class="string">&quot;STDOUT&quot;</span> /&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">root</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">log4j:configuration</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试：</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">测试方法</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        InputStream is = Resources.getResourceAsStream(<span class="string">&quot;./Dao/MybatisConfig.xml&quot;</span>);</span><br><span class="line"></span><br><span class="line">        SqlSessionFactory ssf = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(is);</span><br><span class="line"></span><br><span class="line">        SqlSession ss = ssf.openSession();</span><br><span class="line"></span><br><span class="line">        EmployeeMapper mapper = ss.getMapper(EmployeeMapper.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//第一次查询sql，向数据库发送了sql语句</span></span><br><span class="line">        Employee emp01 = mapper.getEmpById(<span class="number">1</span>);</span><br><span class="line">        System.out.println(emp01);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//第二次查询，并没有向数据库发送sql语句</span></span><br><span class="line">        Employee emp02 = mapper.getEmpById(<span class="number">1</span>);</span><br><span class="line">        System.out.println(emp02);</span><br><span class="line"></span><br><span class="line">        ss.close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>测试结果分析：<ul>
+<li>在测试方法类，共执行了两次sql语句，但是想数据库发送语句只出现了一次</li>
+<li>而第二次查询并没有发送sql语句</li>
+<li>证明了是直接使用缓存，发现缓存有此数据，于是直接拿来使用</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/level1Cache.png" class="">
+
+<h4 id="2-3-不能使用一级缓存情况"><a href="#2-3-不能使用一级缓存情况" class="headerlink" title="2.3 不能使用一级缓存情况"></a>2.3 不能使用一级缓存情况</h4><ul>
+<li>（1）sqlSession改变了，不是同一个sqlSession</li>
+<li>（2）sqlSession一样，但查询条件不一样</li>
+<li>（3）sqlSession一样，但在两次查询期间，执行了增删改的操作</li>
+<li>（4）sqlSession一样，被手动清除掉缓存，执行<code>openSession.clearCache();</code>方法</li>
+</ul>
+<hr>
+<h3 id="三、二级缓存"><a href="#三、二级缓存" class="headerlink" title="三、二级缓存"></a>三、二级缓存</h3><h4 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h4><ul>
+<li>二级缓存（全局缓存）：基于namespqce级别的缓存<ul>
+<li>一个名称空间对应一个二级缓存</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>工作机制：<ul>
+<li>（1）一个会话，查询一条数据。这条数据就会放在当前会话的以及缓存中，即在一级缓存</li>
+<li>（2）如果会话关闭；一级缓存中的数据会被保存在二级缓存中；新的会话查询信息，就可以查找二级缓存信息</li>
+<li>不同namespace（映射文件）查询的数据会在放在自己对应的缓存中(map中)</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-开启步骤"><a href="#2-2-开启步骤" class="headerlink" title="2.2 开启步骤"></a>2.2 开启步骤</h4><ul>
+<li>开启二级缓存步骤</li>
+<li>（1）在全局配置文件中设置<ul>
+<li><code>&lt;setting name=&quot;cacheEnabled&quot; value=&quot;true&quot;/&gt;</code>：开启二级缓存</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span><span class="comment">&lt;!--开启驼峰命名--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;lazyLoadingEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span><span class="comment">&lt;!--开启所有关联对象都会延迟加载--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;aggressiveLazyLoading&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span><span class="comment">&lt;!--关闭所有对象全部加载--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;cacheEnabled&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span><span class="comment">&lt;!--开启二级缓存--&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）去每个mapper.xml（映射文件）中配置使用二级缓存<ul>
+<li>在<code>&lt;mapper&gt;</code>标签下使用<code>&lt;cache&gt;&lt;/cache&gt;</code>开启</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;Dao.EmployeeMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 配置二级缓存</span></span><br><span class="line"><span class="comment">    &lt;cache eviction=&quot;&quot; flushInterval=&quot;&quot; readOnly=&quot;&quot; size=&quot;&quot; type=&quot;&quot;&gt;&lt;/cache&gt;</span></span><br><span class="line"><span class="comment">        eviction：缓存回收策略</span></span><br><span class="line"><span class="comment">            LRU - 最近最少使用：移除最长时间不被使用的对象</span></span><br><span class="line"><span class="comment">            FIFO - 先进先出：按对象进入缓存的顺序来移除</span></span><br><span class="line"><span class="comment">            SOFT - 软引用：移除基于垃圾回收器状态和软引用规则的对象</span></span><br><span class="line"><span class="comment">            WEAK - 弱引用：更加积极地移除基于垃圾收集器状态和弱引用状态的对象</span></span><br><span class="line"><span class="comment">            默认使用：LRU</span></span><br><span class="line"><span class="comment">        flushInterval：缓存刷新间隔</span></span><br><span class="line"><span class="comment">            缓存多长时间清空一次</span></span><br><span class="line"><span class="comment">            默认不清空</span></span><br><span class="line"><span class="comment">        readOnly：是否只读</span></span><br><span class="line"><span class="comment">            true：只读，mybatis认为所有从缓存中获取数据的操作都是只读操作，不会修改数据</span></span><br><span class="line"><span class="comment">                       mybatis会加快获取速度，直接将数据在缓存中的引用交给用户</span></span><br><span class="line"><span class="comment">            false：非只读，mybatis觉得获取的数据可能会被修改，</span></span><br><span class="line"><span class="comment">                        mybatis会利用序列化/反序列化的技术克隆一份新的数据给你。安全，速度。</span></span><br><span class="line"><span class="comment">            默认：false</span></span><br><span class="line"><span class="comment">        size：缓存存放多少元素</span></span><br><span class="line"><span class="comment">        type：指定自定义缓存的全类名</span></span><br><span class="line"><span class="comment">            自定义缓存：实现Cache接口</span></span><br><span class="line"><span class="comment">    --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--使用二级缓存--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">cache</span>&gt;</span><span class="tag">&lt;/<span class="name">cache</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span> <span class="attr">useCache</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">        select id, last_name lastName, gender, email</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">	</span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（3）查询封装的JavaBean实现序列化/反序列化接口<ul>
+<li><code>public class Xxxx implements Serializable</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">JavaBean</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> <span class="keyword">implements</span> <span class="title">Serializable</span> </span>&#123;</span><br><span class="line">    类中内容省略</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-演示实例"><a href="#3-3-演示实例" class="headerlink" title="3.3 演示实例"></a>3.3 演示实例</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">测试方法</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        InputStream is = Resources.getResourceAsStream(<span class="string">&quot;./Dao/MybatisConfig.xml&quot;</span>);</span><br><span class="line">        SqlSessionFactory ssf = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(is);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//开启第一个sqlSession</span></span><br><span class="line">        SqlSession ss1 = ssf.openSession();</span><br><span class="line">        EmployeeMapper mapper1 = ss1.getMapper(EmployeeMapper.class);</span><br><span class="line">        Employee emp1 = mapper1.getEmpById(<span class="number">1</span>);</span><br><span class="line">        System.out.println(emp1);</span><br><span class="line">        <span class="comment">//将sqlSession关闭，一级缓存内容转移到二级缓存</span></span><br><span class="line">        ss1.close();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//开启第二个sqlSession，与第一个sqlSession执行同一sql语句</span></span><br><span class="line">        SqlSession ss2 = ssf.openSession();</span><br><span class="line">        EmployeeMapper mapper2 = ss2.getMapper(EmployeeMapper.class);</span><br><span class="line">        Employee emp2 = mapper2.getEmpById(<span class="number">1</span>);</span><br><span class="line">        System.out.println(emp2);</span><br><span class="line">        ss2.close();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>结果分析<ul>
+<li>和一级缓存分析一样，只是向数据库发送了一次sql语句</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/level2Cache.png" class="">
+
+
+<h4 id="3-4-和缓存有关的设置"><a href="#3-4-和缓存有关的设置" class="headerlink" title="3.4 和缓存有关的设置"></a>3.4 和缓存有关的设置</h4><ul>
+<li>（1）全局配置文件：<code>cacheEnabled=&quot;true&quot;/&quot;false&quot;</code>，开启/关闭二级缓存</li>
+</ul>
+<ul>
+<li>（2）映射文件select标签：<code>useCache=&quot;true&quot;/&quot;fasle&quot;</code>，使用/不使用二级缓存，默认true</li>
+</ul>
+<ul>
+<li>（3）每个增删改标签都有：<code>flushCache=&quot;true&quot;/&quot;false&quot;</code>，是否清除缓存，一二级都会被清空，默认true<ul>
+<li>查询标签也有，默认为fasle，清空缓存对于查询没有意义，一般不修改</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（4）<code>openSession.clearCache();</code> 手动清除缓存，只会清掉一级缓存，不影响二级缓存</li>
+</ul>
+<ul>
+<li>（5）全局配置文件：<code>localCacheScope=&quot;SESSION&quot;/&quot;STATEMENT&quot;</code>本地缓存作用域（一级缓存作用域）<ul>
+<li><code>SESSION</code>：缓存保存在当前会话</li>
+<li><code>STATEMENT</code>：可以禁用一级缓存</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="四、整合Ehcache缓存框架"><a href="#四、整合Ehcache缓存框架" class="headerlink" title="四、整合Ehcache缓存框架"></a>四、整合Ehcache缓存框架</h3><h4 id="4-1-自定义缓存介绍"><a href="#4-1-自定义缓存介绍" class="headerlink" title="4.1 自定义缓存介绍"></a>4.1 自定义缓存介绍</h4><ul>
+<li>Mybatis支持自定义缓存<ul>
+<li>实现cache接口的类就可以作为自定义缓存</li>
+<li>在<code>&lt;cache type=&quot;自定义缓存全类名&quot;&gt;&lt;/cache&gt;</code>设置</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>但一般我们不会自定义缓存类，而是使用现有的缓存类，也是下面所说的ehcache</li>
+<li>EhCache 是一个纯Java的进程内缓存框架，具有快速、精干等特点</li>
+</ul>
+<h4 id="4-2-整合步骤"><a href="#4-2-整合步骤" class="headerlink" title="4.2 整合步骤"></a>4.2 整合步骤</h4><ul>
+<li>（1）需要导入相关Jar包<ul>
+<li>ehcache-core-2.6.8.jar <ul>
+<li><a target="_blank" rel="noopener" href="http://www.java2s.com/example/jar/e/ehcache-core-index.html">http://www.java2s.com/example/jar/e/ehcache-core-index.html</a></li>
+</ul>
+</li>
+<li>slf4j-api-1.7.30.jar</li>
+<li>slf4j-log4j12-1.7.30.jar<ul>
+<li>上面两个在Mybatis的框架下有</li>
+</ul>
+</li>
+<li>mybatis-ehcache-1.0.3.jar<ul>
+<li><a target="_blank" rel="noopener" href="https://github.com/mybatis/ehcache-cache/releases">https://github.com/mybatis/ehcache-cache/releases</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）在映射文件中使用ehcache自定义缓存类<ul>
+<li><cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（3）在src目录下，放置ehcache的配置文件</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">ehcache</span> <span class="attr">xmlns:xsi</span>=<span class="string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span></span><br><span class="line"><span class="tag"> <span class="attr">xsi:noNamespaceSchemaLocation</span>=<span class="string">&quot;../config/ehcache.xsd&quot;</span>&gt;</span></span><br><span class="line"> <span class="comment">&lt;!-- 磁盘保存路径 --&gt;</span></span><br><span class="line"> <span class="tag">&lt;<span class="name">diskStore</span> <span class="attr">path</span>=<span class="string">&quot;D:\FrameWork\Ehcache\overData&quot;</span> /&gt;</span></span><br><span class="line"> </span><br><span class="line"> <span class="tag">&lt;<span class="name">defaultCache</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">maxElementsInMemory</span>=<span class="string">&quot;1&quot;</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">maxElementsOnDisk</span>=<span class="string">&quot;10000000&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">eternal</span>=<span class="string">&quot;false&quot;</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">overflowToDisk</span>=<span class="string">&quot;true&quot;</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">timeToIdleSeconds</span>=<span class="string">&quot;120&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">timeToLiveSeconds</span>=<span class="string">&quot;120&quot;</span> </span></span><br><span class="line"><span class="tag">   <span class="attr">diskExpiryThreadIntervalSeconds</span>=<span class="string">&quot;120&quot;</span></span></span><br><span class="line"><span class="tag">   <span class="attr">memoryStoreEvictionPolicy</span>=<span class="string">&quot;LRU&quot;</span>&gt;</span></span><br><span class="line"> <span class="tag">&lt;/<span class="name">defaultCache</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ehcache</span>&gt;</span></span><br><span class="line"> </span><br><span class="line"><span class="comment">&lt;!-- </span></span><br><span class="line"><span class="comment">属性说明：</span></span><br><span class="line"><span class="comment">l diskStore：指定数据在磁盘中的存储位置。</span></span><br><span class="line"><span class="comment">l defaultCache：当借助CacheManager.add(&quot;demoCache&quot;)创建Cache时，EhCache便会采用&lt;defalutCache/&gt;指定的的管理策略</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">以下属性是必须的：</span></span><br><span class="line"><span class="comment">l maxElementsInMemory - 在内存中缓存的element的最大数目 </span></span><br><span class="line"><span class="comment">l maxElementsOnDisk - 在磁盘上缓存的element的最大数目，若是0表示无穷大</span></span><br><span class="line"><span class="comment">l eternal - 设定缓存的elements是否永远不过期。如果为true，则缓存的数据始终有效，如果为false那么还要根据timeToIdleSeconds，timeToLiveSeconds判断</span></span><br><span class="line"><span class="comment">l overflowToDisk - 设定当内存缓存溢出的时候是否将过期的element缓存到磁盘上</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment">以下属性是可选的：</span></span><br><span class="line"><span class="comment">l timeToIdleSeconds - 当缓存在EhCache中的数据前后两次访问的时间超过timeToIdleSeconds的属性取值时，这些数据便会删除，默认值是0,也就是可闲置时间无穷大</span></span><br><span class="line"><span class="comment">l timeToLiveSeconds - 缓存element的有效生命期，默认是0.,也就是element存活时间无穷大</span></span><br><span class="line"><span class="comment"> diskSpoolBufferSizeMB 这个参数设置DiskStore(磁盘缓存)的缓存区大小.默认是30MB.每个Cache都应该有自己的一个缓冲区.</span></span><br><span class="line"><span class="comment">l diskPersistent - 在VM重启的时候是否启用磁盘保存EhCache中的数据，默认是false。</span></span><br><span class="line"><span class="comment">l diskExpiryThreadIntervalSeconds - 磁盘缓存的清理线程运行间隔，默认是120秒。每个120s，相应的线程会进行一次EhCache中数据的清理工作</span></span><br><span class="line"><span class="comment">l memoryStoreEvictionPolicy - 当内存缓存达到最大，有新的element加入的时候， 移除缓存中element的策略。默认是LRU（最近最少使用），可选的有LFU（最不常使用）和FIFO（先进先出）</span></span><br><span class="line"><span class="comment"> --&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（4）若其他Mapper文件也要配置该缓存空间<ul>
+<li>可以<code>&lt;cache-ref namespace=&quot;&quot;&gt;&lt;/cache-ref&gt;</code>来进行配置</li>
+<li>引用名称空间，可以使用别人的名称空间，共用缓存</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-3-演示结果分析"><a href="#4-3-演示结果分析" class="headerlink" title="4.3 演示结果分析"></a>4.3 演示结果分析</h4><ul>
+<li>重新执行二级缓存的测试方法</li>
+</ul>
+<ul>
+<li>结果分析<ul>
+<li>ehcahe将二级缓存文件保存在本地，可以去本地查看</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/ehcache.png" class="">
+<img src="/blog/2020/10/20/%E3%80%90Mybatis%E3%80%91%E7%BC%93%E5%AD%98%E6%9C%BA%E5%88%B6/ehcache2.png" class="">    
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/19/%E3%80%90Mybatis%E3%80%91%E5%8A%A8%E6%80%81sql/" rel="prev" title="【Mybatis】动态sql">
+      <i class="fa fa-chevron-left"></i> 【Mybatis】动态sql
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/20/%E3%80%90Maven%E3%80%91Maven%E5%85%A5%E9%97%A8/" rel="next" title="【Maven】Maven入门">
+      【Maven】Maven入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E4%BB%8B%E7%BB%8D"><span class="nav-text">一、介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-text">二、一级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%BC%94%E7%A4%BA%E5%AE%9E%E4%BE%8B"><span class="nav-text">2.2 演示实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%B8%8D%E8%83%BD%E4%BD%BF%E7%94%A8%E4%B8%80%E7%BA%A7%E7%BC%93%E5%AD%98%E6%83%85%E5%86%B5"><span class="nav-text">2.3 不能使用一级缓存情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E4%BA%8C%E7%BA%A7%E7%BC%93%E5%AD%98"><span class="nav-text">三、二级缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%BC%80%E5%90%AF%E6%AD%A5%E9%AA%A4"><span class="nav-text">2.2 开启步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%BC%94%E7%A4%BA%E5%AE%9E%E4%BE%8B"><span class="nav-text">3.3 演示实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%92%8C%E7%BC%93%E5%AD%98%E6%9C%89%E5%85%B3%E7%9A%84%E8%AE%BE%E7%BD%AE"><span class="nav-text">3.4 和缓存有关的设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E6%95%B4%E5%90%88Ehcache%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6"><span class="nav-text">四、整合Ehcache缓存框架</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BC%93%E5%AD%98%E4%BB%8B%E7%BB%8D"><span class="nav-text">4.1 自定义缓存介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E6%95%B4%E5%90%88%E6%AD%A5%E9%AA%A4"><span class="nav-text">4.2 整合步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E6%BC%94%E7%A4%BA%E7%BB%93%E6%9E%9C%E5%88%86%E6%9E%90"><span class="nav-text">4.3 演示结果分析</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

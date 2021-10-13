@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="学习枚举类与注解整理的学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Java基础】枚举类与注解">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="学习枚举类与注解整理的学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-09-15T13:59:13.000Z">
+<meta property="article:modified_time" content="2020-09-18T04:02:07.173Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Java基础】枚举类与注解 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Java基础】枚举类与注解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-09-15 21:59:13" itemprop="dateCreated datePublished" datetime="2020-09-15T21:59:13+08:00">2020-09-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-09-18 12:02:07" itemprop="dateModified" datetime="2020-09-18T12:02:07+08:00">2020-09-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>学习枚举类与注解整理的学习笔记</p>
+<a id="more"></a>
+
+<h3 id="一、枚举类"><a href="#一、枚举类" class="headerlink" title="一、枚举类"></a>一、枚举类</h3><h4 id="1-1-说明"><a href="#1-1-说明" class="headerlink" title="1.1 说明"></a>1.1 说明</h4><ul>
+<li>类的对象只有有限个，确定的。称这种类为枚举类</li>
+<li>当需要定义一组常量时，强烈建议使用枚举类</li>
+</ul>
+<hr>
+<h4 id="1-2-枚举类定义"><a href="#1-2-枚举类定义" class="headerlink" title="1.2 枚举类定义"></a>1.2 枚举类定义</h4><ul>
+<li><strong>方式一：JDK5.0之前，自定义枚举类</strong><ul>
+<li>1.定义类的属性:用private final 来修饰</li>
+<li>2.构造器私有化，并带参对类的属性进行赋值</li>
+<li>3.创建对象（public static final）</li>
+<li>4.（可选）提供类的属性get方法，以及重写toString方法</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Season</span></span>&#123;</span><br><span class="line">    <span class="comment">//1.声明Season对象的属性：private、final修饰</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String SeasonName;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String SeasonDesc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.私有化类的构造器，并对属性进行赋值</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Season</span><span class="params">(String SeasonName, String SeasonDesc)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.SeasonName = SeasonName;</span><br><span class="line">        <span class="keyword">this</span>.SeasonDesc = SeasonDesc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.提供当前枚举类的多个对象</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Season SPRING = <span class="keyword">new</span> Season(<span class="string">&quot;春天&quot;</span>, <span class="string">&quot;春暖花开&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Season SUMMER = <span class="keyword">new</span> Season(<span class="string">&quot;夏天&quot;</span>, <span class="string">&quot;夏日炎炎&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Season AUTUMN = <span class="keyword">new</span> Season(<span class="string">&quot;秋天&quot;</span>, <span class="string">&quot;秋高气爽&quot;</span>);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Season WINTER = <span class="keyword">new</span> Season(<span class="string">&quot;冬天&quot;</span>, <span class="string">&quot;雪花飘飘&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//(可选)4.获取枚举类的属性，提供toString方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSeasonName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SeasonName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSeasonDesc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SeasonDesc;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;Season&#123;&quot;</span> +</span><br><span class="line">                <span class="string">&quot;SeasonName=&#x27;&quot;</span> + SeasonName + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&quot;, SeasonDesc=&#x27;&quot;</span> + SeasonDesc + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">                <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>方式二：JDK5.0之后，使用enum创建枚举类</strong><ul>
+<li>1.提供当前枚举类的对象，多个对象用“,”隔开，末尾用“;”结束</li>
+<li>2.声明Season对象的属性：private、final修饰</li>
+<li>3.私有化类的构造器，并对属性进行赋值</li>
+<li>4.(可选)获取枚举类的属性，提供toString方法</li>
+<li>注意：enum继承的父类并不是Object类，而是java.lang.Enum类</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用enum创建枚举类</span></span><br><span class="line"><span class="class"><span class="keyword">enum</span> <span class="title">Season1</span></span>&#123;</span><br><span class="line">    <span class="comment">//1.提供当前枚举类的对象，多个对象用“,”隔开，末尾用“;”结束</span></span><br><span class="line">    SPRING(<span class="string">&quot;春天&quot;</span>, <span class="string">&quot;春暖花开&quot;</span>),</span><br><span class="line">    SUMMER(<span class="string">&quot;夏天&quot;</span>, <span class="string">&quot;夏日炎炎&quot;</span>),</span><br><span class="line">    AUTUMN(<span class="string">&quot;秋天&quot;</span>, <span class="string">&quot;秋高气爽&quot;</span>),</span><br><span class="line">    WINTER(<span class="string">&quot;冬天&quot;</span>, <span class="string">&quot;雪花飘飘&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//2.声明Season对象的属性：private、final修饰</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String SeasonName;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> String SeasonDesc;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//3.私有化类的构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">Season1</span><span class="params">(String SeasonName, String SeasonDesc)</span></span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.SeasonName = SeasonName;</span><br><span class="line">        <span class="keyword">this</span>.SeasonDesc = SeasonDesc;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//(可选)4.获取枚举类的属性，提供toString方法</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSeasonName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SeasonName;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getSeasonDesc</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> SeasonDesc;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="1-3-Enum类的常用方法"><a href="#1-3-Enum类的常用方法" class="headerlink" title="1.3 Enum类的常用方法"></a>1.3 Enum类的常用方法</h4><ul>
+<li>1.values()方法：返回枚举类的对象数组，该方法可以很方便地遍历所有的枚举类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//values()</span></span><br><span class="line">Season1[] values = Season1.values();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; values.length; i++) &#123;</span><br><span class="line">    System.out.println(values[i]);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>2.valueOf(String objName)：可以把一个字符串转为对应的枚举类对象，要求字符串必须是枚举类对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//valueOf(String objName)</span></span><br><span class="line">Season1 winter = Season1.valueOf(<span class="string">&quot;WINTER&quot;</span>);</span><br><span class="line">System.out.println(winter);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>3.toString()：返回当前枚举类对象常量的名称</li>
+</ul>
+<hr>
+<h4 id="1-4-使用enum关键字定义的枚举类实现接口的情况"><a href="#1-4-使用enum关键字定义的枚举类实现接口的情况" class="headerlink" title="1.4 使用enum关键字定义的枚举类实现接口的情况"></a>1.4 使用enum关键字定义的枚举类实现接口的情况</h4><ul>
+<li>1.情况一：实现接口，在enum类中实现抽象方法（普通方法）</li>
+<li>2.情况二：让枚举类对象分别实现接口中的抽象方法，在对象后面加上{}，在里面重写抽象方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">SPRING(<span class="string">&quot;春天&quot;</span>, <span class="string">&quot;春暖花开&quot;</span>)&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">show</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这是春天！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="二、注解"><a href="#二、注解" class="headerlink" title="二、注解"></a>二、注解</h3><h4 id="2-1-注解-Annotation-理解"><a href="#2-1-注解-Annotation-理解" class="headerlink" title="2.1 注解(Annotation)理解"></a>2.1 注解(Annotation)理解</h4><ul>
+<li>（1）这是JDK5.0新增的功能</li>
+<li>（2）Annotation其实是代码里的特殊标记，这些标记可以在编译，类加载，运行时被读取，并执行相应的处理。通过使用Annotation，程序员可以在不改变原有逻辑的情况下，在源文件中嵌入一些补充信息</li>
+<li>（3）在JavaSE中，注解的使用目的比较简单，例如标记过时的功能，忽略警告等。在JavaEE/Android中注解占据了更重要的角色，例如用来配置应用程序的任何切面，代替JavaEE旧版中所遗留的繁冗代码和XML配置等。</li>
+</ul>
+<hr>
+<h4 id="2-2-Annotation使用示例"><a href="#2-2-Annotation使用示例" class="headerlink" title="2.2 Annotation使用示例"></a>2.2 Annotation使用示例</h4><ul>
+<li><strong>示例一：</strong> <ul>
+<li>生成文档相关的注解</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@author</span> 标明开发各类莫尅的作者，多个作者使用<span class="string">&quot;,&quot;</span>来进行分割</span><br><span class="line"></span><br><span class="line"><span class="meta">@version</span> 标明该类模块的版本</span><br><span class="line"></span><br><span class="line"><span class="meta">@see</span> 参考转向，也就是相关的主题</span><br><span class="line"></span><br><span class="line"><span class="meta">@since</span> 从哪个版本开始增加的</span><br><span class="line"></span><br><span class="line"><span class="meta">@param</span> 对方法中参数的说明，如果没有参数就不能写</span><br><span class="line"></span><br><span class="line"><span class="meta">@return</span> 对方法返回值的说明，如果方法的返回值类型是<span class="keyword">void</span>就不能写</span><br><span class="line"></span><br><span class="line"><span class="meta">@exception</span> 对方法可能抛出异常进行说明，如果方法没用<span class="keyword">throws</span>显示抛出异常就不能写</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">其中：</span><br><span class="line">    <span class="meta">@param</span> <span class="meta">@return</span> 和 @ exception 这三个标记都是只用于方法的</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@param</span>的格式要求： <span class="meta">@param</span> 形参名 形参类型 形参说明</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@return</span>的格式要求：<span class="meta">@return</span> 返回值类型 返回值说明</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@exception</span>的格式要求：<span class="meta">@exception</span> 异常类型 异常说明</span><br><span class="line">	</span><br><span class="line">    <span class="meta">@param</span> 和 <span class="meta">@exception</span> 可以并列多个</span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>示例二：</strong> <ul>
+<li>在编译时进行格式检查(JDK内置的三个基本注解)</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span>：限定重写父类方法，该注解只能用于方法</span><br><span class="line"></span><br><span class="line"><span class="meta">@Deprecated</span>：用于表示所修饰的元素(类、方法等)一过时。通常是因为所修饰的结构危险或存在更好的选择</span><br><span class="line"></span><br><span class="line"><span class="meta">@SuppressWarnings</span>：抑制编译器警告</span><br></pre></td></tr></table></figure>
+<hr>
+<h4 id="2-3-元注解"><a href="#2-3-元注解" class="headerlink" title="2.3 元注解"></a>2.3 元注解</h4><ul>
+<li><strong>理解：</strong> <ul>
+<li>JDK提供四种元注解，用来修饰其他Annotation</li>
+</ul>
+</li>
+<li><strong>（1）Retention：</strong> 指定所修饰的注解的生命周期<ul>
+<li>格式：<code>@Retention(RetentionPolicy.xxx)</code></li>
+<li>三种状态：<ul>
+<li>SOURCE：通过javac编译后的class文件就不存在次注解</li>
+<li>CLASS(默认)：编译后注解还在，但通过java运行时，该注解不会被加载</li>
+<li>RUNTIME：运行时注解会被加载</li>
+</ul>
+</li>
+<li><strong>注意：只有声明为RUNTIME生命周期的注解，才能通过反射获取</strong></li>
+</ul>
+</li>
+<li><strong>（2）Target：</strong> 用于指定被修饰的注解，能用于修饰那些程序元素<ul>
+<li>格式：<code>@Target(&#123;xxx, xxx, xxx,......&#125;)</code></li>
+<li>属性：<ul>
+<li>TYPE：表示类、接口、枚举类</li>
+<li>FIELD：field属性</li>
+<li>METHOD：方法</li>
+<li>PARAMETER：属性</li>
+<li>CONSTRUCTOR：构造器</li>
+<li>LOCAL_VARIABLE：局部变量</li>
+<li>ANNOTATION_TYPE：注解类型</li>
+<li>PACKAGE：包</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>（3）Documented：</strong> 被此元注解修饰的注解会被javadoc工具提取成文档。默认情况下，javadoc是不包括注解的<ul>
+<li><strong>注意：定义为Documented的注解必须设置Retention值为RUNTIME</strong></li>
+</ul>
+</li>
+<li><strong>（4）Inherited：</strong> 被修饰的注解将具有继承性</li>
+</ul>
+<hr>
+<h4 id="2-4-自定义注释（实用度不高）"><a href="#2-4-自定义注释（实用度不高）" class="headerlink" title="2.4 自定义注释（实用度不高）"></a>2.4 自定义注释（实用度不高）</h4><ul>
+<li>参照@SuppressWarnings来定义<ul>
+<li>（1）注解声明为@interface</li>
+<li>（2）内部定义成员，通常用value表示</li>
+<li>（3）可以指定成员的默认值，使用default定义</li>
+<li>（4）如果自定义注解没有成员，表明只是个标识</li>
+<li><strong>如果注解有成员，在使用注解时，需要指明成员的值</strong></li>
+<li><strong>自定义注解必须配上注解的信息流程（使用反射）才有意义</strong></li>
+<li><strong>自定义注解一般会指明两个元注解：Retention 和 Target</strong></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@interface</span> MyAnnotion&#123;</span><br><span class="line">    <span class="function">String <span class="title">value</span><span class="params">()</span> <span class="keyword">default</span> &quot;hello&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/09/13/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%B8%B8%E7%94%A8%E7%B1%BB/" rel="prev" title="【Java基础】常用类">
+      <i class="fa fa-chevron-left"></i> 【Java基础】常用类
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/" rel="next" title="【Java基础】集合">
+      【Java基础】集合 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%9E%9A%E4%B8%BE%E7%B1%BB"><span class="nav-text">一、枚举类</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E8%AF%B4%E6%98%8E"><span class="nav-text">1.1 说明</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%AE%9A%E4%B9%89"><span class="nav-text">1.2 枚举类定义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-Enum%E7%B1%BB%E7%9A%84%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95"><span class="nav-text">1.3 Enum类的常用方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E4%BD%BF%E7%94%A8enum%E5%85%B3%E9%94%AE%E5%AD%97%E5%AE%9A%E4%B9%89%E7%9A%84%E6%9E%9A%E4%B8%BE%E7%B1%BB%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-text">1.4 使用enum关键字定义的枚举类实现接口的情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%B3%A8%E8%A7%A3"><span class="nav-text">二、注解</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%B3%A8%E8%A7%A3-Annotation-%E7%90%86%E8%A7%A3"><span class="nav-text">2.1 注解(Annotation)理解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Annotation%E4%BD%BF%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-text">2.2 Annotation使用示例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%85%83%E6%B3%A8%E8%A7%A3"><span class="nav-text">2.3 元注解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E8%87%AA%E5%AE%9A%E4%B9%89%E6%B3%A8%E9%87%8A%EF%BC%88%E5%AE%9E%E7%94%A8%E5%BA%A6%E4%B8%8D%E9%AB%98%EF%BC%89"><span class="nav-text">2.4 自定义注释（实用度不高）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

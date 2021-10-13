@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Spring整合的JDBC技术的工具JdbcTemplate使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Spring】JdbcTemplate使用">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/16/%E3%80%90Spring%E3%80%91JdbcTemplate%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Spring整合的JDBC技术的工具JdbcTemplate使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-04-16T06:30:27.000Z">
+<meta property="article:modified_time" content="2021-04-16T06:38:07.461Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/16/%E3%80%90Spring%E3%80%91JdbcTemplate%E4%BD%BF%E7%94%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Spring】JdbcTemplate使用 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/16/%E3%80%90Spring%E3%80%91JdbcTemplate%E4%BD%BF%E7%94%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Spring】JdbcTemplate使用
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-16 14:30:27 / 修改时间：14:38:07" itemprop="dateCreated datePublished" datetime="2021-04-16T14:30:27+08:00">2021-04-16</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Spring整合的JDBC技术的工具JdbcTemplate使用</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-JdbcTemplate"><a href="#1-JdbcTemplate" class="headerlink" title="1 JdbcTemplate"></a>1 JdbcTemplate</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><ul>
+<li>JdbcTemplate是Spring对之前学习的Jdbc技术的封装，使得对数据库的操作更加的便捷</li>
+</ul>
+<h4 id="1-2-搭建JdbcTemplate"><a href="#1-2-搭建JdbcTemplate" class="headerlink" title="1.2 搭建JdbcTemplate"></a>1.2 搭建JdbcTemplate</h4><ul>
+<li><p><strong>（1）引入依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- JdbcTemplate --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>5.3.6<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- mysql驱动 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>8.0.23<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>（2）创建JdbcTemplate</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span>  JdbcTemplate <span class="title">getJdbTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//创建数据源</span></span><br><span class="line">	DriverManagerDataSource dataSource=<span class="keyword">new</span> DriverManagerDataSource();</span><br><span class="line">	dataSource.setUsername(<span class="string">&quot;root&quot;</span>);</span><br><span class="line">	dataSource.setPassword(<span class="string">&quot;123&quot;</span>);</span><br><span class="line">	dataSource.setUrl(<span class="string">&quot;jdbc:mysql://127.0.0.1:3306/test?useUnicode=true&amp;characterEncoding=UTF-8&amp;rewriteBatchedStatements=true&quot;</span>);</span><br><span class="line">	dataSource.setDriverClassName(<span class="string">&quot;com.mysql.cj.jdbc.Driver&quot;</span>);</span><br><span class="line">	</span><br><span class="line">	<span class="comment">//通过数据源创建JdbcTemplate</span></span><br><span class="line">	JdbcTemplate jdbcTemplate = <span class="keyword">new</span> JdbcTemplate(dataSource);</span><br><span class="line">	<span class="keyword">return</span> jdbcTemplate;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以上是简单创建，如果与Spring项目整合，可以将JdbcTemplate注入IOC容器中，通过注解使用</p>
+</li>
+</ul>
+<h4 id="1-3-常用JdbcTemplate方法"><a href="#1-3-常用JdbcTemplate方法" class="headerlink" title="1.3 常用JdbcTemplate方法"></a>1.3 常用JdbcTemplate方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 增、删、改</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(<span class="keyword">final</span> String sql)</span>；</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">update</span><span class="params">(<span class="keyword">final</span> String sql， Object... args)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 批量增、删、改</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] batchUpdate(String sql, List&lt;Object[]&gt; batchArgs)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 查询</span></span><br><span class="line"><span class="comment">// 查询-返回基本数据类型</span></span><br><span class="line"><span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">queryForObject</span><span class="params">(String sql, Class&lt;T&gt; requiredType)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 查询-返回对象</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> &lt;T&gt; T <span class="title">queryForObject</span><span class="params">(String sql, RowMapper&lt;T&gt; rowMapper, <span class="meta">@Nullable</span> Object... args)</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"><span class="comment">// 查询-返回列表</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> &lt;T&gt; List&lt;T&gt; <span class="title">query</span><span class="params">(String sql, RowMapper&lt;T&gt; rowMapper)</span></span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"> </span></span><br><span class="line"><span class="function"> <span class="comment">// 4. SQL通用执行（一般用于DDL：create alter drop）</span></span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(<span class="keyword">final</span> String sql)</span></span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-使用演示"><a href="#1-4-使用演示" class="headerlink" title="1.4 使用演示"></a>1.4 使用演示</h4><ul>
+<li><strong>（1）数据库表和Bean准备</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 建表语句</span></span><br><span class="line"><span class="keyword">CREATE</span> <span class="keyword">TABLE</span> <span class="string">`person`</span> (</span><br><span class="line">  <span class="string">`id`</span> <span class="built_in">int</span> <span class="keyword">NOT</span> <span class="literal">NULL</span> AUTO_INCREMENT <span class="keyword">COMMENT</span> <span class="string">&#x27;唯一标识&#x27;</span>,</span><br><span class="line">  <span class="string">`name`</span> <span class="built_in">varchar</span>(<span class="number">5</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;姓名&#x27;</span>,</span><br><span class="line">  <span class="string">`sex`</span> <span class="built_in">varchar</span>(<span class="number">2</span>) <span class="keyword">DEFAULT</span> <span class="literal">NULL</span> <span class="keyword">COMMENT</span> <span class="string">&#x27;性别&#x27;</span>,</span><br><span class="line">  PRIMARY <span class="keyword">KEY</span> (<span class="string">`id`</span>)</span><br><span class="line">) <span class="keyword">ENGINE</span>=<span class="keyword">InnoDB</span> AUTO_INCREMENT=<span class="number">2</span> <span class="keyword">DEFAULT</span> <span class="keyword">CHARSET</span>=utf8;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对应存储Bean</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（2）增删改</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//增</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addPerson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	JdbcTemplate jdbTemplate = getJdbTemplate();</span><br><span class="line"></span><br><span class="line">	Person person = <span class="keyword">new</span> Person(<span class="number">1</span>, <span class="string">&quot;C酱&quot;</span>, <span class="string">&quot;女&quot;</span>); <span class="comment">//如果主键自增，id可以设置为null</span></span><br><span class="line">	String sql = <span class="string">&quot;insert into person values(?, ?, ?)&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> jdbTemplate.update(sql, person.getId(), person.getName(), person.getSex());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//改</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">updatePerson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	JdbcTemplate jdbTemplate = getJdbTemplate();</span><br><span class="line"></span><br><span class="line">	Person person = <span class="keyword">new</span> Person(<span class="number">1</span>, <span class="string">&quot;asaki&quot;</span>, <span class="string">&quot;女&quot;</span>);</span><br><span class="line">	String sql = <span class="string">&quot;update person set name=?, sex=? where id=?&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> jdbTemplate.update(sql, person.getName(), person.getSex(), person.getId());</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//删</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deletePerson</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	JdbcTemplate jdbTemplate = getJdbTemplate();</span><br><span class="line"></span><br><span class="line">	String sql = <span class="string">&quot;delete from person where id=?&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> jdbTemplate.update(sql, <span class="string">&quot;1&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（3）批量增、删、改</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//批量增</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] addPersons() &#123;</span><br><span class="line">	Object[] person1 = <span class="keyword">new</span> Object[]&#123;<span class="number">1</span>, <span class="string">&quot;C酱&quot;</span>, <span class="string">&quot;女&quot;</span>&#125;;</span><br><span class="line">	Object[] person2 = <span class="keyword">new</span> Object[]&#123;<span class="number">2</span>, <span class="string">&quot;asaki&quot;</span>, <span class="string">&quot;女&quot;</span>&#125;;</span><br><span class="line"></span><br><span class="line">	List&lt;Object[]&gt; batchArgs = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	batchArgs.add(person1);</span><br><span class="line">	batchArgs.add(person2);</span><br><span class="line"></span><br><span class="line">	String sql = <span class="string">&quot;insert into person values(?, ?, ?)&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> getJdbTemplate().batchUpdate(sql, batchArgs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//批量改</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] updatePersons() &#123;</span><br><span class="line">	Object[] person1 = <span class="keyword">new</span> Object[]&#123;<span class="string">&quot;咕料&quot;</span>, <span class="string">&quot;男&quot;</span>, <span class="number">1</span>&#125;; <span class="comment">//注意顺序</span></span><br><span class="line">	Object[] person2 = <span class="keyword">new</span> Object[]&#123;<span class="string">&quot;yjj&quot;</span>, <span class="string">&quot;男&quot;</span>, <span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line">	List&lt;Object[]&gt; batchArgs = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	batchArgs.add(person1);</span><br><span class="line">	batchArgs.add(person2);</span><br><span class="line"></span><br><span class="line">	String sql = <span class="string">&quot;update person set name=?, sex=? where id=?&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> getJdbTemplate().batchUpdate(sql, batchArgs);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//批量删</span></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">int</span>[] deletePersons() &#123;</span><br><span class="line">	Object[] a = <span class="keyword">new</span> Object[]&#123;<span class="number">1</span>&#125;;</span><br><span class="line">	Object[] b = <span class="keyword">new</span> Object[]&#123;<span class="number">2</span>&#125;;</span><br><span class="line"></span><br><span class="line">	List&lt;Object[]&gt; batchArgs = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	batchArgs.add(a);</span><br><span class="line">	batchArgs.add(b);</span><br><span class="line"></span><br><span class="line">	String sql = <span class="string">&quot;delete from person where id=?&quot;</span>;</span><br><span class="line">	<span class="keyword">return</span> getJdbTemplate().batchUpdate(sql, batchArgs);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（4）查询演示</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//查询-返回基本数据类型</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">queryPersonNumber</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String sql = <span class="string">&quot;select count(*) from person&quot;</span>;</span><br><span class="line">	Integer num = getJdbTemplate().queryForObject(sql, Integer.class);</span><br><span class="line">	System.out.println(num);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//查询-返回对象</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">queryPersonById</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String sql = <span class="string">&quot;select * from person where id = ?&quot;</span>;</span><br><span class="line">	Person person = getJdbTemplate().queryForObject(sql, <span class="keyword">new</span> BeanPropertyRowMapper&lt;&gt;(Person.class), <span class="number">1</span>);</span><br><span class="line">	System.out.println(person);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//查询-返回列表</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">queryPersons</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String sql = <span class="string">&quot;select * from person&quot;</span>;</span><br><span class="line">	List&lt;Person&gt; persons = getJdbTemplate().query(sql, <span class="keyword">new</span> BeanPropertyRowMapper&lt;&gt;(Person.class));</span><br><span class="line">	<span class="keyword">for</span>(Person person : persons) &#123;</span><br><span class="line">		System.out.println(person);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（5）Execute演示</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//execute使用</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">executeTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	String sql = <span class="string">&quot;create table Test (id int primary key auto_increment, name varchar(8) not null, age int not null)&quot;</span>;</span><br><span class="line">	getJdbTemplate().execute(sql);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/15/%E3%80%90Linux%E3%80%91%E4%BB%BB%E5%8A%A1%E8%B0%83%E5%BA%A6/" rel="prev" title="【Linux】任务调度">
+      <i class="fa fa-chevron-left"></i> 【Linux】任务调度
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/17/%E3%80%90MybatisPlus%E3%80%91MybatisPlus%E5%85%A5%E9%97%A8/" rel="next" title="【MybatisPlus】MybatisPlus入门">
+      【MybatisPlus】MybatisPlus入门 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-JdbcTemplate"><span class="nav-text">1 JdbcTemplate</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%90%AD%E5%BB%BAJdbcTemplate"><span class="nav-text">1.2 搭建JdbcTemplate</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%B8%B8%E7%94%A8JdbcTemplate%E6%96%B9%E6%B3%95"><span class="nav-text">1.3 常用JdbcTemplate方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E4%BD%BF%E7%94%A8%E6%BC%94%E7%A4%BA"><span class="nav-text">1.4 使用演示</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

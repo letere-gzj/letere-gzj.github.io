@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="用nacos来取代eurka作为服务注册中心，取代config作为配置中心">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringCloudAlibaba】Nacos服务注册和配置中心">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="用nacos来取代eurka作为服务注册中心，取代config作为配置中心">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-login.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-web.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-server-list.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-compare.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-dataid1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-dataid2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-group1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-group2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/java-install.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/maven-install.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/linux-properties-change.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/hostname.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/cluster_config.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/startup-step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/startup-step2.png">
+<meta property="article:published_time" content="2021-03-17T15:33:07.000Z">
+<meta property="article:modified_time" content="2021-03-18T08:40:49.417Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-login.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringCloudAlibaba】Nacos服务注册和配置中心 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringCloudAlibaba】Nacos服务注册和配置中心
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-17 23:33:07" itemprop="dateCreated datePublished" datetime="2021-03-17T23:33:07+08:00">2021-03-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-18 16:40:49" itemprop="dateModified" datetime="2021-03-18T16:40:49+08:00">2021-03-18</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringCloudAlibaba/" itemprop="url" rel="index"><span itemprop="name">SpringCloudAlibaba</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>用nacos来取代eurka作为服务注册中心，取代config作为配置中心</p>
+<a id="more"></a>
+
+<h3 id="1-Nacos简介"><a href="#1-Nacos简介" class="headerlink" title="1 Nacos简介"></a>1 Nacos简介</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><ul>
+<li>Nacos：Naming Configuration Service</li>
+</ul>
+<ul>
+<li>一个更易于构建云原生应用的动态服务发现、配置管理和服务管理平台</li>
+<li>Nacos就是注册中心 + 配置中心的组合</li>
+<li>Nacos = Eureka + Config + Bus</li>
+</ul>
+<ul>
+<li>官网：<a target="_blank" rel="noopener" href="https://nacos.io/zh-cn/">https://nacos.io/zh-cn/</a></li>
+</ul>
+<h4 id="1-2-功能"><a href="#1-2-功能" class="headerlink" title="1.2 功能"></a>1.2 功能</h4><ul>
+<li>替代Eureka做服务注册中心</li>
+<li>替代Config做服务配置中心</li>
+</ul>
+<h4 id="1-3-Nacos下载与安装"><a href="#1-3-Nacos下载与安装" class="headerlink" title="1.3 Nacos下载与安装"></a>1.3 Nacos下载与安装</h4><ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/tags">https://github.com/alibaba/nacos/tags</a></li>
+</ul>
+<ul>
+<li>演示下载的是windows版，解压后，进入<strong>bin</strong>文件夹</li>
+<li>打卡命令行输入<code>startup -m standalone</code>，意思为单机模式运行，非集群模式</li>
+</ul>
+<ul>
+<li>访问网址：<a target="_blank" rel="noopener" href="http://localhost:8848/nacos">http://localhost:8848/nacos</a> ，就可以进入web后台</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-login.png" class="">
+
+
+<ul>
+<li>默认账号密码为：nacos，可进入后台</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-web.png" class="">
+
+<hr>
+<h3 id="2-Nacos服务注册中心"><a href="#2-Nacos服务注册中心" class="headerlink" title="2 Nacos服务注册中心"></a>2 Nacos服务注册中心</h3><h4 id="2-1-服务提供者搭建nacos"><a href="#2-1-服务提供者搭建nacos" class="headerlink" title="2.1 服务提供者搭建nacos"></a>2.1 服务提供者搭建nacos</h4><ul>
+<li>（1）创建项目<code>cloudAlibaba-provider-payment9001</code></li>
+</ul>
+<ul>
+<li>（2）修改POM（引入依赖）<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- nacos-discovery : 服务注册 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- web --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）修改配置文件yaml<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9001</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">nacos-provider-payment</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">server-addr:</span> <span class="string">localhost:8848</span> <span class="comment"># nacos web地址</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosProviderMain9001</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(NacosProviderMain9001.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）Controller层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosProviderController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;server.port&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String serverPort;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/payment/nacos&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPayment</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;nacos registry -- serverPort：&quot;</span> + serverPort;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（6）测试：启动项目，访问nacos-web，”服务管理” -&gt; “服务列表”</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-server-list.png" class="">
+
+<h4 id="2-2-IDEA伪集群搭建"><a href="#2-2-IDEA伪集群搭建" class="headerlink" title="2.2 IDEA伪集群搭建"></a>2.2 IDEA伪集群搭建</h4><ul>
+<li>如果懒得重新创建一个项目来用集群搭建，可以通过修改IDEA参数来达到伪集群效果</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step1.png" class="">
+
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step2.png" class="">
+
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/copy-step3.png" class="">
+
+<h4 id="2-3-消费者搭建nacos"><a href="#2-3-消费者搭建nacos" class="headerlink" title="2.3 消费者搭建nacos"></a>2.3 消费者搭建nacos</h4><ul>
+<li>（1）创建项目<code>cloudAlibaba-consumer-nacos-order83</code></li>
+</ul>
+<ul>
+<li>（2）引入依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- nacos-discovery 服务发现 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- web --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）修改配置文件<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">83</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">nacos-consumer-order</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">server-addr:</span> <span class="string">localhost:8848</span></span><br><span class="line"></span><br><span class="line"><span class="comment">#设置变量，去访问的微服务名称，用于解耦</span></span><br><span class="line"><span class="attr">service-url:</span></span><br><span class="line">  <span class="attr">nacos-user-service:</span> <span class="string">http://nacos-provider-payment</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableDiscoveryClient</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosOrderMain83</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(NacosOrderMain83.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）Config类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ApplicationContextConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Bean</span><span class="comment">//注入Bean</span></span><br><span class="line">    <span class="meta">@LoadBalanced</span> <span class="comment">//开启负载均衡</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RestTemplate <span class="title">getRestTemplate</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> RestTemplate();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（6）Controller层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosOrderController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//读取配置文件中变量信息，达到代码与配置解耦</span></span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;service-url.nacos-user-service&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String serviceURL;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RestTemplate restTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/consumer/payment/nacos&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getPaymentInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> restTemplate.getForObject(serviceURL + <span class="string">&quot;/payment/nacos&quot;</span>, String.class);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（7）测试，启动提供者服务，消费者服务，访问网址：<a target="_blank" rel="noopener" href="http://localhost:83/consumer/payment/nacos">http://localhost:83/consumer/payment/nacos</a> ， 查看是否成功负载均衡</li>
+</ul>
+<h4 id="2-4-服务注册中心对比"><a href="#2-4-服务注册中心对比" class="headerlink" title="2.4 服务注册中心对比"></a>2.4 服务注册中心对比</h4><img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-compare.png" class="">
+
+<hr>
+<h3 id="3-Nacos服务配置中心"><a href="#3-Nacos服务配置中心" class="headerlink" title="3 Nacos服务配置中心"></a>3 Nacos服务配置中心</h3><h4 id="3-1-基础配置"><a href="#3-1-基础配置" class="headerlink" title="3.1 基础配置"></a>3.1 基础配置</h4><ul>
+<li>（1）创建项目<code>cloudAlibaba-nacos-config-client3377</code></li>
+</ul>
+<ul>
+<li>（2）引入依赖<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- 服务配置 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- web --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）配置文件<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># bootstrap.yaml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">3377</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">nacos-config-client</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">nacos:</span></span><br><span class="line">      <span class="attr">config:</span></span><br><span class="line">        <span class="attr">server-addr:</span> <span class="string">localhost:8848</span> <span class="comment">#nacos配置中心地址</span></span><br><span class="line">        <span class="attr">file-extension:</span> <span class="string">yaml</span> <span class="comment">#指定yaml格式的配置</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># application.yaml</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">profiles:</span></span><br><span class="line">    <span class="attr">active:</span> <span class="string">dev</span> <span class="comment"># 选择开发环境</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">NacosConfigClient3377</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(NacosConfigClient3377.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）Controller层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="meta">@RefreshScope</span> <span class="comment">//支持Nacos的动态刷新功能</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConfigClientController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Value(&quot;$&#123;config.info&#125;&quot;)</span></span><br><span class="line">    <span class="keyword">private</span> String configInfo;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/config/info&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getConfigInfo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> configInfo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（6）在Nacos中发布配置文件，”配置管理” -&gt; “配置列表” -&gt; “+”</li>
+</ul>
+
+
+
+
+<ul>
+<li>（7）启动服务，访问：<a target="_blank" rel="noopener" href="http://localhost:3377/config/info">http://localhost:3377/config/info</a> , 数据成功访问<ul>
+<li>并且nacos支持动态刷新，不再需要我们手动发送消息去刷新配置</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-2-分类配置了解"><a href="#3-2-分类配置了解" class="headerlink" title="3.2 分类配置了解"></a>3.2 分类配置了解</h4><ul>
+<li>（1）Namespace+Group+Data ID三者关系<ul>
+<li>类似Java里面的package名和类名</li>
+<li>最外层的namespace是可以用于区分部署环境，Group和DataID逻辑上区分两个目标对象</li>
+<li>默认：Namespace=public，Group=DEFAULT_GROUP，Cluster=DEFAULT</li>
+</ul>
+</li>
+</ul>
+
+
+
+<ul>
+<li>（2）具体功能使用<ul>
+<li>Namespace主要用来实现隔离，比如说我们现在有三个环境：开发、测试、生产环境，我们可以创建是哪个Namespace，不同的Namespace之间是隔离的</li>
+<li>Group默认是DEFAULT_GROUP，Group可以把不同的微服务划分到同一分组里面去</li>
+<li>Service就是微服务，一个微服务可以包含多个Cluster（集群），Nacos默认Cluster是DEFAULT，Cluster是对指定微服务的一个虚拟划分。比如说为了容灾，将Service微服务分别部署在了杭州机房和广州机房，杭州机房起一个集群名为HZ，广州机房起一个集群名为GZ，还可以尽量让同一个机房的微服务滑翔调用，以提升性能</li>
+<li>Instance，微服务实例</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-3-分类配置"><a href="#3-3-分类配置" class="headerlink" title="3.3 分类配置"></a>3.3 分类配置</h4><ul>
+<li>（1）通过DataID切换文件<ul>
+<li>通过指定<code>spring.profile.active</code>和配置文件的DataID来使不同的环境下读取不同的文件</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-dataid1.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-dataid2.png" class="">
+
+
+<ul>
+<li>（2）通过GROUP切换文件</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-group1.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-group2.png" class="">
+
+
+<ul>
+<li>（3）通过NameSpace切换文件</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace1.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace2.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-namespace3.png" class="">
+
+<hr>
+<h3 id="4-Nacos集群和持久化"><a href="#4-Nacos集群和持久化" class="headerlink" title="4 Nacos集群和持久化"></a>4 Nacos集群和持久化</h3><ul>
+<li>持久化：<a target="_blank" rel="noopener" href="https://nacos.io/zh-cn/docs/deployment.html">https://nacos.io/zh-cn/docs/deployment.html</a></li>
+<li>集群：<a target="_blank" rel="noopener" href="https://nacos.io/zh-cn/docs/cluster-mode-quick-start.html">https://nacos.io/zh-cn/docs/cluster-mode-quick-start.html</a></li>
+</ul>
+<h4 id="4-1-持久化配置"><a href="#4-1-持久化配置" class="headerlink" title="4.1 持久化配置"></a>4.1 持久化配置</h4><ul>
+<li>（1）nacos默认使用derby内嵌数据库来存储文件，例如我们之前的做配置中心的配置文件。为了持久化，我们可以将derby切换为我们自己的mysql数据库</li>
+</ul>
+<ul>
+<li>（2）nacos安装目录/conf/nacos-mysql.sql，创建名为<code>nacos_config</code>的数据库，运行此sql，得到我们的mysql数据库</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql1.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql2.png" class="">
+
+
+<ul>
+<li>（3）也是在conf文件下，修改application.properties文件，迁移数据库</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/nacos-mysql3.png" class="">
+
+
+<ul>
+<li>（4）重启nacos，进入页面，发现之前配置的文件全部不见，证明配置成功</li>
+</ul>
+<h4 id="4-2-Linux环境搭建"><a href="#4-2-Linux环境搭建" class="headerlink" title="4.2 Linux环境搭建"></a>4.2 Linux环境搭建</h4><ul>
+<li><p>集群的搭建在linux上，本人使用的linux为CentOS8</p>
+</li>
+<li><p><strong>Java安装</strong></p>
+</li>
+<li><p>JDK下载：<a target="_blank" rel="noopener" href="https://www.oracle.com/cn/java/technologies/javase-downloads.html">https://www.oracle.com/cn/java/technologies/javase-downloads.html</a> ，选择tar.gz文件</p>
+</li>
+<li><p>（1）上传到linux上，在/user目录下解压<code>sudo tar zxvf 解压文件</code></p>
+</li>
+<li><p>（2）配置环境<code>sudo vim /etc/profile</code></p>
+<figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">export JAVA_HOME=/usr/jdk1.<span class="number">8.0</span>_271-amd64</span><br><span class="line">export CLASSPATH=.:$JAVA_HOME/jre/lib/rt.jar:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar</span><br><span class="line">export PATH=$PATH:$JAVA_HOME/bin</span><br></pre></td></tr></table></figure></li>
+<li><p>（3）加载配置<code>source /etc/profile</code></p>
+</li>
+<li><p>（4）检测是否安装成功<code>java -version</code></p>
+</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/java-install.png" class="">
+
+
+<ul>
+<li><strong>Maven安装</strong></li>
+<li>Maven下载：<a target="_blank" rel="noopener" href="http://maven.apache.org/download.cgi">http://maven.apache.org/download.cgi</a> ，选择bin.tar.gz文件</li>
+<li>（1）上传到linux上，在/user目录下解压<code>sudo tar zxvf 解压文件</code></li>
+<li>（2）配置环境<code>sudo vim /etc/profile</code><figure class="highlight vim"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">export M2_HOME=/usr/apache-maven-<span class="number">3.6</span>.<span class="number">3</span></span><br><span class="line">export PATH=$PATH:$M2_HOME/bin</span><br></pre></td></tr></table></figure></li>
+<li>（3）加载配置<code>source /etc/profile</code></li>
+<li>（4）检测是否安装成功<code>mvn -v</code></li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/maven-install.png" class="">
+
+
+<ul>
+<li><strong>Nacos安装</strong></li>
+<li>Nacos下载：<a target="_blank" rel="noopener" href="https://github.com/alibaba/nacos/tags">https://github.com/alibaba/nacos/tags</a> ，选择tar.gz文件</li>
+<li>上传到linux，在/opt目录下解压<code>sudo tar -zxvf 解压文件</code></li>
+</ul>
+<ul>
+<li><strong>Nginx安装</strong></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_41967563/article/details/103868656">https://blog.csdn.net/qq_41967563/article/details/103868656</a></li>
+</ul>
+<ul>
+<li><strong>MySQL安装</strong></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_38591756/article/details/82958333">https://blog.csdn.net/qq_38591756/article/details/82958333</a></li>
+</ul>
+<h4 id="4-2-集群搭建"><a href="#4-2-集群搭建" class="headerlink" title="4.2 集群搭建"></a>4.2 集群搭建</h4><ul>
+<li><p><strong>（1）数据持久化</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 登录mysql数据库</span></span><br><span class="line"><span class="string">mysql</span> <span class="string">-u</span> <span class="string">root</span> <span class="string">-p</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 创建nacos_config数据库</span></span><br><span class="line"><span class="string">create</span> <span class="string">database</span> <span class="string">`nacos_config`</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 切换到nacos_config数据库</span></span><br><span class="line"><span class="string">use</span> <span class="string">`nacos_config`</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 运行sql文件</span></span><br><span class="line"><span class="string">source</span> <span class="string">/opt/nacos/conf/nacos-mysql.sql</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 检查是都创建表成功</span></span><br><span class="line"><span class="string">show</span> <span class="string">tables</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>（2）切换数据库，修改application.properties</strong></p>
+</li>
+<li><p><code>sudo vim /opt/nacos/conf/application.properties</code></p>
+</li>
+<li><p>修改内容与上文的数据持久化一样</p>
+</li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/linux-properties-change.png" class="">
+
+
+<ul>
+<li><strong>（3）集群配置</strong></li>
+<li><code>sduo cp /opt/nacos/conf/cluster.conf.example /opt/nacos/conf/cluster.conf</code></li>
+<li>获取本机的ip地址<code>hostname -i</code></li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/hostname.png" class="">
+
+<ul>
+<li>修改配置文件，<code>sudo /opt/nacos/conf/cluster.conf</code></li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/cluster_config.png" class="">
+
+
+<ul>
+<li><strong>（4）编辑启动脚本，使其可以接受不同启动端口</strong></li>
+<li><code>sudo vim /opt/nacos/bin/startup.sh</code></li>
+</ul>
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/startup-step1.png" class="">
+
+<img src="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/startup-step2.png" class="">
+
+<ul>
+<li>可以尝试运行<code>sudo ./startup.sh -t 3333</code></li>
+<li>若出现配置了JAVA_HOME环境，但报错说找不到，解决办法：<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_29860591/article/details/106833134">https://blog.csdn.net/qq_29860591/article/details/106833134</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91%E5%85%A5%E9%97%A8%E7%AE%80%E4%BB%8B/" rel="prev" title="【SpringCloudAlibaba】入门简介">
+      <i class="fa fa-chevron-left"></i> 【SpringCloudAlibaba】入门简介
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/" rel="next" title="【SpringCloudAlibaba】Sentinel实现熔断和限流">
+      【SpringCloudAlibaba】Sentinel实现熔断和限流 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Nacos%E7%AE%80%E4%BB%8B"><span class="nav-text">1 Nacos简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%8A%9F%E8%83%BD"><span class="nav-text">1.2 功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-Nacos%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85"><span class="nav-text">1.3 Nacos下载与安装</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83"><span class="nav-text">2 Nacos服务注册中心</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E6%9C%8D%E5%8A%A1%E6%8F%90%E4%BE%9B%E8%80%85%E6%90%AD%E5%BB%BAnacos"><span class="nav-text">2.1 服务提供者搭建nacos</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-IDEA%E4%BC%AA%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-text">2.2 IDEA伪集群搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E6%B6%88%E8%B4%B9%E8%80%85%E6%90%AD%E5%BB%BAnacos"><span class="nav-text">2.3 消费者搭建nacos</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E4%B8%AD%E5%BF%83%E5%AF%B9%E6%AF%94"><span class="nav-text">2.4 服务注册中心对比</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Nacos%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83"><span class="nav-text">3 Nacos服务配置中心</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%9F%BA%E7%A1%80%E9%85%8D%E7%BD%AE"><span class="nav-text">3.1 基础配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%88%86%E7%B1%BB%E9%85%8D%E7%BD%AE%E4%BA%86%E8%A7%A3"><span class="nav-text">3.2 分类配置了解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%88%86%E7%B1%BB%E9%85%8D%E7%BD%AE"><span class="nav-text">3.3 分类配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Nacos%E9%9B%86%E7%BE%A4%E5%92%8C%E6%8C%81%E4%B9%85%E5%8C%96"><span class="nav-text">4 Nacos集群和持久化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%8C%81%E4%B9%85%E5%8C%96%E9%85%8D%E7%BD%AE"><span class="nav-text">4.1 持久化配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-Linux%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA"><span class="nav-text">4.2 Linux环境搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E9%9B%86%E7%BE%A4%E6%90%AD%E5%BB%BA"><span class="nav-text">4.2 集群搭建</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

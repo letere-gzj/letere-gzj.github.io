@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="简单概述页面布局基础，盒子模型的认识，以及综合案例">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【CSS】盒子模型">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="简单概述页面布局基础，盒子模型的认识，以及综合案例">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E6%96%B0%E6%B5%AA%E5%AF%BC%E8%88%AA%E6%A0%8F.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E4%BA%A7%E5%93%81%E6%A8%A1%E5%9D%97.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E5%BF%AB%E6%8A%A5%E6%A8%A1%E5%9D%97.png">
+<meta property="article:published_time" content="2021-02-19T04:22:13.000Z">
+<meta property="article:modified_time" content="2021-02-19T04:27:01.272Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【CSS】盒子模型 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【CSS】盒子模型
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-02-19 12:22:13 / 修改时间：12:27:01" itemprop="dateCreated datePublished" datetime="2021-02-19T12:22:13+08:00">2021-02-19</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/CSS/" itemprop="url" rel="index"><span itemprop="name">CSS</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>简单概述页面布局基础，盒子模型的认识，以及综合案例</p>
+<a id="more"></a>
+
+<h3 id="1-网页布局的本质"><a href="#1-网页布局的本质" class="headerlink" title="1 网页布局的本质"></a>1 网页布局的本质</h3><ul>
+<li>网页布局的过程：<ul>
+<li>（1）准备好相关的网页元素，网页元素都基本是盒子Box</li>
+<li>（2）利用CSS设置好盒子样式，然后摆放到相应的位置</li>
+<li>（3）往盒子里面装内容</li>
+</ul>
+</li>
+<li>网页布局的本质：摆放盒子</li>
+</ul>
+<hr>
+<h3 id="2-盒子模型组成"><a href="#2-盒子模型组成" class="headerlink" title="2 盒子模型组成"></a>2 盒子模型组成</h3><ul>
+<li>盒子模型：被html页面中的布局元素看做是一个矩形的盒子，也就是一个盛装内容的容器</li>
+<li>CSS盒子模型：封装着边框，外边距，内边距，和实际内容</li>
+</ul>
+<img src="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B.png" class="">
+
+<hr>
+<h3 id="3-边框"><a href="#3-边框" class="headerlink" title="3 边框"></a>3 边框</h3><ul>
+<li>可以通过<code>border</code>来设置边框的宽度，样式，颜色</li>
+</ul>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*设置边框宽度*/</span></span><br><span class="line"><span class="selector-tag">border-width</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*设置边框样式*/</span></span><br><span class="line"><span class="selector-tag">border-style</span>:</span><br><span class="line">  <span class="selector-tag">none</span> </span><br><span class="line">  <span class="selector-tag">hidden</span></span><br><span class="line">  <span class="selector-tag">dotted</span>   <span class="comment">/*点线*/</span></span><br><span class="line">  <span class="selector-tag">dashed</span>   <span class="comment">/*虚线*/</span></span><br><span class="line">  <span class="selector-tag">solid</span>    <span class="comment">/*实线*/</span></span><br><span class="line">  <span class="selector-tag">doubled</span>  <span class="comment">/*双实线*/</span></span><br><span class="line">  <span class="selector-tag">groove</span>   <span class="comment">/*3D凹槽*/</span></span><br><span class="line">  <span class="selector-tag">ridge</span>    <span class="comment">/*菱形边框*/</span></span><br><span class="line">  <span class="selector-tag">inset</span>    <span class="comment">/*3D凹边*/</span></span><br><span class="line">  <span class="selector-tag">outset</span>   <span class="comment">/*3D凸边*/</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*设置边框颜色*/</span></span><br><span class="line"><span class="selector-tag">border-color</span>: <span class="selector-tag">red</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*边框整合写法：顺序无要求*/</span></span><br><span class="line">border: border-width | border-style | border-color;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*可以按照边框的上下左右设置*/</span></span><br><span class="line">border-top: border-width | border-style | border-color;</span><br><span class="line">border-buttom: border-width | border-style | border-color;</span><br><span class="line">border-left: border-width | border-style | border-color;</span><br><span class="line">border-right: border-width | border-style | border-color;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*合并相邻的边框*/</span></span><br><span class="line"><span class="selector-tag">border-collapse</span>: <span class="selector-tag">collapse</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>边框会影响盒子的大小，添加边框后的，盒子实际的大小=边框宽度 + 盒子宽度</li>
+</ul>
+<hr>
+<h3 id="4-内边距"><a href="#4-内边距" class="headerlink" title="4 内边距"></a>4 内边距</h3><h4 id="4-1-css使用"><a href="#4-1-css使用" class="headerlink" title="4.1 css使用"></a>4.1 css使用</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*上下左右内边距*/</span></span><br><span class="line"><span class="selector-tag">padding-top</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"><span class="selector-tag">padding-buttom</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"><span class="selector-tag">padding-left</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"><span class="selector-tag">padding-right</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*内边距复合写法*/</span></span><br><span class="line"><span class="selector-tag">padding</span>:</span><br><span class="line">  .<span class="selector-class">.px</span>                <span class="comment">/*1个值，就上下左右内边距都是这值*/</span></span><br><span class="line">  .<span class="selector-class">.px</span> .<span class="selector-class">.px</span>           <span class="comment">/*2个值*，第一个是上下边距值，第二个是左右边距值/</span></span><br><span class="line"><span class="comment">  ..px ..px ..px      /*3个值，第一个值是上边距，第二个是左右边距，第三个是下边距*/</span></span><br><span class="line">  .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> <span class="comment">/*4个值，分别是上右下左边距值，即顺时针算*/</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>内边距也会影响盒子的大小，盒子的实际大小 = 内边距大小 + 盒子宽度</li>
+<li>若盒子没有给定宽度大小，则内边距不会撑开盒子大小</li>
+</ul>
+<hr>
+<h3 id="5-外边距"><a href="#5-外边距" class="headerlink" title="5 外边距"></a>5 外边距</h3><h4 id="5-1-css使用"><a href="#5-1-css使用" class="headerlink" title="5.1 css使用"></a>5.1 css使用</h4><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*上下左右外边距*/</span></span><br><span class="line"><span class="selector-tag">margin-top</span>: .<span class="selector-class">.px</span></span><br><span class="line"><span class="selector-tag">margin-buttom</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"><span class="selector-tag">margin-left</span>: .<span class="selector-class">.px</span>;</span><br><span class="line"><span class="selector-tag">margin-right</span>: .<span class="selector-class">.px</span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*外边距复合写法：和padding使用方法一样*/</span></span><br><span class="line"><span class="selector-tag">margin</span>:</span><br><span class="line">  .<span class="selector-class">.px</span></span><br><span class="line">  .<span class="selector-class">.px</span> .<span class="selector-class">.px</span></span><br><span class="line">  .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> .<span class="selector-class">.px</span></span><br><span class="line">  .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> .<span class="selector-class">.px</span> .<span class="selector-class">.px</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-外边距应用"><a href="#5-2-外边距应用" class="headerlink" title="5.2 外边距应用"></a>5.2 外边距应用</h4><ul>
+<li><p>（1）块级盒子水平居中</p>
+<ul>
+<li>1、盒子指定宽度；</li>
+<li>2、左右外边距设置为auto，即<code>margin: 0 auto;</code></li>
+</ul>
+</li>
+<li><p>（2）行内元素、行内块元素水平居中</p>
+<ul>
+<li>在其父元素添加<code>text-align: center</code>即可</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-3-外边距合并"><a href="#5-3-外边距合并" class="headerlink" title="5.3 外边距合并"></a>5.3 外边距合并</h4><ul>
+<li>对于两个嵌套关系（父子关系）的块元素，子元素的外边距不会影响自己，反而是影响父元素的外边距</li>
+</ul>
+<ul>
+<li>解决方法：<ul>
+<li>（1）为父元素定义上边框</li>
+<li>（2）为父元素定义上内边距</li>
+<li>（3）为父元素添加<code>overflow: hidden</code></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="6-清除网页自带内外边距"><a href="#6-清除网页自带内外边距" class="headerlink" title="6 清除网页自带内外边距"></a>6 清除网页自带内外边距</h3><ul>
+<li><p>一些浏览器会自带内外边距，会影响我们的页面布局，所以在布局前，先清除内外边距</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* css的第一行代码 */</span></span><br><span class="line">* &#123;</span><br><span class="line">  <span class="attribute">margin</span>: <span class="number">0</span>;</span><br><span class="line">  <span class="attribute">padding</span>: <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>注意：行内元素为了照顾兼容性，尽量只设置左右内外边距，不要设置上下内外边距</p>
+</li>
+</ul>
+<hr>
+<h3 id="7-综合案例"><a href="#7-综合案例" class="headerlink" title="7 综合案例"></a>7 综合案例</h3><h4 id="7-1-新浪导航栏"><a href="#7-1-新浪导航栏" class="headerlink" title="7.1 新浪导航栏"></a>7.1 新浪导航栏</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>新浪导航栏<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="selector-class">.nav</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="comment">/*边框*/</span></span></span><br><span class="line"><span class="css">      <span class="selector-tag">border-top</span>: 3<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#ff8500</span>;</span></span><br><span class="line"><span class="css">      <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#edeef0</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*大小，背景*/</span></span></span><br><span class="line">      height: 41px;</span><br><span class="line"><span class="css">      <span class="selector-tag">background-color</span>: <span class="selector-id">#fcfcfc</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*调整文字位置*/</span></span></span><br><span class="line">      line-height: 41px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.nav</span> <span class="selector-tag">a</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="comment">/*转变成行内块元素，可以调整高度，也可以在同一行显示*/</span></span></span><br><span class="line">      display: inline-block;</span><br><span class="line">      height: 41px;</span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*文字调整*/</span></span></span><br><span class="line">      font-size: 12px;</span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#4c4c4c</span>;</span></span><br><span class="line">      text-decoration: none;</span><br><span class="line"></span><br><span class="line"><span class="css">      <span class="comment">/*内边距，利用内边距撑开盒子的宽度，而不是给固定的大小*/</span></span></span><br><span class="line">      padding: 0 20px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="selector-tag">background-color</span>: <span class="selector-id">#eee</span>;</span></span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#ff8500</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;nav&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>新浪导航<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>手机新浪网<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>移动客户端<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>微博<span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E6%96%B0%E6%B5%AA%E5%AF%BC%E8%88%AA%E6%A0%8F.png" class="">
+
+<h4 id="7-2-产品模块"><a href="#7-2-产品模块" class="headerlink" title="7.2 产品模块"></a>7.2 产品模块</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>产品模块<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="comment">/*消除网页自带的内外边距*/</span></span></span><br><span class="line">    * &#123;</span><br><span class="line">      margin: 0;</span><br><span class="line">      padding: 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    body &#123;</span><br><span class="line"><span class="css">      <span class="selector-tag">background-color</span>: <span class="selector-id">#f5f5f5</span>;</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> &#123;</span></span><br><span class="line">      width: 298px;</span><br><span class="line">      height: 415px;</span><br><span class="line"><span class="css">      <span class="comment">/*水平居中*/</span></span></span><br><span class="line">      margin: 0 auto;</span><br><span class="line">      background-color: white;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">img</span> &#123;</span></span><br><span class="line"><span class="css">      <span class="comment">/*跳转图片大小与父元素一样宽*/</span></span></span><br><span class="line">      width: 100%;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.review</span> &#123;</span></span><br><span class="line">      font-size: 14px;</span><br><span class="line">      height: 70px;</span><br><span class="line">      margin-top: 28px;</span><br><span class="line">      padding: 0 28px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.appraise</span> &#123;</span></span><br><span class="line">      font-size: 12px;</span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#b0b0b0</span>;</span></span><br><span class="line">      margin-top: 20px;</span><br><span class="line">      padding: 0 28px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.info</span> <span class="selector-tag">h4</span>&#123;</span></span><br><span class="line">      display: inline-block;</span><br><span class="line">      font-size: 14px;</span><br><span class="line">      margin: 15px 28px 0;</span><br><span class="line"><span class="css">      <span class="comment">/*文字不加粗*/</span></span></span><br><span class="line">      font-weight: 400;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="selector-class">.info</span> <span class="selector-tag">span</span> &#123;</span></span><br><span class="line">      font-size: 14px;</span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#ff6700</span>;</span></span><br><span class="line"><span class="css">      <span class="selector-tag">border-left</span>: 2<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#ebe4e0</span>;</span></span><br><span class="line">      padding-left: 15px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span>=<span class="string">&quot;img.jpg&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">p</span> <span class="attr">class</span>=<span class="string">&quot;review&quot;</span>&gt;</span>快递牛，整体不错蓝牙可以说秒连。红米给力<span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;appraise&quot;</span>&gt;</span></span><br><span class="line">      来自于117384232的评价</span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;info&quot;</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">h4</span>&gt;</span>Redmi AirDots真无线蓝...<span class="tag">&lt;/<span class="name">h4</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">span</span>&gt;</span>99.9元<span class="tag">&lt;/<span class="name">span</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E4%BA%A7%E5%93%81%E6%A8%A1%E5%9D%97.png" class="">
+
+<hr>
+<h4 id="7-3-快报模块"><a href="#7-3-快报模块" class="headerlink" title="7.3 快报模块"></a>7.3 快报模块</h4><figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">title</span>&gt;</span>快报模块<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="css">    <span class="comment">/*清除页面自带内外边距*/</span></span></span><br><span class="line">    * &#123;</span><br><span class="line">      margin: 0;</span><br><span class="line">      padding: 0;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*最外层盒子布局（宽，高，边框，位置）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> &#123;</span></span><br><span class="line">      width: 248px;</span><br><span class="line">      height: 163px;</span><br><span class="line"><span class="css">      <span class="selector-tag">border</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">solid</span> <span class="selector-id">#ccc</span>;</span></span><br><span class="line">      margin: 100px auto;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*标题布局（文字大小，取消加粗，高，行高居中，下边框，内边距）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">h3</span> &#123;</span></span><br><span class="line">      font-size: 14px;</span><br><span class="line">      font-weight: 400;</span><br><span class="line">      height: 32px;</span><br><span class="line">      line-height: 32px;</span><br><span class="line"><span class="css">      <span class="selector-tag">border-bottom</span>: 1<span class="selector-tag">px</span> <span class="selector-tag">dotted</span> <span class="selector-id">#ccc</span>;</span></span><br><span class="line">      padding-left: 15px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*列表整体布局（上外边距）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">ul</span> &#123;</span></span><br><span class="line">      margin-top: 7px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*无序列表布局（去除列表原点，高，行高居中，左内边距）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> &#123;</span></span><br><span class="line">      list-style: none;</span><br><span class="line">      height: 23px;</span><br><span class="line">      line-height: 23px;</span><br><span class="line">      padding-left: 20px;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*列表链接布局（文字大小，颜色，无下划线）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span> &#123;</span></span><br><span class="line">      font-size: 12px;</span><br><span class="line"><span class="css">      <span class="selector-tag">color</span>: <span class="selector-id">#666666</span>;</span></span><br><span class="line">      text-decoration: none;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="css">    <span class="comment">/*鼠标浏览链接（下划线）*/</span></span></span><br><span class="line"><span class="css">    <span class="selector-class">.box</span> <span class="selector-tag">ul</span> <span class="selector-tag">li</span> <span class="selector-tag">a</span><span class="selector-pseudo">:hover</span> &#123;</span></span><br><span class="line">      text-decoration: underline;</span><br><span class="line">    &#125;</span><br><span class="line">  <span class="tag">&lt;/<span class="name">style</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;box&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">h3</span>&gt;</span>品优购快报<span class="tag">&lt;/<span class="name">h3</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">ul</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>【特惠】爆款耳机5折秒！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>【特惠】母亲节，健康好礼低至5折！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>【特惠】9.9元洗100张照片！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>【特惠】NS只需1999元购买！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">li</span>&gt;</span><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span>=<span class="string">&quot;#&quot;</span>&gt;</span>【特惠】怪物猎人Rise只需300元！<span class="tag">&lt;/<span class="name">a</span>&gt;</span><span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B/%E5%BF%AB%E6%8A%A5%E6%A8%A1%E5%9D%97.png" class="">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/02/16/%E3%80%90CSS%E3%80%91CSS%E5%9F%BA%E7%A1%80%E8%A1%A5%E5%85%85/" rel="prev" title="【CSS】CSS基础补充">
+      <i class="fa fa-chevron-left"></i> 【CSS】CSS基础补充
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/02/19/%E3%80%90CSS%E3%80%91%E7%9B%92%E5%AD%90%E7%BE%8E%E5%8C%96/" rel="next" title="【CSS】盒子美化">
+      【CSS】盒子美化 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%BD%91%E9%A1%B5%E5%B8%83%E5%B1%80%E7%9A%84%E6%9C%AC%E8%B4%A8"><span class="nav-text">1 网页布局的本质</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%9B%92%E5%AD%90%E6%A8%A1%E5%9E%8B%E7%BB%84%E6%88%90"><span class="nav-text">2 盒子模型组成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%BE%B9%E6%A1%86"><span class="nav-text">3 边框</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%86%85%E8%BE%B9%E8%B7%9D"><span class="nav-text">4 内边距</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-css%E4%BD%BF%E7%94%A8"><span class="nav-text">4.1 css使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%A4%96%E8%BE%B9%E8%B7%9D"><span class="nav-text">5 外边距</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-css%E4%BD%BF%E7%94%A8"><span class="nav-text">5.1 css使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E5%A4%96%E8%BE%B9%E8%B7%9D%E5%BA%94%E7%94%A8"><span class="nav-text">5.2 外边距应用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E5%A4%96%E8%BE%B9%E8%B7%9D%E5%90%88%E5%B9%B6"><span class="nav-text">5.3 外边距合并</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E6%B8%85%E9%99%A4%E7%BD%91%E9%A1%B5%E8%87%AA%E5%B8%A6%E5%86%85%E5%A4%96%E8%BE%B9%E8%B7%9D"><span class="nav-text">6 清除网页自带内外边距</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E7%BB%BC%E5%90%88%E6%A1%88%E4%BE%8B"><span class="nav-text">7 综合案例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E6%96%B0%E6%B5%AA%E5%AF%BC%E8%88%AA%E6%A0%8F"><span class="nav-text">7.1 新浪导航栏</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-%E4%BA%A7%E5%93%81%E6%A8%A1%E5%9D%97"><span class="nav-text">7.2 产品模块</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-%E5%BF%AB%E6%8A%A5%E6%A8%A1%E5%9D%97"><span class="nav-text">7.3 快报模块</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

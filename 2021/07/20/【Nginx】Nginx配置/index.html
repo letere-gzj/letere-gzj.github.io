@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Nginx中各种配置的实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Nginx】Nginx配置">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Nginx中各种配置的实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/tomcat%E4%B8%8B%E8%BD%BD.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/tomcat%E7%AB%AF%E5%8F%A3%E5%8F%B7.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%951.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%952.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%B5%8B%E8%AF%951.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%B5%8B%E8%AF%952.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E6%B5%8B%E8%AF%951.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E6%B5%8B%E8%AF%952.png">
+<meta property="article:published_time" content="2021-07-20T02:50:40.000Z">
+<meta property="article:modified_time" content="2021-07-26T13:02:26.483Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE1.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Nginx】Nginx配置 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Nginx】Nginx配置
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-20 10:50:40" itemprop="dateCreated datePublished" datetime="2021-07-20T10:50:40+08:00">2021-07-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-07-26 21:02:26" itemprop="dateModified" datetime="2021-07-26T21:02:26+08:00">2021-07-26</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Nginx/" itemprop="url" rel="index"><span itemprop="name">Nginx</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Nginx中各种配置的实现</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-配置文件"><a href="#1-配置文件" class="headerlink" title="1 配置文件"></a>1 配置文件</h3><ul>
+<li>nginx配置文件的路径：”/usr/local/nginx/conf/nginx.conf”</li>
+</ul>
+<h4 id="1-1-配置文件组成部分"><a href="#1-1-配置文件组成部分" class="headerlink" title="1.1 配置文件组成部分"></a>1.1 配置文件组成部分</h4><ul>
+<li><strong>（1）全局块</strong></li>
+<li>nginx配置文件的一些全局配置</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE1.png" class="">·
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">work_process 1;</span><br><span class="line"><span class="comment"># 并发处理值，值越大，并发处理数越大</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（2）event块</strong></li>
+<li>主要影响nginx服务器与用户的网络连接</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE2.png" class="">
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">worker_connections 1024;</span><br><span class="line"><span class="comment"># nginx支持的最大连接数，与nginx性能关系巨大，需要按需配置</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（3）http块</strong></li>
+<li>nginx配置中最频繁的部分，代理、缓存和日志定义等绝大多数功能和第三方模块都在此配置</li>
+<li>http块可以细分为<strong>http全局块、server块</strong></li>
+<li>http块存在多个Server块</li>
+</ul>
+<ul>
+<li><strong>（4）http全局块</strong></li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE3.png" class="">
+
+
+<ul>
+<li><strong>（5）server块</strong></li>
+<li>此块与虚拟主机有密切关系，为了节省互联网服务硬件成本</li>
+<li>server块可以细分为<strong>全局server块、location块</strong></li>
+<li>server块存在多个location块</li>
+</ul>
+<ul>
+<li><strong>（6）全局server块</strong></li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE4.png" class="">
+
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">listen 80;</span><br><span class="line"><span class="comment"># nginx服务监听的端口号为80</span></span><br><span class="line"></span><br><span class="line">server_name localhost;</span><br><span class="line"><span class="comment"># 服务名称为localhost</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（7）location块</strong></li>
+<li>配置请求转发</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/nginx%E9%85%8D%E7%BD%AE5.png" class="">
+
+<hr>
+<h3 id="2-反向代理配置"><a href="#2-反向代理配置" class="headerlink" title="2 反向代理配置"></a>2 反向代理配置</h3><h4 id="2-1-tomcat安装配置"><a href="#2-1-tomcat安装配置" class="headerlink" title="2.1 tomcat安装配置"></a>2.1 tomcat安装配置</h4><ul>
+<li><strong>（1）Tomcat下载</strong></li>
+<li>tomcat下载地址：<a target="_blank" rel="noopener" href="https://tomcat.apache.org/download-10.cgi">https://tomcat.apache.org/download-10.cgi</a></li>
+<li>下载tar.gz后缀名文件</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/tomcat%E4%B8%8B%E8%BD%BD.png" class="">
+
+
+<ul>
+<li><p><strong>（2）解压</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">tar -zxvf 文件名</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>（3）启动</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 切换目录到tomcat的bin目录下</span></span><br><span class="line">./startup.sh</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<h4 id="2-2-配置实例1"><a href="#2-2-配置实例1" class="headerlink" title="2.2 配置实例1"></a>2.2 配置实例1</h4><p><strong>目标：访问指定ip地址，自动转发到tomcat服务中</strong></p>
+<ul>
+<li><strong>（1）nginx请求转发配置</strong></li>
+<li>配置location块，来实现请求转发<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	<span class="comment"># 端口号</span></span><br><span class="line">	listen       80;</span><br><span class="line">	<span class="comment"># 服务名称</span></span><br><span class="line">	server_name  192.168.85.130;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 请求转发地址</span></span><br><span class="line">	location / &#123;</span><br><span class="line">		root   html;</span><br><span class="line">		proxy_pass http://127.0.0.1:8080/;</span><br><span class="line">		index  index.html index.htm;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试效果</strong></li>
+<li>修改完nginx后，需要重启nginx</li>
+<li>浏览器输入：http://服务名称:端口号/转发地址</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%95.png" class="">
+
+
+<h4 id="2-3-配置实例2"><a href="#2-3-配置实例2" class="headerlink" title="2.3 配置实例2"></a>2.3 配置实例2</h4><p><strong>目标：根据访问地址的不同，转发到不同的tomcat服务器中</strong></p>
+<ul>
+<li><strong>（1）准备多一个tomcat服务</strong></li>
+<li>复制tomcat文件夹</li>
+<li>修改/conf/server.xml中的端口号</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/tomcat%E7%AB%AF%E5%8F%A3%E5%8F%B7.png" class="">
+
+
+<ul>
+<li><strong>（2）准备一些静态文件，好进行两端口区分</strong></li>
+<li>8080端口在/webapps创建文件夹/edu</li>
+<li>8081端口在/webapps创建文件夹/cov</li>
+<li>在两文件夹下放入a.html，内容如下文<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>here is 8080/8081!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）nginx配置</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">	<span class="comment"># 端口号</span></span><br><span class="line">	listen 8001;</span><br><span class="line">	<span class="comment"># 服务名称</span></span><br><span class="line">	server_name 192.168.85.130;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 转发路径（正则匹配）</span></span><br><span class="line">	location ~ /edu/ &#123;</span><br><span class="line">		proxy_pass http://127.0.0.1:8080;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 转发路径2（正则匹配）</span></span><br><span class="line">	location ~ /cov/ &#123;</span><br><span class="line">		proxy_pass http://127.0.0.1:8081;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）防火墙开放8001端口</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加8001端口</span></span><br><span class="line">firewall-cmd --add-port=8001/tcp --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重载防火墙</span></span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（5）测试效果</strong></li>
+<li>事先启动tomcat8080、tomcat8081、nginx三个服务</li>
+<li>分别访问两个tomcat的静态资源a.html</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%951.png" class="">
+
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E6%B5%8B%E8%AF%952.png" class="">
+
+
+<h4 id="2-4-补充说明"><a href="#2-4-补充说明" class="headerlink" title="2.4 补充说明"></a>2.4 补充说明</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">location [ = | ~ | ~* | ^~] uri &#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># location路径有可选选项进行填写</span></span><br><span class="line"><span class="comment"># =：用于不含正则表达式的uri前，要求字符串uri严格匹配</span></span><br><span class="line"><span class="comment"># ~：用于表示uri包含正则表达式，区分大小写</span></span><br><span class="line"><span class="comment"># ~*：用于表示uri包含正则表达式。不区分大小写</span></span><br><span class="line"><span class="comment"># ^~：用于不含正则表达式的uri前，寻找匹配度最高的location后，立即使用此location处理请求</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-负载均衡"><a href="#3-负载均衡" class="headerlink" title="3 负载均衡"></a>3 负载均衡</h3><h4 id="3-1-配置步骤"><a href="#3-1-配置步骤" class="headerlink" title="3.1 配置步骤"></a>3.1 配置步骤</h4><ul>
+<li><strong>（1）准备一个相同的服务</strong></li>
+<li>继上面的反向代理，在tomcat8081的/webapps在创建edu目录，并创建文件a.html，内容如下<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">h1</span>&gt;</span>here is 8081!<span class="tag">&lt;/<span class="name">h1</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）nginx配置</strong></li>
+<li>在http块中进行配置<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 负载均衡的服务器（名字自定义）</span></span><br><span class="line">upstream www.balance.com &#123;</span><br><span class="line">	server 127.0.0.1:8080;</span><br><span class="line">	server 127.0.0.1:8081;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">server &#123;</span><br><span class="line">	<span class="comment"># 端口号</span></span><br><span class="line">	listen 8002;</span><br><span class="line">	<span class="comment"># 服务名</span></span><br><span class="line">	server_name 192.168.85.130;</span><br><span class="line">	</span><br><span class="line">	<span class="comment"># 转发路径（路径为上面负载均衡的服务器名）</span></span><br><span class="line">	location ~ /edu/ &#123;</span><br><span class="line">		proxy_pass http://www.balance.com;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）防火墙开放8002端口</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加8001端口</span></span><br><span class="line">firewall-cmd --add-port=8002/tcp --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重载防火墙</span></span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）测试效果</strong></li>
+<li>记得重新启动tomcat8081和nginx</li>
+<li>输入地址后，每次刷新都会切换到不同的tomcat服务（默认轮询算法）</li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%B5%8B%E8%AF%951.png" class="">
+
+
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%E6%B5%8B%E8%AF%952.png" class="">
+
+
+<h4 id="3-2-补充说明"><a href="#3-2-补充说明" class="headerlink" title="3.2 补充说明"></a>3.2 补充说明</h4><ul>
+<li><strong>Nginx分配策略</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 不做任何配置，默认使用轮询：每个请求一个接一个平均分配到不同的服务器中</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># 权重策略：权重越高，分配给该服务器的请求数越多</span></span><br><span class="line">upstream www.balance.com &#123;</span><br><span class="line">	server 127.0.0.1:8080 weight=1;</span><br><span class="line">	server 127.0.0.1:8081 weight=2;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># ip_hash：根据请求ip的hash值进行服务器分配，每个访客的固定在一台服务器，解决session问题</span></span><br><span class="line">upstream www.balance.com &#123;</span><br><span class="line">	ip_hash;</span><br><span class="line">	server 127.0.0.1:8080;</span><br><span class="line">	server 127.0.0.1:8081;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment"># fair（公平）：根据后端服务器的响应时间来分配，响应时间越短的服务器优先分配请求</span></span><br><span class="line">upstream www.balance.com &#123;</span><br><span class="line">	server 127.0.0.1:8080;</span><br><span class="line">	server 127.0.0.1:8081;</span><br><span class="line">	fair;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h3 id="4-动静分离"><a href="#4-动静分离" class="headerlink" title="4 动静分离"></a>4 动静分离</h3><h4 id="4-1-介绍"><a href="#4-1-介绍" class="headerlink" title="4.1 介绍"></a>4.1 介绍</h4><ul>
+<li><strong>动静分离</strong>：即将动态资源和静态资源部署在不同的服务器中</li>
+<li><strong>动态资源</strong>：一般指与数据库交互得到的数据</li>
+<li><strong>静态资源</strong>：一般指前端文件，即html、css、js等</li>
+</ul>
+<ul>
+<li><strong>实现思路</strong>：通过请求的后缀名不同，来区分动态/静态资源。通过expires参数，设置浏览器缓存，减少服务器请求。如果在指定缓存日期内请求，则会直接发送304状态码，让用户从自家浏览器缓存获取资源（前提服务器最后更新时间与浏览器缓存资源的最后更新时间一致，否则还是会从服务器下载资源）</li>
+</ul>
+<h4 id="4-2-配置实例"><a href="#4-2-配置实例" class="headerlink" title="4.2 配置实例"></a>4.2 配置实例</h4><ul>
+<li><strong>（1）准备静态资源</strong></li>
+<li>准备一个图片和html文件</li>
+</ul>
+<ul>
+<li><strong>（2）nginx配置</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 若出现访问403，则需要此设置</span></span><br><span class="line">user root;</span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">	server &#123;</span><br><span class="line">		<span class="comment"># 端口号</span></span><br><span class="line">		listen 8003;</span><br><span class="line">		<span class="comment"># 服务名</span></span><br><span class="line">		server_name 192.168.85.130;</span><br><span class="line"></span><br><span class="line">		<span class="comment"># 请求转发（正则过滤静态资源）</span></span><br><span class="line">		location ~ .*\.(jpg|html)$ &#123;</span><br><span class="line">			<span class="comment"># 资源存放路径</span></span><br><span class="line">			root /home/letere/nginx_learn/static/;</span><br><span class="line">			<span class="comment"># 资源缓存时间</span></span><br><span class="line">			expires 7d;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）防火墙开放8003端口</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 添加8003端口</span></span><br><span class="line">firewall-cmd --add-port=8002/tcp --permanent</span><br><span class="line"></span><br><span class="line"><span class="comment"># 重载防火墙</span></span><br><span class="line">firewall-cmd --reload</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（4）测试效果</strong></li>
+</ul>
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E6%B5%8B%E8%AF%951.png" class="">
+
+<img src="/blog/2021/07/20/%E3%80%90Nginx%E3%80%91Nginx%E9%85%8D%E7%BD%AE/%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB%E6%B5%8B%E8%AF%952.png" class="">
+
+<hr>
+<h3 id="5-Nginx高可用集群"><a href="#5-Nginx高可用集群" class="headerlink" title="5 Nginx高可用集群"></a>5 Nginx高可用集群</h3><h4 id="5-1-keepalived安装"><a href="#5-1-keepalived安装" class="headerlink" title="5.1 keepalived安装"></a>5.1 keepalived安装</h4><ul>
+<li><strong>指令：</strong><code>yum -y install keepalived</code></li>
+</ul>
+<ul>
+<li><strong>keepalived配置文件路径：</strong>/etc/keepalived</li>
+</ul>
+<h4 id="5-2-keepalived配置"><a href="#5-2-keepalived配置" class="headerlink" title="5.2 keepalived配置"></a>5.2 keepalived配置</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 脚本配置</span></span><br><span class="line">vrrp_script 脚本名 &#123;</span><br><span class="line">	script <span class="string">&quot;脚本路径&quot;</span></span><br><span class="line">	<span class="comment"># 脚本执行时间（单位：秒）</span></span><br><span class="line">	interval 数字</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 服务器配置</span></span><br><span class="line">vrrp_instance 服务器名 &#123;</span><br><span class="line">	<span class="comment"># 服务器是主服务器/备份服务器</span></span><br><span class="line">	state MASTER/BACKUP</span><br><span class="line">	<span class="comment"># 网卡名称（通过ifconfig查看）</span></span><br><span class="line">	interface 网卡名</span><br><span class="line">	<span class="comment"># 路由id，同一服务使用同一id值</span></span><br><span class="line">	virtual_router_id id值</span><br><span class="line">	<span class="comment"># 优先级</span></span><br><span class="line">	priority 数字</span><br><span class="line">	<span class="comment"># 对外虚拟ip地址</span></span><br><span class="line">	virtual_ipaddress &#123;</span><br><span class="line">		id地址</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/07/19/%E3%80%90Nginx%E3%80%91Nginx%E5%85%A5%E9%97%A8/" rel="prev" title="【Nginx】Nginx入门">
+      <i class="fa fa-chevron-left"></i> 【Nginx】Nginx入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/07/26/%E3%80%90Nginx%E3%80%91Nginx%E5%8E%9F%E7%90%86/" rel="next" title="【Nginx】Nginx原理">
+      【Nginx】Nginx原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">1 配置文件</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E7%BB%84%E6%88%90%E9%83%A8%E5%88%86"><span class="nav-text">1.1 配置文件组成部分</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86%E9%85%8D%E7%BD%AE"><span class="nav-text">2 反向代理配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-tomcat%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="nav-text">2.1 tomcat安装配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B1"><span class="nav-text">2.2 配置实例1</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B2"><span class="nav-text">2.3 配置实例2</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E"><span class="nav-text">2.4 补充说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1"><span class="nav-text">3 负载均衡</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E9%85%8D%E7%BD%AE%E6%AD%A5%E9%AA%A4"><span class="nav-text">3.1 配置步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E8%A1%A5%E5%85%85%E8%AF%B4%E6%98%8E"><span class="nav-text">3.2 补充说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB"><span class="nav-text">4 动静分离</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">4.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E9%85%8D%E7%BD%AE%E5%AE%9E%E4%BE%8B"><span class="nav-text">4.2 配置实例</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-Nginx%E9%AB%98%E5%8F%AF%E7%94%A8%E9%9B%86%E7%BE%A4"><span class="nav-text">5 Nginx高可用集群</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-keepalived%E5%AE%89%E8%A3%85"><span class="nav-text">5.1 keepalived安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-keepalived%E9%85%8D%E7%BD%AE"><span class="nav-text">5.2 keepalived配置</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

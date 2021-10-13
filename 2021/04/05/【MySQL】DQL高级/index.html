@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="DQL查询语句的高级使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL】DQL高级">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="DQL查询语句的高级使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A21.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A22.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E9%9D%9E%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E5%A4%96%E8%BF%9E%E6%8E%A51.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A23.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/where%E5%AD%90%E6%9F%A5%E8%AF%A21.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/from%E5%AD%90%E6%9F%A5%E8%AF%A2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/select%E5%AD%90%E6%9F%A5%E8%AF%A2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/union%E5%90%88%E6%88%90.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/limit%E6%88%AA%E5%8F%961.png">
+<meta property="article:published_time" content="2021-04-05T06:00:11.000Z">
+<meta property="article:modified_time" content="2021-04-05T06:02:48.521Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A21.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MySQL】DQL高级 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MySQL】DQL高级
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-05 14:00:11 / 修改时间：14:02:48" itemprop="dateCreated datePublished" datetime="2021-04-05T14:00:11+08:00">2021-04-05</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>DQL查询语句的高级使用</p>
+<a id="more"></a>
+<hr>
+<h3 id="1-连接查询（级联查询）"><a href="#1-连接查询（级联查询）" class="headerlink" title="1 连接查询（级联查询）"></a>1 连接查询（级联查询）</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><ul>
+<li>在实际开发中，大部分的情况下都不是从单表中查询数据，一般都是多张变联合查询取出最终的结果</li>
+</ul>
+<h4 id="1-2-分类"><a href="#1-2-分类" class="headerlink" title="1.2 分类"></a>1.2 分类</h4><ul>
+<li><strong>（1）年代划分</strong></li>
+<li>SQL92（老）</li>
+<li>SQL99（比较新）</li>
+</ul>
+<ul>
+<li><strong>（2）连接方式划分</strong></li>
+<li>内连接：<ul>
+<li>等值连接</li>
+<li>非等值连接</li>
+<li>自连接</li>
+</ul>
+</li>
+<li>外连接<ul>
+<li>左外连接（左连接）</li>
+<li>右外连接（右连接）</li>
+</ul>
+</li>
+<li>全连接（少用）</li>
+</ul>
+<h4 id="1-3-笛卡尔乘积现象"><a href="#1-3-笛卡尔乘积现象" class="headerlink" title="1.3 笛卡尔乘积现象"></a>1.3 笛卡尔乘积现象</h4><ul>
+<li>当两张表进行连接查询，如果不设置过滤条件(where)，查询出来结果个数为x*y</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A21.png" class="">
+
+<ul>
+<li>此现象为表连接查询的原理：两张表数据相乘，再进行过滤，最后得出想要的数据</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A22.png" class="">
+
+<ul>
+<li>上面连接查询方法为SQL92，不建议使用</li>
+</ul>
+<h4 id="1-4-内连接"><a href="#1-4-内连接" class="headerlink" title="1.4 内连接"></a>1.4 内连接</h4><ul>
+<li><strong>内连接</strong>：假设A和B表进行连接，使用内连接的话，凡是A表和B表能够匹配上的记录都查询出来。AB量表没有主副之分，两张表时平等的</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> 字段</span><br><span class="line"><span class="keyword">from</span> 表<span class="number">1</span></span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> 表<span class="number">2</span></span><br><span class="line"><span class="keyword">on</span> 连接过滤条件</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>现在普遍使用SQL99语法，因为99将<strong>连接过滤条件和连接后的过滤条件进行了分离</strong>，阅读性更好。</li>
+<li>SQL92若要补充连接后的where条件，只能使用and来连接，使得与连接过滤条件混合</li>
+<li>inner join 中的 inner 可以省略</li>
+</ul>
+<ul>
+<li><strong>（1）等值连接</strong></li>
+<li>顾名思义：连接过滤条件是用等于表达式进行连接</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5.png" class="">
+
+
+<ul>
+<li><strong>（2）非等值连接</strong></li>
+<li>与等值连接相反，连接过滤条件并不是用等于表达式进行连接</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E9%9D%9E%E7%AD%89%E5%80%BC%E8%BF%9E%E6%8E%A5.png" class="">
+
+
+<ul>
+<li><strong>（3）自连接</strong></li>
+<li>自连接的特点：一张表当作两张表来进行连接</li>
+<li>例：员工的领导编号 = 领导的员工编号，两个编号都在同一张员工表上</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> a.ename <span class="string">&#x27;员工名&#x27;</span>, b.ename <span class="string">&#x27;领导名&#x27;</span>、</span><br><span class="line"><span class="keyword">from</span> emp a</span><br><span class="line"><span class="keyword">inner</span> <span class="keyword">join</span> emp b</span><br><span class="line"><span class="keyword">on</span> a.mgr = b.empno;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-5-外连接"><a href="#1-5-外连接" class="headerlink" title="1.5 外连接"></a>1.5 外连接</h4><ul>
+<li><strong>外连接</strong>：假设A和B表进行连接，使用外连接的话，AB两张表有一张表时主表，一张表是附表，主要查询主表中的数据，捎带查询副表，当副表中的数据没有和主表中的数据匹配上，副表自动模拟出null与之匹配</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> 字段</span><br><span class="line"><span class="keyword">from</span> 表<span class="number">1</span></span><br><span class="line"><span class="keyword">left</span>|<span class="keyword">right</span> <span class="keyword">outer</span> <span class="keyword">join</span> 表<span class="number">2</span></span><br><span class="line"><span class="keyword">on</span> 连接条件</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>左外连接（左连接）：表示左边的表是主表，使用<code>left outer join</code></li>
+<li>右外连接（右连接）：表示右边的表时主表，使用<code>right outer join</code></li>
+<li>和内连接一样，外连接的<code>outer</code>可省略</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E5%A4%96%E8%BF%9E%E6%8E%A51.png" class="">
+
+<h4 id="1-6-多表之间连接"><a href="#1-6-多表之间连接" class="headerlink" title="1.6 多表之间连接"></a>1.6 多表之间连接</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> 字段</span><br><span class="line"><span class="keyword">from</span> 表<span class="number">1</span></span><br><span class="line"><span class="keyword">join</span> 表<span class="number">2</span></span><br><span class="line"><span class="keyword">on</span> 连接条件</span><br><span class="line"><span class="keyword">join</span> 表<span class="number">3</span></span><br><span class="line"><span class="keyword">on</span> 连接条件</span><br><span class="line">...以此类推</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A23.png" class="">
+
+<hr>
+<h3 id="2-子查询"><a href="#2-子查询" class="headerlink" title="2 子查询"></a>2 子查询</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><ul>
+<li>子查询：select语句当前嵌套select 语句，被嵌套的select语句为子查询</li>
+<li>子查询可以出现在select、from、where后面</li>
+</ul>
+<h4 id="2-2-where使用子查询"><a href="#2-2-where使用子查询" class="headerlink" title="2.2 where使用子查询"></a>2.2 where使用子查询</h4><ul>
+<li><strong>使用思想</strong>：将子查询得出的结果理解为一个参数值</li>
+</ul>
+<ul>
+<li>例：求出高于平均分的学生信息</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/where%E5%AD%90%E6%9F%A5%E8%AF%A21.png" class="">
+
+<h4 id="2-3-from使用子查询"><a href="#2-3-from使用子查询" class="headerlink" title="2.3 from使用子查询"></a>2.3 from使用子查询</h4><ul>
+<li><strong>使用思想</strong>：将子查询得出的结果理解为一张新表</li>
+</ul>
+<ul>
+<li>例：求出每个班级平均分的分数等级</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/from%E5%AD%90%E6%9F%A5%E8%AF%A2.png" class="">
+
+<h4 id="2-4-select使用子查询"><a href="#2-4-select使用子查询" class="headerlink" title="2.4 select使用子查询"></a>2.4 select使用子查询</h4><ul>
+<li><strong>使用思想</strong>：将子查询得出的结果理解为一个带逻辑处理的字段</li>
+</ul>
+<ul>
+<li>例：求出每个学生的班级名称（连接查询可以解决）</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/select%E5%AD%90%E6%9F%A5%E8%AF%A2.png" class="">
+
+<hr>
+<h3 id="3-Union"><a href="#3-Union" class="headerlink" title="3 Union"></a>3 Union</h3><ul>
+<li>Union将两张表合成为一张表</li>
+<li>合成要求：两张表的列数要一样</li>
+<li>合成后的字段名，按照最前面合成的表</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/union%E5%90%88%E6%88%90.png" class="">
+
+<hr>
+<h3 id="4-limit"><a href="#4-limit" class="headerlink" title="4 limit"></a>4 limit</h3><ul>
+<li>limit非常常用，一般用于分页查询</li>
+<li>limit是<strong>mysql特有</strong>的，其他数据库中没有，不通用。（Oracle中有一个相同的机制，叫做rownum）</li>
+<li>limit作用：<strong>取结果集的部分数据</strong></li>
+<li>limit在sql语句中执行顺序为最后</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">limit [startIndex], [length]</span><br><span class="line"></span><br><span class="line">startIndex：数据起始位置</span><br><span class="line">length：数据长度</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>startIndex可以省略，默认从0开始</li>
+</ul>
+<img src="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DQL%E9%AB%98%E7%BA%A7/limit%E6%88%AA%E5%8F%961.png" class="">
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/04/%E3%80%90MySQL%E3%80%91DQL%E5%9F%BA%E7%A1%80/" rel="prev" title="【MySQL】DQL基础">
+      <i class="fa fa-chevron-left"></i> 【MySQL】DQL基础
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/05/%E3%80%90MySQL%E3%80%91DML%E4%BD%BF%E7%94%A8/" rel="next" title="【MySQL】DML使用">
+      【MySQL】DML使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E8%BF%9E%E6%8E%A5%E6%9F%A5%E8%AF%A2%EF%BC%88%E7%BA%A7%E8%81%94%E6%9F%A5%E8%AF%A2%EF%BC%89"><span class="nav-text">1 连接查询（级联查询）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%88%86%E7%B1%BB"><span class="nav-text">1.2 分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%AC%9B%E5%8D%A1%E5%B0%94%E4%B9%98%E7%A7%AF%E7%8E%B0%E8%B1%A1"><span class="nav-text">1.3 笛卡尔乘积现象</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%86%85%E8%BF%9E%E6%8E%A5"><span class="nav-text">1.4 内连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E5%A4%96%E8%BF%9E%E6%8E%A5"><span class="nav-text">1.5 外连接</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-%E5%A4%9A%E8%A1%A8%E4%B9%8B%E9%97%B4%E8%BF%9E%E6%8E%A5"><span class="nav-text">1.6 多表之间连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-text">2 子查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.1 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-where%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-text">2.2 where使用子查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-from%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-text">2.3 from使用子查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-select%E4%BD%BF%E7%94%A8%E5%AD%90%E6%9F%A5%E8%AF%A2"><span class="nav-text">2.4 select使用子查询</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Union"><span class="nav-text">3 Union</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-limit"><span class="nav-text">4 limit</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

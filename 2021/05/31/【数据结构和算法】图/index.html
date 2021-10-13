@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="数据结构之图的介绍和实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【数据结构和算法】图">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="数据结构之图的介绍和实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E8%A1%A8.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E8%A1%A8%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png">
+<meta property="article:published_time" content="2021-05-31T15:27:18.000Z">
+<meta property="article:modified_time" content="2021-06-01T01:42:49.174Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【数据结构和算法】图 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【数据结构和算法】图
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-05-31 23:27:18" itemprop="dateCreated datePublished" datetime="2021-05-31T23:27:18+08:00">2021-05-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-06-01 09:42:49" itemprop="dateModified" datetime="2021-06-01T09:42:49+08:00">2021-06-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>数据结构之图的介绍和实现</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-图"><a href="#1-图" class="headerlink" title="1 图"></a>1 图</h3><h4 id="1-1-使用场景"><a href="#1-1-使用场景" class="headerlink" title="1.1 使用场景"></a>1.1 使用场景</h4><blockquote>
+<p>线性表：只有一个前驱节点和一个后继节点（1 : 1）<br>树：有一个前驱节点和多个后继节点（1 : 多）</p>
+</blockquote>
+<blockquote>
+<p>一旦问题需要<code>多 : 多</code>的时候，以上的数据结构都不太适用<br>所以诞生出了新的数据结构 - <strong>图</strong></p>
+</blockquote>
+<h4 id="1-2-介绍"><a href="#1-2-介绍" class="headerlink" title="1.2 介绍"></a>1.2 介绍</h4><blockquote>
+<p>图是一种数据结构，其中节点可以具有0个或者多个相邻元素。两个节点之间的连接称为边。节点也可以称为顶点</p>
+</blockquote>
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png" class="">
+
+<h4 id="1-3-概念"><a href="#1-3-概念" class="headerlink" title="1.3 概念"></a>1.3 概念</h4><ul>
+<li>（1）顶点【vertex】：图中的节点</li>
+</ul>
+<ul>
+<li>（2）边【edge】：两节点之间的线</li>
+</ul>
+<ul>
+<li>（3）路径：节点A到节点B，所经过的节点路线，例：A-&gt;C-&gt;D-&gt;B</li>
+</ul>
+<ul>
+<li>（4）无向图：两节点之间连接没有指向，即：节点AB互邻，可以A-&gt;B，也可以B-&gt;A</li>
+</ul>
+<ul>
+<li>（5）有向图：概念与无向图相反</li>
+</ul>
+<ul>
+<li>（6）带权图：图的边带有一定的权值（数值）</li>
+</ul>
+<h4 id="1-4-编程表示方式"><a href="#1-4-编程表示方式" class="headerlink" title="1.4 编程表示方式"></a>1.4 编程表示方式</h4><blockquote>
+<p><strong>邻接矩阵（二维数组）</strong>：矩阵中0表示不相邻，1表示相邻。行和列都表示节点自己，所以行列的交汇点为两个节点的关系。</p>
+</blockquote>
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5.png" class="">
+
+
+<blockquote>
+<p><strong>邻接表（数组+链表）</strong>：数组表示节点，链表表示与该节点相邻的节点编号</p>
+</blockquote>
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E8%A1%A8.png" class="">
+
+
+<hr>
+<h3 id="2-图的代码实现"><a href="#2-图的代码实现" class="headerlink" title="2 图的代码实现"></a>2 图的代码实现</h3><h4 id="2-1-邻接矩阵"><a href="#2-1-邻接矩阵" class="headerlink" title="2.1 邻接矩阵"></a>2.1 邻接矩阵</h4><ul>
+<li><strong>（1）代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 图表示方式 - 邻接矩阵</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-05-31 17:23</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AdjacencyMatrix</span> </span>&#123;</span><br><span class="line">    <span class="comment">//顶点数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] vertexArr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//邻接矩阵（二维数组）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">int</span>[][] matrix;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AdjacencyMatrix</span><span class="params">(Object[] vertexArr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexArr = vertexArr;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">int</span> len = vertexArr.length;</span><br><span class="line">        <span class="keyword">this</span>.matrix = <span class="keyword">new</span> <span class="keyword">int</span>[len][len];</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 连接两个顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex1 顶点1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex2 顶点2</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(Object vertex1, Object vertex2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> index1 = getIndex(vertex1);</span><br><span class="line">        <span class="keyword">int</span> index2 = getIndex(vertex2);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//无向图（对称）</span></span><br><span class="line">        matrix[index1][index2] = <span class="number">1</span>;</span><br><span class="line">        matrix[index2][index1] = <span class="number">1</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取顶点所在下标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex 顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int(下标)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getIndex</span><span class="params">(Object vertex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vertexArr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vertexArr[i].equals(vertex)) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;顶点不存在，连接失败！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印邻接矩阵</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;邻接矩阵为：&quot;</span>);</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span>[] row : matrix) &#123;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> item : row) &#123;</span><br><span class="line">                System.out.print(item + <span class="string">&quot;\t&quot;</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(<span class="string">&quot;&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">adjacencyMatrixTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//创建邻接矩阵</span></span><br><span class="line">	String[] vertexArr = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>&#125;;</span><br><span class="line">	AdjacencyMatrix adjacencyMatrix = <span class="keyword">new</span> AdjacencyMatrix(vertexArr);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//连接顶点</span></span><br><span class="line">	adjacencyMatrix.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>);</span><br><span class="line">	adjacencyMatrix.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;C&quot;</span>);</span><br><span class="line">	adjacencyMatrix.connect(<span class="string">&quot;C&quot;</span>, <span class="string">&quot;E&quot;</span>);</span><br><span class="line">	adjacencyMatrix.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;D&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//打印邻接矩阵</span></span><br><span class="line">	adjacencyMatrix.print();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png" class="">
+
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png" class="">
+
+
+<h4 id="2-2-邻接表"><a href="#2-2-邻接表" class="headerlink" title="2.2 邻接表"></a>2.2 邻接表</h4><ul>
+<li><strong>（1）代码</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 图表示方法 - 邻接表</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> letere</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@create</span> 2021-05-31 22:04</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AdjacencyTable</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 邻接表子类 - 单链表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">LinkedList</span> </span>&#123;</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 单链表子类 - 节点</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">private</span> <span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Node</span> </span>&#123;</span><br><span class="line">            Object data;</span><br><span class="line">            Node next;</span><br><span class="line"></span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="title">Node</span><span class="params">(Object data)</span> </span>&#123;</span><br><span class="line">                <span class="keyword">this</span>.data = data;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="string">&quot;Node&#123;data=&quot;</span> + data + <span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//头节点</span></span><br><span class="line">        <span class="keyword">private</span> Node head;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 添加节点</span></span><br><span class="line"><span class="comment">         * <span class="doctag">@param</span> data 数据</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">add</span><span class="params">(Object data)</span> </span>&#123;</span><br><span class="line">            Node node = <span class="keyword">new</span> Node(data);</span><br><span class="line"></span><br><span class="line">            <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">                head = node;</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Node temp = head;</span><br><span class="line">            <span class="keyword">while</span> (temp.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">                temp = temp.next;</span><br><span class="line">            &#125;</span><br><span class="line">            temp.next = node;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         * 打印单链表</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (head == <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.println(<span class="string">&quot;null&quot;</span>);</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            Node temp = head;</span><br><span class="line">            <span class="keyword">while</span> (temp.next != <span class="keyword">null</span>) &#123;</span><br><span class="line">                System.out.print(temp + <span class="string">&quot; -&gt; &quot;</span>);</span><br><span class="line">                temp = temp.next;</span><br><span class="line">            &#125;</span><br><span class="line">            System.out.println(temp);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//顶点数组</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Object[] vertexArr;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//邻接表（数组+链表）</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> LinkedList[] linkedLists;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">AdjacencyTable</span><span class="params">(Object[] vertexArr)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.vertexArr = vertexArr;</span><br><span class="line"></span><br><span class="line">        linkedLists = <span class="keyword">new</span> LinkedList[vertexArr.length];</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;linkedLists.length; i++) &#123;</span><br><span class="line">            linkedLists[i] = <span class="keyword">new</span> LinkedList();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 连接两个顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex1 顶点1</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex2 顶点2</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">connect</span><span class="params">(Object vertex1, Object vertex2)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> index1 = getIndex(vertex1);</span><br><span class="line">        <span class="keyword">int</span> index2 = getIndex(vertex2);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//无向图（互相添加）</span></span><br><span class="line">        linkedLists[index1].add(vertex2);</span><br><span class="line">        linkedLists[index2].add(vertex1);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取顶点数组下标</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> vertex 顶点</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> int(下标)</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">getIndex</span><span class="params">(Object vertex)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vertexArr.length; i++) &#123;</span><br><span class="line">            <span class="keyword">if</span> (vertexArr[i].equals(vertex)) &#123;</span><br><span class="line">                <span class="keyword">return</span> i;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;顶点不存在，连接失败！&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 打印邻接表</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">print</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;vertexArr.length; i++) &#123;</span><br><span class="line">            System.out.print(vertexArr[i] + <span class="string">&quot;：&quot;</span>);</span><br><span class="line">            linkedLists[i].print();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）测试</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">adjacencyTableTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//构建邻接表</span></span><br><span class="line">	String[] vertexArr = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>, <span class="string">&quot;C&quot;</span>, <span class="string">&quot;D&quot;</span>, <span class="string">&quot;E&quot;</span>&#125;;</span><br><span class="line">	AdjacencyTable adjacencyTable = <span class="keyword">new</span> AdjacencyTable(vertexArr);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//连接顶点</span></span><br><span class="line">	adjacencyTable.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;B&quot;</span>);</span><br><span class="line">	adjacencyTable.connect(<span class="string">&quot;A&quot;</span>, <span class="string">&quot;C&quot;</span>);</span><br><span class="line">	adjacencyTable.connect(<span class="string">&quot;C&quot;</span>, <span class="string">&quot;E&quot;</span>);</span><br><span class="line">	adjacencyTable.connect(<span class="string">&quot;B&quot;</span>, <span class="string">&quot;D&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//打印邻接表</span></span><br><span class="line">	adjacencyTable.print();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E5%9B%BE.png" class="">
+
+<img src="/blog/2021/05/31/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE/%E9%82%BB%E6%8E%A5%E8%A1%A8%E6%B5%8B%E8%AF%95%E7%BB%93%E6%9E%9C.png" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/05/22/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%A4%9A%E5%8F%89%E6%A0%91/" rel="prev" title="【数据结构和算法】多叉树">
+      <i class="fa fa-chevron-left"></i> 【数据结构和算法】多叉树
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/06/03/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E5%9B%BE%E9%81%8D%E5%8E%86%E7%AE%97%E6%B3%95/" rel="next" title="【数据结构和算法】图遍历算法">
+      【数据结构和算法】图遍历算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%9B%BE"><span class="nav-text">1 图</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="nav-text">1.1 使用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.2 介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E6%A6%82%E5%BF%B5"><span class="nav-text">1.3 概念</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E7%BC%96%E7%A8%8B%E8%A1%A8%E7%A4%BA%E6%96%B9%E5%BC%8F"><span class="nav-text">1.4 编程表示方式</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%9B%BE%E7%9A%84%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="nav-text">2 图的代码实现</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%82%BB%E6%8E%A5%E7%9F%A9%E9%98%B5"><span class="nav-text">2.1 邻接矩阵</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%82%BB%E6%8E%A5%E8%A1%A8"><span class="nav-text">2.2 邻接表</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

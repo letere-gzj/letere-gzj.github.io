@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="智能算法之一：蚁群优化算法初步了解以及Java实现">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【智能算法】蚁群优化算法">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="智能算法之一：蚁群优化算法初步了解以及Java实现">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/rate.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/sub.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/add.png">
+<meta property="article:published_time" content="2021-01-03T04:18:30.000Z">
+<meta property="article:modified_time" content="2021-01-03T04:20:42.738Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/rate.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【智能算法】蚁群优化算法 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【智能算法】蚁群优化算法
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-03 12:18:30 / 修改时间：12:20:42" itemprop="dateCreated datePublished" datetime="2021-01-03T12:18:30+08:00">2021-01-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">智能算法</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>智能算法之一：蚁群优化算法初步了解以及Java实现</p>
+<a id="more"></a>
+
+<h3 id="一、算法介绍"><a href="#一、算法介绍" class="headerlink" title="一、算法介绍"></a>一、算法介绍</h3><p>具体百度</p>
+<h4 id="1-1-三个重要式子"><a href="#1-1-三个重要式子" class="headerlink" title="1.1 三个重要式子"></a>1.1 三个重要式子</h4><ul>
+<li>（1）每条路选中概率<ul>
+<li>其中alpha 和 beta 参数自定义</li>
+<li>alpha为信息因子占的权重，权重过高，蚂蚁选中已走的路概率越高，开始走新路概率低</li>
+<li>beta为两点距离的权重（能见度），权重过高，蚂蚁优先走两点最短距离的路</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/rate.png" class="">
+
+<ul>
+<li>（2）信息素更新<ul>
+<li>信息素更新包括：信息素挥发 以及 信息素新增</li>
+<li>蚂蚁走完一遍所有城市后，就开始先计算挥发，再计算新增</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/sub.png" class="">
+<img src="/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E8%9A%81%E7%BE%A4%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/add.png" class="">
+
+<h3 id="二、Java实现代码（TSP问题）"><a href="#二、Java实现代码（TSP问题）" class="headerlink" title="二、Java实现代码（TSP问题）"></a>二、Java实现代码（TSP问题）</h3><h4 id="2-1-TSP问题"><a href="#2-1-TSP问题" class="headerlink" title="2.1 TSP问题"></a>2.1 TSP问题</h4><ul>
+<li>简单来说，就是寻找一条访问所有城市，最短的一条路线<ul>
+<li>前提：所有城市之间是互通的，任意两个城市可以来往</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-2-Java实现代码"><a href="#2-2-Java实现代码" class="headerlink" title="2.2 Java实现代码"></a>2.2 Java实现代码</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个蚂蚁类 Ant.java</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Ant</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> List&lt;Integer&gt; route = <span class="keyword">new</span> ArrayList&lt;Integer&gt;(); <span class="comment">//路线：记录蚂蚁行走的路线</span></span><br><span class="line">    <span class="keyword">private</span> Integer currentCity; <span class="comment">//当前城市：记录蚂蚁当前所在城市的ID</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;Integer&gt; citys = <span class="keyword">new</span> ArrayList&lt;Integer&gt;(); <span class="comment">//城市：记录需要行走的城市ID</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span>[][] pheromoneMatrix; <span class="comment">//信息素矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[][] distanceMatrix; <span class="comment">//距离矩阵（整型方便查看）</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Ant</span><span class="params">(List&lt;Integer&gt; citys, <span class="keyword">double</span>[][] pheromoneMatrix, <span class="keyword">int</span>[][] distanceMatrix)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.citys = citys;</span><br><span class="line">        <span class="keyword">this</span>.pheromoneMatrix = pheromoneMatrix;</span><br><span class="line">        <span class="keyword">this</span>.distanceMatrix = distanceMatrix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 添加路线</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cityId</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addRoute</span><span class="params">(Integer cityId)</span> </span>&#123;</span><br><span class="line">        route.add(cityId); <span class="comment">//路线中添加城市ID</span></span><br><span class="line">        currentCity = cityId; <span class="comment">//当前城市修改为城市ID</span></span><br><span class="line">        citys.remove(cityId); <span class="comment">//需要行走的城市移除当前城市ID</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 随机选择初始城市</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">randomSelectCity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Random random = <span class="keyword">new</span> Random();</span><br><span class="line">        Integer cityId = random.nextInt(citys.size())+<span class="number">1</span>;</span><br><span class="line">        addRoute(cityId);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 选择下一个城市</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">selectNextCity</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(citys.size() == <span class="number">1</span>) &#123;</span><br><span class="line">            addRoute(citys.get(<span class="number">0</span>));</span><br><span class="line">            addRoute(route.get(<span class="number">0</span>)); <span class="comment">//路线添加最开始的城市</span></span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        Double alpha = <span class="number">1.0</span>; <span class="comment">//信息素因子权重</span></span><br><span class="line">        Double beta  = <span class="number">2.0</span>; <span class="comment">//路线距离权重</span></span><br><span class="line">        Map&lt;Integer, Double&gt; molecules = <span class="keyword">new</span> HashMap&lt;Integer, Double&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//计算选路概率公式中的分子</span></span><br><span class="line">        <span class="keyword">for</span> (Integer city : citys) &#123;</span><br><span class="line">            <span class="comment">//城市从1开始数，数组从0开始数，所以涉及数组都要‘-1’</span></span><br><span class="line">            Double molecule = Math.pow(pheromoneMatrix[currentCity-<span class="number">1</span>][city-<span class="number">1</span>], alpha) * Math.pow(<span class="number">1.0</span> / distanceMatrix[currentCity-<span class="number">1</span>][city-<span class="number">1</span>], beta);</span><br><span class="line">            molecules.put(city, molecule);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//计算选路概率公式中的分母</span></span><br><span class="line">        Double totalMolecule = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span>(Integer city : molecules.keySet()) &#123;</span><br><span class="line">            totalMolecule += molecules.get(city);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//轮盘赌选择下一个城市</span></span><br><span class="line">        <span class="keyword">double</span> random = Math.random();</span><br><span class="line">        Double temp = <span class="number">0.0</span>;</span><br><span class="line">        <span class="keyword">for</span>(Integer city : molecules.keySet()) &#123;</span><br><span class="line">            temp += molecules.get(city) / totalMolecule;</span><br><span class="line">            <span class="keyword">if</span>(temp &gt;= random) &#123;</span><br><span class="line">                addRoute(city);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 蚂蚁开始旅行所有城市</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">tour</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> cityQuantity = citys.size();</span><br><span class="line">        randomSelectCity();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;cityQuantity; i++) &#123;</span><br><span class="line">            selectNextCity();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取路线</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">getRoute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> route;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 计算路线总距离</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getRouteLength</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Integer length = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;route.size()-<span class="number">1</span>; i++) &#123;</span><br><span class="line">            length += distanceMatrix[route.get(i)-<span class="number">1</span>][route.get(i+<span class="number">1</span>)-<span class="number">1</span>];</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> length;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建一个AOC类：是蚁群优化算法主要实现类</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ACO</span> </span>&#123;</span><br><span class="line">    List&lt;Integer&gt; citys = <span class="keyword">new</span> ArrayList&lt;Integer&gt;(); <span class="comment">//城市集合</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">double</span>[][] pheromoneMatrix; <span class="comment">//信息素矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span>[][] distanceMatrix; <span class="comment">//距离矩阵</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> times; <span class="comment">//运行次数</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">int</span> antQuantity; <span class="comment">// 蚂蚁数量</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> List&lt;Integer&gt; bestRoute; <span class="comment">//最佳路线</span></span><br><span class="line">    <span class="keyword">private</span> Integer bestLength = -<span class="number">1</span>; <span class="comment">//最佳距离</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ACO</span><span class="params">(List&lt;Integer&gt; citys, <span class="keyword">double</span>[][] pheromoneMatrix, <span class="keyword">int</span>[][] distanceMatrix, <span class="keyword">int</span> times, <span class="keyword">int</span> antQuantity)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.citys = citys;</span><br><span class="line">        <span class="keyword">this</span>.pheromoneMatrix = pheromoneMatrix;</span><br><span class="line">        <span class="keyword">this</span>.distanceMatrix = distanceMatrix;</span><br><span class="line">        <span class="keyword">this</span>.times = times;</span><br><span class="line">        <span class="keyword">this</span>.antQuantity = antQuantity;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 更新信息素</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> ants 蚂蚁群</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">update</span><span class="params">(List&lt;Ant&gt; ants)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//信息素挥发</span></span><br><span class="line">        <span class="keyword">double</span> volatilizationRate = <span class="number">0.5</span>; <span class="comment">//挥发率</span></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;citys.size(); i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;citys.size(); j++) &#123;</span><br><span class="line">                pheromoneMatrix[i][j] = pheromoneMatrix[i][j] * (<span class="number">1.0</span>-volatilizationRate);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//信息素新增</span></span><br><span class="line">        <span class="keyword">for</span>(Ant ant : ants) &#123;</span><br><span class="line">            List&lt;Integer&gt; route = ant.getRoute();</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;route.size()-<span class="number">1</span>; i++)&#123;</span><br><span class="line">                pheromoneMatrix[route.get(i)-<span class="number">1</span>][route.get(i+<span class="number">1</span>)-<span class="number">1</span>] += <span class="number">1.0</span> / ant.getRouteLength();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 记录最佳路径和最佳距离</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">recordBest</span><span class="params">(List&lt;Ant&gt; ants)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//给bestLength赋予初始值</span></span><br><span class="line">        <span class="keyword">if</span>(bestLength == -<span class="number">1.0</span>) &#123;</span><br><span class="line">            bestLength = ants.get(<span class="number">0</span>).getRouteLength();</span><br><span class="line">            bestRoute = ants.get(<span class="number">0</span>).getRoute();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//遍历比较最佳</span></span><br><span class="line">        <span class="keyword">for</span>(Ant ant : ants) &#123;</span><br><span class="line">            <span class="keyword">if</span>(bestLength &gt; ant.getRouteLength()) &#123;</span><br><span class="line">                bestLength = ant.getRouteLength();</span><br><span class="line">                bestRoute = ant.getRoute();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 运行蚁群优化算法</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">runAlgorithm</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//创建蚂蚁集合存储蚂蚁</span></span><br><span class="line">        List&lt;Ant&gt; ants = <span class="keyword">new</span> ArrayList&lt;Ant&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;antQuantity; i++)&#123;</span><br><span class="line">            <span class="comment">//复制城市集合(集合为地址引用，为了不影响原参数，复制一个新集合)</span></span><br><span class="line">            List&lt;Integer&gt; cityCopy = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">            <span class="keyword">for</span> (Integer city : citys) &#123;</span><br><span class="line">                cityCopy.add(city);</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="comment">//创建蚂蚁，并开始旅行所有城市</span></span><br><span class="line">            Ant ant = <span class="keyword">new</span> Ant(cityCopy, pheromoneMatrix, distanceMatrix);</span><br><span class="line">            ant.tour();</span><br><span class="line">            ants.add(ant);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        update(ants); <span class="comment">//更新信息素</span></span><br><span class="line">        recordBest(ants); <span class="comment">//记录最佳路线与距离</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 多次运行蚁群优化算法（蚂蚁算法的运行入口）</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;times; i++)&#123;</span><br><span class="line">            runAlgorithm();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取最佳路线</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Integer&gt; <span class="title">getBestRoute</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> bestRoute;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取最佳距离</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Integer <span class="title">getBestLength</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> bestLength;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>针对TSP问题的蚂蚁优化算法就写好了，只要创建AOC，传入对应的参数，运行run()方法就会跑起来，通过getXxxx获取路线以及路线长度</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//主程序代码演示</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//自定义距离矩阵</span></span><br><span class="line">        <span class="keyword">int</span>[][] distanceMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[][]&#123;&#123;<span class="number">0</span>, <span class="number">1</span>, <span class="number">3</span>, <span class="number">1</span>&#125;, &#123;<span class="number">1</span>, <span class="number">0</span>, <span class="number">3</span>, <span class="number">2</span>&#125;, &#123;<span class="number">3</span>, <span class="number">3</span>, <span class="number">0</span>, <span class="number">2</span>&#125;, &#123;<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">0</span>&#125;&#125;;</span><br><span class="line">        <span class="comment">//创建信息素矩阵并赋初值</span></span><br><span class="line">        <span class="keyword">double</span>[][] pheromoneMatrix = <span class="keyword">new</span> <span class="keyword">double</span>[<span class="number">4</span>][<span class="number">4</span>];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;distanceMatrix.length; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;distanceMatrix.length; j++) &#123;</span><br><span class="line">                pheromoneMatrix[i][j] = <span class="number">0.1</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//创建城市集合</span></span><br><span class="line">        List&lt;Integer&gt; citys = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">4</span>; i++) &#123;</span><br><span class="line">            citys.add(i+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">//运行蚁群优化算法</span></span><br><span class="line">        ACO aco = <span class="keyword">new</span> ACO(citys, pheromoneMatrix, distanceMatrix, <span class="number">50</span>, <span class="number">6</span>);</span><br><span class="line">        aco.run();</span><br><span class="line">        System.out.println(aco.getBestRoute());</span><br><span class="line">        System.out.println(aco.getBestLength());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-自定义工具类"><a href="#2-3-自定义工具类" class="headerlink" title="2.3 自定义工具类"></a>2.3 自定义工具类</h4><ul>
+<li><p>由于自己定义距离矩阵，信息素矩阵觉得麻烦，就创建一个工具类实现创建</p>
+</li>
+<li><p>（1）将城市信息存储在一个txt文件中</p>
+<ul>
+<li>城市ID X轴 Y轴</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">48</span><br><span class="line">1 6734 1453</span><br><span class="line">2 2233 10</span><br><span class="line">3 5530 1424</span><br><span class="line">4 401 841</span><br><span class="line">5 3082 1644</span><br><span class="line">6 7608 4458</span><br><span class="line">7 7573 3716</span><br><span class="line">8 7265 1268</span><br><span class="line">9 6898 1885</span><br><span class="line">10 1112 2049</span><br><span class="line">11 5468 2606</span><br><span class="line">12 5989 2873</span><br><span class="line">13 4706 2674</span><br><span class="line">14 4612 2035</span><br><span class="line">15 6347 2683</span><br><span class="line">16 6107 669</span><br><span class="line">17 7611 5184</span><br><span class="line">18 7462 3590</span><br><span class="line">19 7732 4723</span><br><span class="line">20 5900 3561</span><br><span class="line">21 4483 3369</span><br><span class="line">22 6101 1110</span><br><span class="line">23 5199 2182</span><br><span class="line">24 1633 2809</span><br><span class="line">25 4307 2322</span><br><span class="line">26 675 1006</span><br><span class="line">27 7555 4819</span><br><span class="line">28 7541 3981</span><br><span class="line">29 3177 756</span><br><span class="line">30 7352 4506</span><br><span class="line">31 7545 2801</span><br><span class="line">32 3245 3305</span><br><span class="line">33 6426 3173</span><br><span class="line">34 4608 1198</span><br><span class="line">35 23 2216</span><br><span class="line">36 7248 3779</span><br><span class="line">37 7762 4595</span><br><span class="line">38 7392 2244</span><br><span class="line">39 3484 2829</span><br><span class="line">40 6271 2135</span><br><span class="line">41 4985 140</span><br><span class="line">42 1916 1569</span><br><span class="line">43 7280 4899</span><br><span class="line">44 7509 3239</span><br><span class="line">45 10 2676</span><br><span class="line">46 6807 2993</span><br><span class="line">47 5185 3258</span><br><span class="line">48 3023 1942</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）创建工具类来读取txt信息</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Utils</span> </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 读取文件内容，将每一行文本封装为字符串集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     * <span class="doctag">@throws</span> Exception</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> List&lt;String&gt; <span class="title">readFile</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="comment">//文件路径，按照自己情况进行修改</span></span><br><span class="line">        String filePath = <span class="string">&quot;D:\\WorkSpace\\IDEA_workspace\\智能算法\\蚁群优化算法\\src\\main\\java\\data\\position.txt&quot;</span>;</span><br><span class="line">        List&lt;String&gt; texts = <span class="keyword">null</span>;</span><br><span class="line">        BufferedReader br = <span class="keyword">null</span>;</span><br><span class="line">        <span class="comment">//异常处理</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            br = <span class="keyword">new</span> BufferedReader(<span class="keyword">new</span> InputStreamReader(<span class="keyword">new</span> FileInputStream(filePath))); <span class="comment">//创建读取文件流</span></span><br><span class="line">            texts = <span class="keyword">new</span> ArrayList&lt;String&gt;(); <span class="comment">//创建集合存储字符串</span></span><br><span class="line"></span><br><span class="line">            <span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">                String text = br.readLine();</span><br><span class="line">                <span class="keyword">if</span>(text == <span class="keyword">null</span>) &#123; <span class="comment">//直到下一行没有内容，退出循环</span></span><br><span class="line">                    <span class="keyword">break</span>;</span><br><span class="line">                &#125;</span><br><span class="line">                texts.add(text);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                br.close();</span><br><span class="line">            &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> texts;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建城市Id集合</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> List&lt;Integer&gt; <span class="title">getCitys</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        Integer cityQuantity = Integer.valueOf(readFile().get(<span class="number">0</span>));</span><br><span class="line">        List&lt;Integer&gt; citys = <span class="keyword">new</span> ArrayList&lt;Integer&gt;();</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;cityQuantity; i++) &#123;</span><br><span class="line">            citys.add(i+<span class="number">1</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> citys;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 创建距离矩阵</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">int</span>[][] getDistanceMatrix() &#123;</span><br><span class="line">        List&lt;String&gt; texts = readFile();</span><br><span class="line">        Integer cityQuantity = Integer.valueOf(texts.get(<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">int</span>[][] distanceMatrix = <span class="keyword">new</span> <span class="keyword">int</span>[cityQuantity][cityQuantity];</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;cityQuantity; i++) &#123;</span><br><span class="line">            distanceMatrix[i][i] = <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> j=i+<span class="number">1</span>; j&lt;cityQuantity; j++) &#123;</span><br><span class="line">                <span class="comment">//按空格分割字符串</span></span><br><span class="line">                String[] city1 = texts.get(i + <span class="number">1</span>).split(<span class="string">&quot; &quot;</span>);</span><br><span class="line">                String[] city2 = texts.get(j + <span class="number">1</span>).split(<span class="string">&quot; &quot;</span>);</span><br><span class="line">                <span class="comment">//两点距离公式（整数方便查看）</span></span><br><span class="line">                <span class="keyword">double</span> distance = Math.pow((Integer.valueOf(city1[<span class="number">1</span>]) - Integer.valueOf(city2[<span class="number">1</span>])), <span class="number">2</span>) + Math.pow((Integer.valueOf(city1[<span class="number">2</span>]) - Integer.valueOf(city2[<span class="number">2</span>])), <span class="number">2</span>);</span><br><span class="line">                distanceMatrix[i][j] = (<span class="keyword">int</span>) Math.sqrt(distance);</span><br><span class="line">                distanceMatrix[j][i] = distanceMatrix[i][j];</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> distanceMatrix;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 初始化信息素矩阵</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> value 初始值</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">double</span>[][] getPheromoneMatrix(<span class="keyword">double</span> value) &#123;</span><br><span class="line">        Integer cityQuantity = Integer.valueOf(readFile().get(<span class="number">0</span>));</span><br><span class="line">        <span class="keyword">double</span>[][] pheromoneMatrix = <span class="keyword">new</span> <span class="keyword">double</span>[cityQuantity][cityQuantity];</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;cityQuantity; i++) &#123;</span><br><span class="line">            <span class="keyword">for</span>(<span class="keyword">int</span> j=<span class="number">0</span>; j&lt;cityQuantity; j++) &#123;</span><br><span class="line">                pheromoneMatrix[i][j] = value; <span class="comment">//赋予初始信息素值</span></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> pheromoneMatrix;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（3）通过使用工具类的主程序</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Main</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        List&lt;Integer&gt; citys = Utils.getCitys(); <span class="comment">//城市集合</span></span><br><span class="line">        <span class="keyword">double</span>[][] pheromoneMatrix = Utils.getPheromoneMatrix(<span class="number">1.0</span>); <span class="comment">//信息素矩阵</span></span><br><span class="line">        <span class="keyword">int</span>[][] distanceMatrix = Utils.getDistanceMatrix(); <span class="comment">//距离矩阵</span></span><br><span class="line"></span><br><span class="line">        ACO aco = <span class="keyword">new</span> ACO(citys, pheromoneMatrix, distanceMatrix, <span class="number">150</span>, <span class="number">72</span>);</span><br><span class="line">        aco.run();</span><br><span class="line">        System.out.println(aco.getBestRoute());</span><br><span class="line">        System.out.println(aco.getBestLength());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/12/24/%E3%80%90Vue%E3%80%91Vue%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE/" rel="prev" title="【Vue】Vue实战项目">
+      <i class="fa fa-chevron-left"></i> 【Vue】Vue实战项目
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/03/%E3%80%90%E6%99%BA%E8%83%BD%E7%AE%97%E6%B3%95%E3%80%91%E5%AE%9E%E9%AA%8C%EF%BC%9A%E4%BC%A0%E6%95%99%E5%A3%AB%E8%BF%87%E6%B2%B3/" rel="next" title="【智能算法】实验：传教士过河">
+      【智能算法】实验：传教士过河 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E7%AE%97%E6%B3%95%E4%BB%8B%E7%BB%8D"><span class="nav-text">一、算法介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%B8%89%E4%B8%AA%E9%87%8D%E8%A6%81%E5%BC%8F%E5%AD%90"><span class="nav-text">1.1 三个重要式子</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Java%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81%EF%BC%88TSP%E9%97%AE%E9%A2%98%EF%BC%89"><span class="nav-text">二、Java实现代码（TSP问题）</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-TSP%E9%97%AE%E9%A2%98"><span class="nav-text">2.1 TSP问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Java%E5%AE%9E%E7%8E%B0%E4%BB%A3%E7%A0%81"><span class="nav-text">2.2 Java实现代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%87%AA%E5%AE%9A%E4%B9%89%E5%B7%A5%E5%85%B7%E7%B1%BB"><span class="nav-text">2.3 自定义工具类</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

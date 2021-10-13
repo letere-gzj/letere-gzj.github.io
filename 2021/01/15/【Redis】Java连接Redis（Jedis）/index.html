@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Java使用Jedis来进行对Redis的连接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Redis】Java连接Redis（Jedis）">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Java使用Jedis来进行对Redis的连接">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/ip%E5%9C%B0%E5%9D%80.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/step1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/step2.png">
+<meta property="article:published_time" content="2021-01-15T08:36:48.000Z">
+<meta property="article:modified_time" content="2021-01-19T06:31:53.222Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/ip%E5%9C%B0%E5%9D%80.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Redis】Java连接Redis（Jedis） | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Redis】Java连接Redis（Jedis）
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-01-15 16:36:48" itemprop="dateCreated datePublished" datetime="2021-01-15T16:36:48+08:00">2021-01-15</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-01-19 14:31:53" itemprop="dateModified" datetime="2021-01-19T14:31:53+08:00">2021-01-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Java使用Jedis来进行对Redis的连接</p>
+<a id="more"></a>
+<h3 id="1-Java连接Redis"><a href="#1-Java连接Redis" class="headerlink" title="1. Java连接Redis"></a>1. Java连接Redis</h3><h4 id="1-1-修改配置文件"><a href="#1-1-修改配置文件" class="headerlink" title="1.1 修改配置文件"></a>1.1 修改配置文件</h4><ul>
+<li>（1）无密码连接<ul>
+<li>将<code>bind 127.0.0.1</code>注释掉，<code>bind [ip]</code>配置是只允许当前ip地址使用redis，即liunx本机，使得其他机器无法访问使用。</li>
+<li>将保护模式关闭<code>protected-mode no</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）需要密码进行连接<ul>
+<li>将<code>bind 127.0.0.1</code>注释掉</li>
+<li>设置密码<code>requirepass [密码]</code></li>
+</ul>
+</li>
+</ul>
+<h4 id="1-2-查看linux的ip地址"><a href="#1-2-查看linux的ip地址" class="headerlink" title="1.2 查看linux的ip地址"></a>1.2 查看linux的ip地址</h4><figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install net-tools  <span class="comment">--安装网络工具（不同版本linux，语法不同）</span></span><br><span class="line"></span><br><span class="line">ifconfig -<span class="keyword">a</span>  <span class="comment">--查看所有网络信息</span></span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/ip%E5%9C%B0%E5%9D%80.png" class="">
+
+<h4 id="1-3-Java连接"><a href="#1-3-Java连接" class="headerlink" title="1.3 Java连接"></a>1.3 Java连接</h4><ul>
+<li>（1）jar包导入<ul>
+<li>jedis.xxxx.jar</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- Maven依赖：Jedis --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（2）代码测试</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//无密码连接</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConnectTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">        System.out.println(jedis.ping());  <span class="comment">//返回&quot;PONG&quot;表示连接成功</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//密码连接</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ConnectTest</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">        jedis.auth(<span class="string">&quot;123456&quot;</span>); <span class="comment">//身份验证</span></span><br><span class="line">        System.out.println(jedis.ping());  <span class="comment">//返回&quot;PONG&quot;表示连接成功</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-Jedis常用API"><a href="#2-Jedis常用API" class="headerlink" title="2. Jedis常用API"></a>2. Jedis常用API</h3><ul>
+<li>Jedis的API就是redis的命令，参数都是一样，所以直接参考Redis的命令那一章节的内容进行使用即可</li>
+</ul>
+<hr>
+<h3 id="3-Jedis事务使用"><a href="#3-Jedis事务使用" class="headerlink" title="3. Jedis事务使用"></a>3. Jedis事务使用</h3><h4 id="3-1-正常使用"><a href="#3-1-正常使用" class="headerlink" title="3.1 正常使用"></a>3.1 正常使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">normalTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">    <span class="comment">//开启事务</span></span><br><span class="line">    Transaction transaction = jedis.multi();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//业务逻辑</span></span><br><span class="line">    transaction.decrBy(<span class="string">&quot;balance&quot;</span>, <span class="number">10</span>);</span><br><span class="line">    transaction.incrBy(<span class="string">&quot;debt&quot;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//执行事务</span></span><br><span class="line">    transaction.exec();</span><br><span class="line">    <span class="comment">//放弃执行</span></span><br><span class="line">    <span class="comment">//transaction.discard();</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-加锁使用"><a href="#3-2-加锁使用" class="headerlink" title="3.2 加锁使用"></a>3.2 加锁使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">lockTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.85.130&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">     <span class="comment">//监控&quot;balance&quot;</span></span><br><span class="line">    jedis.watch(<span class="string">&quot;balance&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//事务开始前数据发生修改</span></span><br><span class="line">    jedis.set(<span class="string">&quot;balance&quot;</span>, <span class="string">&quot;500&quot;</span>);  <span class="comment">//若发生此情况，执行不会报错，但事务不会执行，自动放弃</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//开启事务</span></span><br><span class="line">     Transaction transaction = jedis.multi();</span><br><span class="line"></span><br><span class="line">    <span class="comment">//业务逻辑</span></span><br><span class="line">    transaction.decrBy(<span class="string">&quot;balance&quot;</span>, <span class="number">10</span>);</span><br><span class="line">    transaction.incrBy(<span class="string">&quot;debt&quot;</span>, <span class="number">10</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//执行事务</span></span><br><span class="line">    transaction.exec();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-Jedis主从复制"><a href="#4-Jedis主从复制" class="headerlink" title="4. Jedis主从复制"></a>4. Jedis主从复制</h3><ul>
+<li>一般不会使用Java来设置从机，一般都会在linux上设置好，再来使用，一下内容作为了解即可</li>
+</ul>
+<ul>
+<li>（1）开启两个主机<ul>
+<li>记得修改配置，让其他机器也能访问Redis</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/step1.png" class="">
+
+
+
+<ul>
+<li>（2）Java代码实现主从复制</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">replicationTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    Jedis master = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">    Jedis slave = <span class="keyword">new</span> Jedis(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6380</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定从机</span></span><br><span class="line">    slave.slaveof(<span class="string">&quot;192.168.xx.xx&quot;</span>, <span class="number">6379</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//主写从读</span></span><br><span class="line">    master.set(<span class="string">&quot;message&quot;</span>, <span class="string">&quot;this is master&#x27;s message&quot;</span>);</span><br><span class="line">    System.out.println(slave.get(<span class="string">&quot;message&quot;</span>));</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（3）去linux上重新查看信息</li>
+</ul>
+<img src="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Java%E8%BF%9E%E6%8E%A5Redis%EF%BC%88Jedis%EF%BC%89/step2.png" class="">
+
+<hr>
+<h3 id="5-JedisPool使用"><a href="#5-JedisPool使用" class="headerlink" title="5. JedisPool使用"></a>5. JedisPool使用</h3><ul>
+<li>池子的使用一般都封装为一个工具类</li>
+</ul>
+<h4 id="5-1-依赖导入"><a href="#5-1-依赖导入" class="headerlink" title="5.1 依赖导入"></a>5.1 依赖导入</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- jedis --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>redis.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jedis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>3.4.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- slf4j --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.slf4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>slf4j-simple<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.7.25<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-工具类封装"><a href="#5-2-工具类封装" class="headerlink" title="5.2 工具类封装"></a>5.2 工具类封装</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//单例模式</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisPoolUtil</span></span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> JedisPool jedisPool = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//构造器私有化</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">JedisPoolUtil</span><span class="params">()</span> </span>&#123;&#125;;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//用静态方法来构造</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> JedisPool <span class="title">getJedisPoolInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(jedisPool == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//同步</span></span><br><span class="line">            <span class="keyword">synchronized</span> (JedisPoolUtil.class) &#123;</span><br><span class="line">                <span class="comment">//进入同步后，还是为空，就才创建实例【有可能在判断是否为空后，没进同步前，另外一个线程创建一个实例】</span></span><br><span class="line">                <span class="keyword">if</span> (jedisPool == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="comment">//池配置</span></span><br><span class="line">                    JedisPoolConfig poolConfig = <span class="keyword">new</span> JedisPoolConfig();</span><br><span class="line">                    poolConfig.setMaxTotal(<span class="number">1000</span>); <span class="comment">//控制一个pool最大可分配多少个Jedis实例</span></span><br><span class="line">                    poolConfig.setMaxIdle(<span class="number">32</span>); <span class="comment">//控制一个pool最多有多少个Idle（空闲的）jedis实例</span></span><br><span class="line">                    poolConfig.setMaxWaitMillis(<span class="number">100</span>*<span class="number">1000</span>); <span class="comment">//当borrow一个jedis实例时，最大的等待时间</span></span><br><span class="line">                    poolConfig.setTestOnBorrow(<span class="keyword">true</span>); <span class="comment">//获取一个jedis实例时是否检查连接可用性</span></span><br><span class="line">                    <span class="comment">//创建池子</span></span><br><span class="line">                    jedisPool = <span class="keyword">new</span> JedisPool(poolConfig, <span class="string">&quot;192.168.85.130&quot;</span>, <span class="number">6379</span>);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> jedisPool;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//释放资源</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">release</span><span class="params">(Jedis jedis)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span>(jedis != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="comment">//jedisPool.returnSourceObject(jedis); //方法属性变成protected，无法调用了</span></span><br><span class="line">            jedis.close();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-3-JedisPoolConfig介绍"><a href="#5-3-JedisPoolConfig介绍" class="headerlink" title="5.3 JedisPoolConfig介绍"></a>5.3 JedisPoolConfig介绍</h4><table>
+<thead>
+<tr>
+<th align="center">属性</th>
+<th align="center">解释</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">maxTotal</td>
+<td align="center">控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted</td>
+</tr>
+<tr>
+<td align="center">maxIdle</td>
+<td align="center">控制一个pool最多有多少个状态为idle(空闲)的jedis实例</td>
+</tr>
+<tr>
+<td align="center">whenExhaustedAction</td>
+<td align="center">表示当pool中的jedis实例都被allocated完时，pool要采取的操作；默认有三种。WHEN_EXHAUSTED_FAIL –&gt; 表示无jedis实例时，直接抛出NoSuchElementException；WHEN_EXHAUSTED_BLOCK –&gt; 则表示阻塞住，或者达到maxWait时抛出JedisConnectionException；WHEN_EXHAUSTED_GROW –&gt; 则表示新建一个jedis实例，也就说设置的maxActive无用；</td>
+</tr>
+<tr>
+<td align="center">MaxWaitMillis</td>
+<td align="center">表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛JedisConnectionException；</td>
+</tr>
+<tr>
+<td align="center">testOnBorrow</td>
+<td align="center">获得一个jedis实例的时候是否检查连接可用性（ping()）；如果为true，则得到的jedis实例均是可用的；</td>
+</tr>
+<tr>
+<td align="center">testOnReturn</td>
+<td align="center">return 一个jedis实例给pool时，是否检查连接可用性（ping()）；</td>
+</tr>
+<tr>
+<td align="center">testWhileIdle</td>
+<td align="center">如果为true，表示有一个idle object evitor线程对idle object进行扫描，如果validate失败，此object会被从pool中drop掉；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义；</td>
+</tr>
+<tr>
+<td align="center">timeBetweenEvictionRunsMillis</td>
+<td align="center">表示idle object evitor两次扫描之间要sleep的毫秒数；</td>
+</tr>
+<tr>
+<td align="center">numTestsPerEvictionRun</td>
+<td align="center">表示idle object evitor每次扫描的最多的对象数</td>
+</tr>
+<tr>
+<td align="center">minEvictableIdleTimeMillis</td>
+<td align="center">表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义</td>
+</tr>
+<tr>
+<td align="center">softMinEvictableIdleTimeMillis</td>
+<td align="center">在minEvictableIdleTimeMillis基础上，加入了至少minIdle个对象已经在pool里面了。如果为-1，evicted不会根据idle time驱逐任何对象。如果minEvictableIdleTimeMillis&gt;0，则此项设置无意义，且只有在timeBetweenEvictionRunsMillis大于0时才有意义</td>
+</tr>
+<tr>
+<td align="center">lifo</td>
+<td align="center">borrowObject返回对象时，是采用DEFAULT_LIFO（last in first out，即类似cache的最频繁使用队列），如果为False，则表示FIFO队列</td>
+</tr>
+</tbody></table>
+<h4 id="5-4-工具类使用"><a href="#5-4-工具类使用" class="headerlink" title="5.4 工具类使用"></a>5.4 工具类使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">	Jedis resource = <span class="keyword">null</span>;</span><br><span class="line">	<span class="keyword">try</span> &#123;</span><br><span class="line">		<span class="comment">//获取线程池</span></span><br><span class="line">		JedisPool jedisPoolInstance = JedisPoolUtil.getJedisPoolInstance();</span><br><span class="line">		<span class="comment">//获取Jedis实例</span></span><br><span class="line">		resource = jedisPoolInstance.getResource();</span><br><span class="line">		<span class="comment">//Jedis业务逻辑</span></span><br><span class="line">		resource.set(<span class="string">&quot;message&quot;</span>, <span class="string">&quot;hello JedisPool&quot;</span>);</span><br><span class="line">	&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">		e.printStackTrace();</span><br><span class="line">	&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">		<span class="comment">//释放Jedis</span></span><br><span class="line">		JedisPoolUtil.release(resource);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/15/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%A4%8D%E5%88%B6/" rel="prev" title="【Redis】Redis的复制">
+      <i class="fa fa-chevron-left"></i> 【Redis】Redis的复制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/26/%E3%80%90JWT%E3%80%91JWT%E5%AD%A6%E4%B9%A0/" rel="next" title="【JWT】JWT学习">
+      【JWT】JWT学习 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Java%E8%BF%9E%E6%8E%A5Redis"><span class="nav-text">1. Java连接Redis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">1.1 修改配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%9F%A5%E7%9C%8Blinux%E7%9A%84ip%E5%9C%B0%E5%9D%80"><span class="nav-text">1.2 查看linux的ip地址</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-Java%E8%BF%9E%E6%8E%A5"><span class="nav-text">1.3 Java连接</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Jedis%E5%B8%B8%E7%94%A8API"><span class="nav-text">2. Jedis常用API</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Jedis%E4%BA%8B%E5%8A%A1%E4%BD%BF%E7%94%A8"><span class="nav-text">3. Jedis事务使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E6%AD%A3%E5%B8%B8%E4%BD%BF%E7%94%A8"><span class="nav-text">3.1 正常使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%8A%A0%E9%94%81%E4%BD%BF%E7%94%A8"><span class="nav-text">3.2 加锁使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Jedis%E4%B8%BB%E4%BB%8E%E5%A4%8D%E5%88%B6"><span class="nav-text">4. Jedis主从复制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-JedisPool%E4%BD%BF%E7%94%A8"><span class="nav-text">5. JedisPool使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E4%BE%9D%E8%B5%96%E5%AF%BC%E5%85%A5"><span class="nav-text">5.1 依赖导入</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E5%B7%A5%E5%85%B7%E7%B1%BB%E5%B0%81%E8%A3%85"><span class="nav-text">5.2 工具类封装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-JedisPoolConfig%E4%BB%8B%E7%BB%8D"><span class="nav-text">5.3 JedisPoolConfig介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-%E5%B7%A5%E5%85%B7%E7%B1%BB%E4%BD%BF%E7%94%A8"><span class="nav-text">5.4 工具类使用</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

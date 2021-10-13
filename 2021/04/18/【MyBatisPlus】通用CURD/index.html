@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Mybatis的通用CRUD操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MyBatisPlus】通用CRUD">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Mybatis的通用CRUD操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/insert%E5%8A%A8%E6%80%81SQL.png">
+<meta property="article:published_time" content="2021-04-18T03:31:23.000Z">
+<meta property="article:modified_time" content="2021-04-18T14:10:16.517Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/insert%E5%8A%A8%E6%80%81SQL.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MyBatisPlus】通用CRUD | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MyBatisPlus】通用CRUD
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-18 11:31:23 / 修改时间：22:10:16" itemprop="dateCreated datePublished" datetime="2021-04-18T11:31:23+08:00">2021-04-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/MybatisPlus/" itemprop="url" rel="index"><span itemprop="name">MybatisPlus</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Mybatis的通用CRUD操作</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-CRUD"><a href="#1-CRUD" class="headerlink" title="1 CRUD"></a>1 CRUD</h3><h4 id="1-1-与Mybatis区别"><a href="#1-1-与Mybatis区别" class="headerlink" title="1.1 与Mybatis区别"></a>1.1 与Mybatis区别</h4><ul>
+<li><strong>Mybatis</strong></li>
+<li>Mybatis操作数据库，要创建一个Mapper接口，并创建对应的CURD方法</li>
+<li>创建完接口，还要创建对应Mapper.xml文件，在里面的文件填写相应的SQL语句</li>
+</ul>
+<ul>
+<li><strong>MybatisPlus</strong></li>
+<li>只需创建一个Mapper接口，此Mapper接口继承与BaseMapper接口，就能够实现对数据库进行CURD操作，无需写SQL，但是复杂的业务还是需要手写SQL来实现</li>
+</ul>
+<h4 id="1-2-BaseMapper"><a href="#1-2-BaseMapper" class="headerlink" title="1.2 BaseMapper"></a>1.2 BaseMapper</h4><ul>
+<li>BaseMapper内部已经创建好了许多通用的CURD方法，所以在我们创建的Mapper接口继承BaseMapper接口后，无需创建接口方法，就可以进行CURD</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BaseMapper源码</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">BaseMapper</span>&lt;<span class="title">T</span>&gt; <span class="keyword">extends</span> <span class="title">Mapper</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(T entity)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">deleteById</span><span class="params">(Serializable id)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">deleteByMap</span><span class="params">(<span class="meta">@Param(&quot;cm&quot;)</span> Map&lt;String, Object&gt; columnMap)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">delete</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">deleteBatchIds</span><span class="params">(<span class="meta">@Param(&quot;coll&quot;)</span> Collection&lt;? extends Serializable&gt; idList)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">updateById</span><span class="params">(<span class="meta">@Param(&quot;et&quot;)</span> T entity)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">update</span><span class="params">(<span class="meta">@Param(&quot;et&quot;)</span> T entity, <span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; updateWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">T <span class="title">selectById</span><span class="params">(Serializable id)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;T&gt; <span class="title">selectBatchIds</span><span class="params">(<span class="meta">@Param(&quot;coll&quot;)</span> Collection&lt;? extends Serializable&gt; idList)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;T&gt; <span class="title">selectByMap</span><span class="params">(<span class="meta">@Param(&quot;cm&quot;)</span> Map&lt;String, Object&gt; columnMap)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">T <span class="title">selectOne</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Integer <span class="title">selectCount</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;T&gt; <span class="title">selectList</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    List&lt;Map&lt;String, Object&gt;&gt; selectMaps(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper);</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;Object&gt; <span class="title">selectObjs</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    &lt;E extends IPage&lt;T&gt;&gt; <span class="function">E <span class="title">selectPage</span><span class="params">(E page, <span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line">    &lt;E extends IPage&lt;Map&lt;String, Object&gt;&gt;&gt; <span class="function">E <span class="title">selectMapsPage</span><span class="params">(E page, <span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-字段注解"><a href="#1-3-字段注解" class="headerlink" title="1.3 字段注解"></a>1.3 字段注解</h4><ul>
+<li>具体查看：<a target="_blank" rel="noopener" href="https://mp.baomidou.com/guide/annotation.html">https://mp.baomidou.com/guide/annotation.html</a></li>
+</ul>
+<ul>
+<li><strong>（1）表名注解</strong></li>
+<li><code>@TableName(value = 表名)</code></li>
+<li>表名：如果数据库表名与类名不一致，需要设置此类型，否则会找不到对应的数据库表</li>
+</ul>
+<ul>
+<li><strong>（2）主键注解</strong></li>
+<li><code>@TableId(value = 主键字段名, type = 主键类型)</code></li>
+<li>主键字段名：如果Bean属性id和主键字段名一直，可以不设置</li>
+<li>主键类型：<ul>
+<li>IdType.ASSIGN_ID，默认，若我们主键为null，会自动为我们生成主键id并插入</li>
+<li>IdType.AUTO，数据库ID自增，数据库表使用id自增建议使用此类型</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（3）字段注解</strong></li>
+<li><code>@TableField(value = 字段名, exist = true/false)</code></li>
+<li>字段名：数据库对应字段名，如果一致，可以不用设置</li>
+<li>exist：是否为数据库存在字段，默认true，若想要对数据库操作忽略此字段，可以设置为false</li>
+</ul>
+<h4 id="1-4-全局配置策略"><a href="#1-4-全局配置策略" class="headerlink" title="1.4 全局配置策略"></a>1.4 全局配置策略</h4><ul>
+<li>配置类：com.baomidou.mybatisplus.core.MybatisConfiguration</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">MybatisConfiguration</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">this</span>.mybatisMapperRegistry = <span class="keyword">new</span> MybatisMapperRegistry(<span class="keyword">this</span>);</span><br><span class="line">	<span class="keyword">this</span>.caches = <span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;Caches collection&quot;</span>);</span><br><span class="line">	<span class="keyword">this</span>.resultMaps = <span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;Result Maps collection&quot;</span>);</span><br><span class="line">	<span class="keyword">this</span>.parameterMaps = <span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;Parameter Maps collection&quot;</span>);</span><br><span class="line">	<span class="keyword">this</span>.keyGenerators = <span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;Key Generators collection&quot;</span>);</span><br><span class="line">	<span class="keyword">this</span>.sqlFragments = <span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;XML fragments parsed from previous mappers&quot;</span>);</span><br><span class="line">	<span class="keyword">this</span>.mappedStatements = (<span class="keyword">new</span> MybatisConfiguration.StrictMap(<span class="string">&quot;Mapped Statements collection&quot;</span>)).conflictMessageProducer((savedValue, targetValue) -&gt; &#123;</span><br><span class="line">		<span class="keyword">return</span> <span class="string">&quot;. please check &quot;</span> + savedValue.getResource() + <span class="string">&quot; and &quot;</span> + targetValue.getResource();</span><br><span class="line">	&#125;);</span><br><span class="line">	</span><br><span class="line">	<span class="keyword">this</span>.useGeneratedShortKey = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">this</span>.useDeprecatedExecutor = <span class="keyword">true</span>;</span><br><span class="line">	<span class="keyword">this</span>.mapUnderscoreToCamelCase = <span class="keyword">true</span>;  <span class="comment">//开启驼峰命令</span></span><br><span class="line">	<span class="keyword">this</span>.languageRegistry.setDefaultDriverClass(MybatisXMLLanguageDriver.class);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-插入操作"><a href="#2-插入操作" class="headerlink" title="2 插入操作"></a>2 插入操作</h3><h4 id="2-1-基本使用"><a href="#2-1-基本使用" class="headerlink" title="2.1 基本使用"></a>2.1 基本使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//对应BaseMapper接口方法</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">insert</span><span class="params">(T entity)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">//使用测试</span></span></span><br><span class="line"><span class="function">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	User user = <span class="keyword">new</span> User();</span><br><span class="line">	user.setName(<span class="string">&quot;C酱&quot;</span>);</span><br><span class="line">	user.setAge(<span class="number">18</span>);</span><br><span class="line">	user.setEmail(<span class="string">&quot;CC@qq.com&quot;</span>);</span><br><span class="line">	userMapper.insert(user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-细节"><a href="#2-2-细节" class="headerlink" title="2.2 细节"></a>2.2 细节</h4><ul>
+<li><strong>（1）获取当前数据id值</strong></li>
+<li>对于主键自增的数据，想要实现数据插入后，顺便获取会该数据的主键值</li>
+<li>MybatisPlus自动封装好方法，插入成功后，自动将主键值，set回java数据中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">insertTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//通用插入</span></span><br><span class="line">	User user = <span class="keyword">new</span> User();</span><br><span class="line">	user.setName(<span class="string">&quot;asaki&quot;</span>);</span><br><span class="line">	user.setAge(<span class="number">18</span>);</span><br><span class="line">	user.setEmail(<span class="string">&quot;1231231@qq.com&quot;</span>);</span><br><span class="line">	userMapper.insert(user);</span><br><span class="line">	<span class="comment">//获取主键值（插入成功后，id值自动被设置）</span></span><br><span class="line">	Integer id = user.getId();</span><br><span class="line">	System.out.println(id);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>（2）动态SQL</strong></li>
+<li>MybatisPlus的插入方法使用的动态SQL，如果插入值为空的话，会自动忽略该字段，不进行sql语句的插入</li>
+</ul>
+<img src="/blog/2021/04/18/%E3%80%90MyBatisPlus%E3%80%91%E9%80%9A%E7%94%A8CURD/insert%E5%8A%A8%E6%80%81SQL.png" class="">
+
+<hr>
+<h3 id="3-更新操作"><a href="#3-更新操作" class="headerlink" title="3 更新操作"></a>3 更新操作</h3><h4 id="3-1-基本使用"><a href="#3-1-基本使用" class="headerlink" title="3.1 基本使用"></a>3.1 基本使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BaseMapper接口对应方法</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">updateById</span><span class="params">(<span class="meta">@Param(&quot;et&quot;)</span> T entity)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	User user = <span class="keyword">new</span> User();</span><br><span class="line">	user.setId(<span class="number">9</span>);</span><br><span class="line">	user.setName(<span class="string">&quot;玛利亚&quot;</span>);</span><br><span class="line">	user.setAge(<span class="number">18</span>);</span><br><span class="line">	user.setEmail(<span class="string">&quot;myl@qq.com&quot;</span>);</span><br><span class="line">	<span class="comment">//修改</span></span><br><span class="line">	userMapper.updateById(user);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-细节"><a href="#3-2-细节" class="headerlink" title="3.2 细节"></a>3.2 细节</h4><ul>
+<li><strong>（1）动态SQL</strong></li>
+<li>update方法和insert方法一样，都是有动态SQL，插入值为null自动忽略该字段</li>
+</ul>
+<hr>
+<h3 id="4-查询操作"><a href="#4-查询操作" class="headerlink" title="4 查询操作"></a>4 查询操作</h3><h4 id="4-1-基本使用"><a href="#4-1-基本使用" class="headerlink" title="4.1 基本使用"></a>4.1 基本使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BaseMapper接口对应方法</span></span><br><span class="line"><span class="function">T <span class="title">selectById</span><span class="params">(Serializable id)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">T <span class="title">selectOne</span><span class="params">(<span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;T&gt; <span class="title">selectBatchIds</span><span class="params">(<span class="meta">@Param(&quot;coll&quot;)</span> Collection&lt;? extends Serializable&gt; idList)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">List&lt;T&gt; <span class="title">selectByMap</span><span class="params">(<span class="meta">@Param(&quot;cm&quot;)</span> Map&lt;String, Object&gt; columnMap)</span></span>;</span><br><span class="line"></span><br><span class="line">&lt;E extends IPage&lt;T&gt;&gt; <span class="function">E <span class="title">selectPage</span><span class="params">(E page, <span class="meta">@Param(&quot;ew&quot;)</span> Wrapper&lt;T&gt; queryWrapper)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">selectTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//1、通过主键id查询</span></span><br><span class="line">	User user = userMapper.selectById(<span class="number">1</span>); <span class="comment">//SQL：SELECT id,name,age,email FROM user WHERE id=?</span></span><br><span class="line">	System.out.println(user);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//2、多个字段条件查询（注意查询结果只能有一个，否则报错）</span></span><br><span class="line">	User user1 = <span class="keyword">new</span> User();</span><br><span class="line">	user1.setId(<span class="number">6</span>);</span><br><span class="line">	user1.setName(<span class="string">&quot;C酱&quot;</span>);</span><br><span class="line">	User user2 = userMapper.selectOne(<span class="keyword">new</span> QueryWrapper&lt;&gt;(user1)); <span class="comment">//SQL：SELECT id,name,age,email FROM user WHERE id=? AND name=?</span></span><br><span class="line">	System.out.println(user2);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//3、通过多个主键id查询多条数据</span></span><br><span class="line">	List&lt;Integer&gt; ids = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	ids.add(<span class="number">1</span>);</span><br><span class="line">	ids.add(<span class="number">2</span>);</span><br><span class="line">	List&lt;User&gt; users = userMapper.selectBatchIds(ids); <span class="comment">//SQL：SELECT id,name,age,email FROM user WHERE id IN ( ? , ? )</span></span><br><span class="line">	users.forEach(System.out::println);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//4、多字段条件查询（支持返回多个）</span></span><br><span class="line">	Map&lt;String, Object&gt; columnMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	columnMap.put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;C酱&quot;</span>);</span><br><span class="line">	columnMap.put(<span class="string">&quot;age&quot;</span>, <span class="number">18</span>);</span><br><span class="line">	List&lt;User&gt; users1 = userMapper.selectByMap(columnMap); <span class="comment">//SQL：SELECT id,name,age,email FROM user WHERE name = ? AND age = ?</span></span><br><span class="line">	users1.forEach(System.out::println);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//5、分页查询（暂无效果，需要与分页插件使用才有效果）</span></span><br><span class="line">	Page&lt;User&gt; page = <span class="keyword">new</span> Page&lt;&gt;(<span class="number">1</span>, <span class="number">2</span>);</span><br><span class="line">	Page&lt;User&gt; userIPage = userMapper.selectPage(page, <span class="keyword">null</span>); <span class="comment">//SQL：SELECT id,name,age,email FROM user</span></span><br><span class="line">	List&lt;User&gt; records = userIPage.getRecords();</span><br><span class="line">	records.forEach(System.out::println);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-删除操作"><a href="#5-删除操作" class="headerlink" title="5 删除操作"></a>5 删除操作</h3><h4 id="5-1-基本使用"><a href="#5-1-基本使用" class="headerlink" title="5.1 基本使用"></a>5.1 基本使用</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//BaseMapper接口对应的方法</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">deleteById</span><span class="params">(Serializable id)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">deleteByMap</span><span class="params">(<span class="meta">@Param(&quot;cm&quot;)</span> Map&lt;String, Object&gt; columnMap)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">deleteBatchIds</span><span class="params">(<span class="meta">@Param(&quot;coll&quot;)</span> Collection&lt;? extends Serializable&gt; idList)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">//使用</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteTest</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="comment">//1、根据主键id进行删除</span></span><br><span class="line">	userMapper.deleteById(<span class="number">9</span>); <span class="comment">//SQL：DELETE FROM user WHERE id=?</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//2、多字段条件删除</span></span><br><span class="line">	Map&lt;String, Object&gt; columnMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	columnMap.put(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;C酱&quot;</span>);</span><br><span class="line">	columnMap.put(<span class="string">&quot;age&quot;</span>, <span class="number">18</span>);</span><br><span class="line">	userMapper.deleteByMap(columnMap); <span class="comment">//SQL：DELETE FROM user WHERE name = ? AND age = ?</span></span><br><span class="line"></span><br><span class="line">	<span class="comment">//3、根据主键id批量删除</span></span><br><span class="line">	List&lt;Integer&gt; ids = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">	ids.add(<span class="number">8</span>);</span><br><span class="line">	ids.add(<span class="number">10</span>);</span><br><span class="line">	userMapper.deleteBatchIds(ids); <span class="comment">//SQL：DELETE FROM user WHERE id IN ( ? , ? )</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="6-MP启动注入SQL"><a href="#6-MP启动注入SQL" class="headerlink" title="6 MP启动注入SQL"></a>6 MP启动注入SQL</h3><h4 id="6-1-问题提出"><a href="#6-1-问题提出" class="headerlink" title="6.1 问题提出"></a>6.1 问题提出</h4><ul>
+<li>一个Mapper接口继承了BaseMapper之后，可以使用对应BaseMapper的方法。方法有了，但是对应的SQL语句并没有发现。这是因为MybatisPlus启动后会自动注入SQL</li>
+</ul>
+<h4 id="6-2-MybatisPlus原理"><a href="#6-2-MybatisPlus原理" class="headerlink" title="6.2 MybatisPlus原理"></a>6.2 MybatisPlus原理</h4><ul>
+<li>以后再学：<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Ds411E76Y?p=31&amp;spm_id_from=pageDriver">https://www.bilibili.com/video/BV1Ds411E76Y?p=31&amp;spm_id_from=pageDriver</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/17/%E3%80%90MybatisPlus%E3%80%91MybatisPlus%E5%85%A5%E9%97%A8/" rel="prev" title="【MybatisPlus】MybatisPlus入门">
+      <i class="fa fa-chevron-left"></i> 【MybatisPlus】MybatisPlus入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/18/%E3%80%90MybatisPlus%E3%80%91%E6%9D%A1%E4%BB%B6%E6%9E%84%E9%80%A0%E5%99%A8/" rel="next" title="【MybatisPlus】条件构造器">
+      【MybatisPlus】条件构造器 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-CRUD"><span class="nav-text">1 CRUD</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%B8%8EMybatis%E5%8C%BA%E5%88%AB"><span class="nav-text">1.1 与Mybatis区别</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-BaseMapper"><span class="nav-text">1.2 BaseMapper</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%AD%97%E6%AE%B5%E6%B3%A8%E8%A7%A3"><span class="nav-text">1.3 字段注解</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%E7%AD%96%E7%95%A5"><span class="nav-text">1.4 全局配置策略</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%8F%92%E5%85%A5%E6%93%8D%E4%BD%9C"><span class="nav-text">2 插入操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">2.1 基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E7%BB%86%E8%8A%82"><span class="nav-text">2.2 细节</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%9B%B4%E6%96%B0%E6%93%8D%E4%BD%9C"><span class="nav-text">3 更新操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">3.1 基本使用</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E7%BB%86%E8%8A%82"><span class="nav-text">3.2 细节</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%9F%A5%E8%AF%A2%E6%93%8D%E4%BD%9C"><span class="nav-text">4 查询操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">4.1 基本使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="nav-text">5 删除操作</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">5.1 基本使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-MP%E5%90%AF%E5%8A%A8%E6%B3%A8%E5%85%A5SQL"><span class="nav-text">6 MP启动注入SQL</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E9%97%AE%E9%A2%98%E6%8F%90%E5%87%BA"><span class="nav-text">6.1 问题提出</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-MybatisPlus%E5%8E%9F%E7%90%86"><span class="nav-text">6.2 MybatisPlus原理</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

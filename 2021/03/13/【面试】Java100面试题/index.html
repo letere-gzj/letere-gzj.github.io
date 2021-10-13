@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Java面试题">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【面试】Java100面试题">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Java面试题">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/JDK%E5%85%B3%E7%B3%BB.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%89%98%E6%A8%A1%E5%9E%8B.png">
+<meta property="article:published_time" content="2021-03-12T16:17:22.000Z">
+<meta property="article:modified_time" content="2021-03-16T01:35:56.923Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/JDK%E5%85%B3%E7%B3%BB.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【面试】Java100面试题 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【面试】Java100面试题
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-03-13 00:17:22" itemprop="dateCreated datePublished" datetime="2021-03-13T00:17:22+08:00">2021-03-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-03-16 09:35:56" itemprop="dateModified" datetime="2021-03-16T09:35:56+08:00">2021-03-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E9%9D%A2%E8%AF%95/" itemprop="url" rel="index"><span itemprop="name">面试</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Java面试题</p>
+<a id="more"></a>
+
+<h3 id="1-面向对象的理解"><a href="#1-面向对象的理解" class="headerlink" title="1 面向对象的理解"></a>1 面向对象的理解</h3><ul>
+<li>要与面向过程对比</li>
+<li>面向过程：注重事情的每一个步骤以及顺序（直接高效）</li>
+<li>面向对象：注重事情有哪些参与者（易于复用、拓展和维护）</li>
+</ul>
+<ul>
+<li>面向对象的三大特性<ul>
+<li>封住：提供给外部调用的属性和方法，内部细节无需外部知道以及修改</li>
+<li>继承：继承基类的方法，并作出自己的改变或拓展</li>
+<li>多态：父类引向子类对象<code>父类 变量名 = new 子类()</code>，创建的类虽然是父类，但调用的方法的逻辑，是子类的逻辑</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="2-JDK-JRE-JVM"><a href="#2-JDK-JRE-JVM" class="headerlink" title="2 JDK JRE JVM"></a>2 JDK JRE JVM</h3><ul>
+<li>JDK：Java Develpment Kit（Java开发工具）</li>
+<li>JRE：Java Runtime Enviroment（Java运行时环境）</li>
+<li>JVM：Java Virtual Machine（Java虚拟机）</li>
+</ul>
+<img src="/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/JDK%E5%85%B3%E7%B3%BB.png" class="">
+
+<hr>
+<h3 id="3-和equals"><a href="#3-和equals" class="headerlink" title="3 ==和equals"></a>3 ==和equals</h3><ul>
+<li>一般笔试中用于判断true / false</li>
+</ul>
+<ul>
+<li><code>==</code>比较的是栈中的值，比较的是堆中内存对象的地址<ul>
+<li>如果创建一个对象，用<code>==</code>比较，比较的是地址，而不是值</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>equals一般与<code>==</code>是同一比较效果<ul>
+<li>但我们一般会对equals进行方法重写，用来比较类中的值，而不是地址</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-final"><a href="#4-final" class="headerlink" title="4 final"></a>4 final</h3><ul>
+<li>（1）final作用<ul>
+<li>修饰类：表示类不可被继承</li>
+<li>修饰方法：表示方法不可被子类覆盖（重写），但可以重载</li>
+<li>修饰变量：表示变量一旦被赋值就不可以更改它的值</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>修饰成员变量<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Finalvar</span> </span>&#123;</span><br><span class="line">	<span class="keyword">final</span> <span class="keyword">int</span> b = <span class="number">0</span>; <span class="comment">//在声明的时候就需要赋值；或者在代码块中赋值；或者构造器赋值</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>修饰局部变量<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Finalvar</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		<span class="keyword">final</span> <span class="keyword">int</span> a; <span class="comment">//局部变量可以在声明的时候不赋值，但要在使用前进行赋值</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（2）局部内部类和匿名内部类<ul>
+<li>局部内部类和匿名内部类方法中的参数要添加<code>final</code>修饰，否者访问不到</li>
+<li>原因：<ul>
+<li>内部类与外部类是同一级别，不会因为内部方法执行完后，会进行销毁</li>
+<li>实际执行流程，将局部变量赋值一份作为内部类的成员变量，当方法结束，局变量变量销毁，内部类仍然可以访问局部变量，即copy的变量</li>
+<li>复制变量的过程汇总，必须保证两个变量是一样的，所以添加一个final来修饰局部变量</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="5-String-StringBuffer-StringBuilder"><a href="#5-String-StringBuffer-StringBuilder" class="headerlink" title="5 String StringBuffer StringBuilder"></a>5 String StringBuffer StringBuilder</h3><ul>
+<li>String是final修饰的，不可变，每次操作都会产生新的String对象</li>
+<li>StringBuffer和StringBuilder都是在原对象上操作</li>
+<li>StringBuffer是线程安全的，StringBuilder线程不安全</li>
+<li>StringBuffer方法都是synchronized修饰</li>
+</ul>
+<ul>
+<li>性能：StringBuilder &gt; StringBuffer &gt; String</li>
+</ul>
+<ul>
+<li>场景：经常需要改变字符串内容时使用后面两个，优先使用StringBuilder，多线程使用共享变量时使用StringBuffer</li>
+</ul>
+<hr>
+<h3 id="6-重载和重写"><a href="#6-重载和重写" class="headerlink" title="6 重载和重写"></a>6 重载和重写</h3><ul>
+<li>（太过容易简单回答，注意要详细）</li>
+<li>重载：发生在同一个类中，方法名相同，参数类型，个数，顺序不同，方法返回值和访问修饰符可以不同</li>
+<li>重写：发生在父子类中，方法名、参数列表必须相同，返回值的范围小于等于父类，抛出的异常小于等于父类，访问修饰符访问大于等于父类（如果父类为private，则子类不能重写该方法）</li>
+</ul>
+<hr>
+<h3 id="7-接口和抽象类的区别"><a href="#7-接口和抽象类的区别" class="headerlink" title="7 接口和抽象类的区别"></a>7 接口和抽象类的区别</h3><ul>
+<li>抽象类可以存在普通成员函数（可以有实现方法），而接口中只能存在public、abstract方法</li>
+<li>抽象类中的成员变量可以是各种类型的，而接口中的成员变量只能是public static final类型</li>
+<li>抽象类只能继承一个，接口可以实现多个</li>
+</ul>
+<hr>
+<h3 id="8-List和Set的区别"><a href="#8-List和Set的区别" class="headerlink" title="8 List和Set的区别"></a>8 List和Set的区别</h3><ul>
+<li>List：有序，按对象进入的顺序保存对象；可重复，允许多个Null元素对象，可以使用迭代器（Iterator）取出所有元素，逐一遍历，还以使用get(int index)获取指定下标的元素</li>
+</ul>
+<ul>
+<li>Set：无序，不可重复，最多允许一个Null元素对象，取元素时只能用迭代器取出所有元素，再逐一遍历各个元素</li>
+</ul>
+<hr>
+<h3 id="9-hashCode与equals"><a href="#9-hashCode与equals" class="headerlink" title="9 hashCode与equals"></a>9 hashCode与equals</h3><ul>
+<li>如果两个对象相等，则hashCode一定也相等</li>
+<li>两个对象相等 ，对两个对象分别调用equals方法都会返回true</li>
+<li>两个对象有相同的hashCode值，它们也不一定是相等，因此equals你发呗覆盖过，则hashCode方法也必须被覆盖</li>
+<li>hashCode的默认行为是对对上的对象产生独特值，如果没有重写hashCode()方法，则该class的两个对象无论润滑都不会相等（即使这两个对象指向相同的数据）</li>
+</ul>
+<hr>
+<h3 id="10-ArrayList和LinkedList区别"><a href="#10-ArrayList和LinkedList区别" class="headerlink" title="10 ArrayList和LinkedList区别"></a>10 ArrayList和LinkedList区别</h3><ul>
+<li>ArrayList：基于动态数组，连续内存存储，适合下标访问<ul>
+<li>如果ArrayList使用尾插法，就不会涉及元素的移动，就会极大提高性能，甚至会超过LinkedList</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>LinkedList：基于链表，分散在内存中，适合做数据插入以及删除操作，不适合做查询<ul>
+<li>遍历LinkedList必须使用迭代器进行访问（for效率低），比较麻烦。</li>
+<li>另外不要用IndexOf来返回元素索引，当结果为空时，会遍历整个列表</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="11-HashMap和HashTable区别"><a href="#11-HashMap和HashTable区别" class="headerlink" title="11 HashMap和HashTable区别"></a>11 HashMap和HashTable区别</h3><p>区别</p>
+<ul>
+<li>（1）HashMap方法没有synchronized修饰，线程非安全，HashTable线程安全</li>
+<li>（2）HashMap允许key和value为null，而HashTable不允许</li>
+</ul>
+<p>底层实现：（数组和链表实现）</p>
+<ul>
+<li>JDK8开始链表高度到8，数组长度超过64，链表转为红黑树，元素以内部类Node节点存在</li>
+<li>实现方法类似HashSet，利用hashcode计算数组位置，判断该位置上是否有值？没，直接插入；有和链表上的数据比较hashCode，判断是否相同？不相同，链表上插入新数据；相同，使用equals比较，判断是否相同？相同，取消插入；不相同，将原来值修改为新插入的值</li>
+</ul>
+<hr>
+<h3 id="12-ConcurrentHashMap"><a href="#12-ConcurrentHashMap" class="headerlink" title="12 ConcurrentHashMap"></a>12 ConcurrentHashMap</h3><hr>
+<h3 id="13-如何实现一个IOC容器"><a href="#13-如何实现一个IOC容器" class="headerlink" title="13 如何实现一个IOC容器"></a>13 如何实现一个IOC容器</h3><ul>
+<li>（1）配置文件配置包扫描路径</li>
+<li>（2）递归包扫描获取.class文件</li>
+<li>（3）反射、确定需要交给IOC管理的类</li>
+<li>（4）对需要注入的类进行依赖注入</li>
+</ul>
+<ul>
+<li>配置文件中指定需要扫描的包路径</li>
+<li>定义一些注解，分别表示访问控制层，业务服务成…</li>
+<li>从配置文件中获取需要扫描的包路径，获取到当前路径下的文件信息及文件夹信息，我们将当前路径下所有以.class结尾的文件添加到一个set集合中进行存储</li>
+<li>遍历这个set集合，获取在类上有指定注解的类，并将其交给IOC容器，定义一个安全的Map用来存储这些对象</li>
+<li>遍历这个IOC容器，获取到每一个类的实例，判断里面是否有依赖其他类的实例，然后进行递归注入</li>
+</ul>
+<hr>
+<h3 id="14-什么是字节码？采用字节码的好处是什么？"><a href="#14-什么是字节码？采用字节码的好处是什么？" class="headerlink" title="14 什么是字节码？采用字节码的好处是什么？"></a>14 什么是字节码？采用字节码的好处是什么？</h3><p>Java中的编译器和解释器</p>
+<ul>
+<li>Java中引入了虚拟机的概念，即在机器和编译程序之间加入了一层抽象的虚拟机，这台虚拟的机器在任何平台上都提供给编译程序一个共同的接口（实现同一Java代码，能够在不同平台之间运行）</li>
+<li>编译程序只需要面向虚拟机，生成虚拟机能够理解的代码，然后由解释器来将虚拟机代码转换为特定系统机器码执行。</li>
+<li>Java中，供虚拟机理解代码叫做字节码（.class文件） </li>
+</ul>
+<p>字节码好处</p>
+<ul>
+<li>一定程度上解决传统解释型语言执行效率低的问题，同时又保留解释型语言可移植的特点，无需重新边意思便可在多种不同的计算机上运行</li>
+</ul>
+<hr>
+<h3 id="15-Java类加载器有哪些？"><a href="#15-Java类加载器有哪些？" class="headerlink" title="15 Java类加载器有哪些？"></a>15 Java类加载器有哪些？</h3><ul>
+<li>JDK自带有三个类加载器：bootstrap ClassLoader、ExClassLoader、AppClassLoader</li>
+<li>bootstrapClassLoader是ExtClassLoader的父类加载器，默认负责加载%JAVA_HOME%lib下的jar包和class文件</li>
+<li>ExtClassLoader是AppClassLoader的父类加载器，负责加载%JAVA_HOME%/lib/ext文件下的jar包和class类</li>
+<li>AppClassLoader是自定义类加载器的父类，负责加载classpath下的类文件。继承ClassLoader实现自定义类加载器</li>
+</ul>
+<hr>
+<h3 id="16-双亲委托（派）模型"><a href="#16-双亲委托（派）模型" class="headerlink" title="16 双亲委托（派）模型"></a>16 双亲委托（派）模型</h3><img src="/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%89%98%E6%A8%A1%E5%9E%8B.png" class="">
+
+<p>双亲委派模型的好处：</p>
+<ul>
+<li>主要是为了安全性，避免了用户自己编写类动态替换Java的一些核心类，比如String</li>
+<li>同时也避免了类的重复加载，因为JVM中区分不同类，不仅仅是根据类名，相同的class被不同的ClassLoader加载就是不同的两个类</li>
+</ul>
+<hr>
+<h3 id="17-Java中的异常体系"><a href="#17-Java中的异常体系" class="headerlink" title="17 Java中的异常体系"></a>17 Java中的异常体系</h3><ul>
+<li>Java中的所有异常都来自顶级父类<code>Throwable</code></li>
+<li><code>Throwable</code>下有两个子类<code>Exception</code>和<code>Error</code></li>
+<li><code>Error</code>是程序无法处理的错误，一旦出现这个错误，即程序将被迫停止运行</li>
+<li><code>Exception</code>不糊导致程序停止，又分为两个部分<code>RunTimeException</code>运行时异常 和 <code>CheckedException</code>检查异常</li>
+<li><code>RunTimeException</code>常常发生在程序运行过程中，会导致程序当前线程执行失败。<code>CheckedException</code>常常发生在程序编译过程中，会导致程序编译不通过</li>
+</ul>
+<hr>
+<h3 id="18-GC如何判断对象可以被回收（JVM）"><a href="#18-GC如何判断对象可以被回收（JVM）" class="headerlink" title="18 GC如何判断对象可以被回收（JVM）"></a>18 GC如何判断对象可以被回收（JVM）</h3><hr>
+<h3 id="19-线程的生命周期，线程有哪些状态"><a href="#19-线程的生命周期，线程有哪些状态" class="headerlink" title="19 线程的生命周期，线程有哪些状态"></a>19 线程的生命周期，线程有哪些状态</h3><ul>
+<li>线程的五种状态：创建，就绪，运行，阻塞，死亡</li>
+</ul>
+<ul>
+<li>阻塞的情况分为三种：<ul>
+<li>（1）等待阻塞：运行的线程执行了wait()方法</li>
+<li>（2）同步阻塞：运行线程在获取对象的同步锁时，若该同步锁被别的线程占用，则JVM会把该线程放入”锁池”中</li>
+<li>（3）其他阻塞：运行的线程执行了sleep或join方法，或发出了I/O请求时，JVM会把该线程置为阻塞状态。当sleep状态超时，join等待线程的终止或者超时。或者I/O处理完毕时，线程重新转入就绪状态。sleep是thread类的方法</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>创建状态（new）：新创建一个线程对象</li>
+<li>就绪状态（Runable）：线程对象创建后，其他线程调用了该对象的start方法，该状态的线程位于可运行线程池中，变得可运行，等待获取CPU的使用权</li>
+<li>运行状态(Running)：就绪状态的线程获取了CPU，执行程序代码</li>
+<li>阻塞状态（Blocked）：阻塞状态是线程因为某种原因放弃CPU使用权，暂时停止运行。直到线程进入就绪状态，才有机会转到运行状态</li>
+<li>死亡状态（Dead）：线程执行完或者因一场退出了run方法，该线程结束生命周期</li>
+</ul>
+<hr>
+<h3 id="20-sleep-、wait-、join-、yield-区别"><a href="#20-sleep-、wait-、join-、yield-区别" class="headerlink" title="20 sleep()、wait()、join()、yield()区别"></a>20 sleep()、wait()、join()、yield()区别</h3><ul>
+<li>（1）锁池：<ul>
+<li>所有需要竞争同步锁的线程都会放在锁池当中，比如当前对象的锁已经被其中一个线程得到，则其他线程需要在这个锁池进行等待，当前面的线程释放同步锁后锁池中的线程去竞争同步锁，当某个线程得到后会进入就绪队列进行等待CPU资源分配</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）等待池：<ul>
+<li>·当我们调用wait()方法后，线程会放到等待池当中，等待池的线程是不会去竞争同步锁。只有调用notify()或notifyAll()后等待池的线程才会开始去竞争锁，notify()是随机从等待池选出一个线程放到锁池，而notifyAll()是将等待池中的所有线程方法哦锁池当中</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>sleep是Thread类的静态本地方法，wait()是Object类的本地方法</li>
+<li>sleep方法不会释放lock，但是wait会释放，并加入等待列表中</li>
+<li>sleep方法不依赖于同步器synchronzied，但是wait()需要依赖synchronzied关键字</li>
+<li>sleep不需要被唤醒（时间到自动唤醒），但是wait()需要notify进行唤醒</li>
+<li>sleep一般用于当前线程休眠，或者轮循暂停操作，wait则多用于多线程之间的通信</li>
+<li>sleep会让出CPU执行时间且强制上下文切换，而wait()则不一定，wait后可能还是有机会重新竞争到锁继续执行的</li>
+</ul>
+<ul>
+<li>yield()执行后线程直接进入就绪状态，马上释放了cpu的执行权，但是依然保留了cpu的执行资格，所以有可能cpu下次进行线程调度还会让出这个线程获得到执行权继续执行</li>
+<li>join() 执行后线程进入阻塞状态，例如在线程B中低昂线程A的join()，那线程B会进入到阻塞队列，知道线程A结束或中断线程</li>
+</ul>
+<hr>
+<h3 id="21-对线程安全的理解"><a href="#21-对线程安全的理解" class="headerlink" title="21 对线程安全的理解"></a>21 对线程安全的理解</h3><hr>
+<h3 id="32-Sring是什么？"><a href="#32-Sring是什么？" class="headerlink" title="32 Sring是什么？"></a>32 Sring是什么？</h3><ul>
+<li>spring是一个轻量级的开源的J2EE框架，它是一个容器框架，用来装JavaBean。中间层可以起一个连接作用，整合其他框架，可以让我们的企业开发更快、更简洁</li>
+</ul>
+<ul>
+<li>Spring是一个轻量级的控制反转（IOC）和面向切面（AOP）的容器框架<ul>
+<li>从大小与开销两方面而言，Spring都是轻量级的</li>
+<li>通过控制反转（IOC）技术到到松耦合的目的</li>
+<li>提供了面向切面编程的丰富支持，允许通过分离应用的业务逻辑与系统级服务进行内聚性的开发</li>
+<li>包含并管理应用对象（Bean）的配置和声明周期，这个意义上是一个容器</li>
+<li>将简单的组件配置，组合成为复杂的应用，这个意义上是一个框架</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="33-对AOP的理解"><a href="#33-对AOP的理解" class="headerlink" title="33 对AOP的理解"></a>33 对AOP的理解</h3><ul>
+<li>系统由许多不同的组件组成，每一个组件各负责一块特定功能，除了实现自身核心功能之外，这些组件还经常承担额外的制作，例如日志，事务管理</li>
+</ul>
+<ul>
+<li>当我们需要为分散的对象映日公共行为的时候，OOP（面向对象）则显得无能为力。OOP允许你定义从上到下的关系，但不适合定义从左到右的关系。例如日志功能。</li>
+</ul>
+<ul>
+<li>AOP（面向切面），将程序中的交叉业务逻辑（安全，日志，事务等），封装成一个切面，然后注入到目标对象（具体业务逻辑）中去。AOP可以对某个对象或某个对象的功能进行增强，比如对象中的方法进行增强，可以在执行某个方法之前额外的做一些事情，在某个方法执行之后外的做一些事情</li>
+</ul>
+<hr>
+<h3 id="34-对IOC理解"><a href="#34-对IOC理解" class="headerlink" title="34 对IOC理解"></a>34 对IOC理解</h3><p>切入点：容器概念、控制反转、依赖注入</p>
+<ul>
+<li>IOC容器：<ul>
+<li>实际上市一个Map(key, value)，里面存储各种对象（被注解标识的类，xml中配置的Bean）。在项目启动时，通过全限定类名使用反射创建对讲放入map里</li>
+<li>map中拥有各种对象，通过<code>@autowired</code> /  <code>@resource</code>等注解，或xml中bean节点内的ref属性</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>控制反转：<ul>
+<li>（1）没有引入IOC容器之前，对象A依赖对象B，在对象A初始化，运行到某一点时，需要自己去创建对象B或使用已经创建的对象B，控制权都在自己的手上</li>
+<li>（2）引入IOC之后，对象A与对象B失去了直接联系，当对象A运行到需要对象B时候，IOC会主动创建一个对象B注入到对象A需要的地方</li>
+<li>对象A获取对象B的过程是有主动变成被动应为，控制权颠倒，称为<code>控制反转</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>依赖注入：<ul>
+<li>获取依赖对象的过程有自身管理变为了有IOC容器主动注入，依赖注入是实现IOC的方法，在IOC容器运行时间，动态地将某种依赖关系注入到对象之中</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="35-BeanFactory和ApplicationContext区别"><a href="#35-BeanFactory和ApplicationContext区别" class="headerlink" title="35 BeanFactory和ApplicationContext区别"></a>35 BeanFactory和ApplicationContext区别</h3><ul>
+<li>ApplicationContext是BeanFactory的子接口</li>
+<li>ApplicationContext提供了更完整的功能<ul>
+<li>（1）继承了MessageSource，因此支持国际化</li>
+<li>（2）同一的资源文件访问方式</li>
+<li>（3）提供在监听器中注册bean的事件</li>
+<li>（4）同时加载多个配置文件</li>
+<li>（5）载入多个（有继承关系）上下文，使得每一个上下文都有专注于一个特定的层次</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>BeanFactory采用延迟加载形式来注入Bean，使用使用某个Bean时（getBean()），才对该Bean进行加载实例化</li>
+<li>ApplicationContext，它是在容器启动时，一次性创建所有Bean。</li>
+<li>两者相比，ApplicationContext在启动时，就能发现哪个Bean配置出现问题。而BeanFactory只有使用到相应的Bean时才知道是否出现问题。</li>
+<li>两者相比，ApplicationContext相比于BeanFactory比较占用内存</li>
+<li>BeanFactory通常以编程的方式被创建，Application还能以声明的方式被创建，如使用ContextLoader</li>
+<li>BeanFactory和ApplicationContext都支持BeanPostProcessor、BeanFactoryPostProcessor的使用，但两者之间的区别是：BeanFactory需要手动注册，而ApplicationContext则是自动注册</li>
+</ul>
+<hr>
+<h3 id="36-Spring-Bean的生命周期"><a href="#36-Spring-Bean的生命周期" class="headerlink" title="36 Spring Bean的生命周期"></a>36 Spring Bean的生命周期</h3><ul>
+<li>扫描路径，解析类获得BeanDefinition</li>
+<li>如果有多个构造方法，则要推断构造方法</li>
+<li>确定好构造方法后，进行实例化得到一个对象</li>
+<li>对对象中的加了@autowired注解属性进行属性填充</li>
+<li>回调Aware方法，比如BeanNameAware、BeanFactoryAware</li>
+<li>调用BeanPostProcessor初始化前的方法</li>
+<li>调用初始化方法</li>
+<li>调用BeanPostProcessor的初始化后的方法，在这里会进行AOP</li>
+<li>如果当前创建的Bean是单例的则会把Bean放入单例池</li>
+<li>使用Bean</li>
+<li>Spring容器关闭时调用DisposableBean中的destory()方法</li>
+</ul>
+<hr>
+<h3 id="37-Spring支持的Bean的作用域"><a href="#37-Spring支持的Bean的作用域" class="headerlink" title="37 Spring支持的Bean的作用域"></a>37 Spring支持的Bean的作用域</h3><ul>
+<li>singleton：默认，每一个容器中只有一个bean的实例，单例的模式由BeanFactory自身来维护，该对象的生命周期是与Spring IOC容器一致的（但在第一次被注入时才会创建一个新的对象）</li>
+<li>prototype：为每一个Bean请求提供一个实例。在每次注入时都会创建一个新的对象</li>
+<li>request：Bean被定义为在每个HTTP请求中创建一个单例对象，也就是说在单个请求中都会复用这一个单例对象</li>
+<li>session：与request范围类似，确保每个session中有个bean的实例，在session过期后，bean会随之失效</li>
+<li>application：Bean被定义为ServeltContext的生命周期中复用一个单例对象</li>
+<li>websocker：Bean被定义在websocker的生命周期中复用一个单例对象</li>
+</ul>
+<hr>
+<h3 id="38-Spring框架中的单例Bean是线程安全的吗"><a href="#38-Spring框架中的单例Bean是线程安全的吗" class="headerlink" title="38 Spring框架中的单例Bean是线程安全的吗"></a>38 Spring框架中的单例Bean是线程安全的吗</h3><ul>
+<li>单例Bean：IOC容器中只有这么一个Bean，无论多少个线程去注入Bean，都是同一个Bean，不会额外new一个新的Bean</li>
+</ul>
+<ul>
+<li>该单例Bean并不是线程安全的，因为框架并没有对Bean进行多线程的封装处理</li>
+<li>如果Bean是有状态的（Bean里面存储数据），会出现线程安全问题，需要更改Bean的作用于，将默认的singleton更改为prototype，每次依赖注入时都会创建一个新的Bean</li>
+<li>如果Bean是无状态的，只是调用Bean里面的接口，就不会发生线程安全问题</li>
+</ul>
+<ul>
+<li>例子：DAO会操作数据库的connection，connection是带有状态的，比如数据库事务，spring事务管理器使用Threadlocal为不同线程维护了一套独立的connection副本，保证线程之间不会互相影响</li>
+</ul>
+<hr>
+<h3 id="39-Spring-框架使用到的设计模式"><a href="#39-Spring-框架使用到的设计模式" class="headerlink" title="39 Spring 框架使用到的设计模式"></a>39 Spring 框架使用到的设计模式</h3><ul>
+<li><p>（1）简单工厂：有一个工厂类根据传入的参数，动态决定应该创建哪一个产品类</p>
+<figure class="highlight autohotkey"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spring中的`BeanFactory`就是简单工厂模式的体现，根据传入一个唯一的标识来获取Bean对象，但是否是在传入参数后创建，还是传入参数前创建就根据具体的情况来决定</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>（2）工厂方法：</p>
+<figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">实现了`<span class="selector-tag">FactoryBean</span>`接口的<span class="selector-tag">bean</span>是一类叫做<span class="selector-tag">factory</span>的<span class="selector-tag">bean</span>，其特点是，<span class="selector-tag">spring</span>会在使用<span class="selector-tag">getBean</span>()调用火哥该<span class="selector-tag">bean</span>时，会自动调用该<span class="selector-tag">bean</span>的<span class="selector-tag">getObject</span>()方法，所以返回的不是<span class="selector-tag">factory</span>这个<span class="selector-tag">bean</span>，而是这个<span class="selector-tag">bean</span><span class="selector-class">.getObject</span>()方法的返回值</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）单例模式：保证一个类仅有一个实例，并提供一个访问它的全局访问点<figure class="highlight mel"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">spring</span>对单例的实现，<span class="keyword">spring</span>中的单例模式完成了后半句话，即提供了全局的访问点BeanFactory，但没有从构造器级别去控制单例，这是因为<span class="keyword">spring</span>管理的是任意的java对象</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）适配器模式：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Spring定义一个适配接口，使得每一种Controller有一种对应的适配器实现类，让适配器代替Controller执行相应的方法，这样在拓展Controller时，只需要加一个适配器类就完成了SpringMVC的扩展了</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（5）装饰器模式：动态给一个对象添加一些额外的职责。就增加功能来说，Decorator模式相比生成子类更为灵活<figure class="highlight pgsql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">Spring中用到的包装器模式在类名上有两种表现：一种是类名中含有<span class="keyword">wrapper</span>，另一种是类名中含有Desorator</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">+ （<span class="number">6</span>）动态代理：</span><br></pre></td></tr></table></figure>
+切面在应用运行的时刻被织入，在织入切面时，AOP容器会为目标对象动态创建一个代理对象,SpringAOP就是以这种方式织入切面<br>织入：把切面应用到目标对象并创建新的代理对象的过程<pre><code></code></pre>
+</li>
+</ul>
+<hr>
+<h3 id="40-Spring事务的实现方式和原理以及隔离级别"><a href="#40-Spring事务的实现方式和原理以及隔离级别" class="headerlink" title="40 Spring事务的实现方式和原理以及隔离级别"></a>40 Spring事务的实现方式和原理以及隔离级别</h3>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/07/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E9%99%8D%E7%BA%A7%EF%BC%9AHystrix/" rel="prev" title="【SpringCloud】服务降级：Hystrix">
+      <i class="fa fa-chevron-left"></i> 【SpringCloud】服务降级：Hystrix
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/" rel="next" title="【SpringCloud】服务网关：Gateway">
+      【SpringCloud】服务网关：Gateway <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-text">1 面向对象的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-JDK-JRE-JVM"><span class="nav-text">2 JDK JRE JVM</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%92%8Cequals"><span class="nav-text">3 &#x3D;&#x3D;和equals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-final"><span class="nav-text">4 final</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-String-StringBuffer-StringBuilder"><span class="nav-text">5 String StringBuffer StringBuilder</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E9%87%8D%E8%BD%BD%E5%92%8C%E9%87%8D%E5%86%99"><span class="nav-text">6 重载和重写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-%E6%8E%A5%E5%8F%A3%E5%92%8C%E6%8A%BD%E8%B1%A1%E7%B1%BB%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">7 接口和抽象类的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-List%E5%92%8CSet%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">8 List和Set的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-hashCode%E4%B8%8Eequals"><span class="nav-text">9 hashCode与equals</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-ArrayList%E5%92%8CLinkedList%E5%8C%BA%E5%88%AB"><span class="nav-text">10 ArrayList和LinkedList区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-HashMap%E5%92%8CHashTable%E5%8C%BA%E5%88%AB"><span class="nav-text">11 HashMap和HashTable区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-ConcurrentHashMap"><span class="nav-text">12 ConcurrentHashMap</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AAIOC%E5%AE%B9%E5%99%A8"><span class="nav-text">13 如何实现一个IOC容器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-%E4%BB%80%E4%B9%88%E6%98%AF%E5%AD%97%E8%8A%82%E7%A0%81%EF%BC%9F%E9%87%87%E7%94%A8%E5%AD%97%E8%8A%82%E7%A0%81%E7%9A%84%E5%A5%BD%E5%A4%84%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">14 什么是字节码？采用字节码的好处是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-Java%E7%B1%BB%E5%8A%A0%E8%BD%BD%E5%99%A8%E6%9C%89%E5%93%AA%E4%BA%9B%EF%BC%9F"><span class="nav-text">15 Java类加载器有哪些？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-%E5%8F%8C%E4%BA%B2%E5%A7%94%E6%89%98%EF%BC%88%E6%B4%BE%EF%BC%89%E6%A8%A1%E5%9E%8B"><span class="nav-text">16 双亲委托（派）模型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-Java%E4%B8%AD%E7%9A%84%E5%BC%82%E5%B8%B8%E4%BD%93%E7%B3%BB"><span class="nav-text">17 Java中的异常体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-GC%E5%A6%82%E4%BD%95%E5%88%A4%E6%96%AD%E5%AF%B9%E8%B1%A1%E5%8F%AF%E4%BB%A5%E8%A2%AB%E5%9B%9E%E6%94%B6%EF%BC%88JVM%EF%BC%89"><span class="nav-text">18 GC如何判断对象可以被回收（JVM）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%EF%BC%8C%E7%BA%BF%E7%A8%8B%E6%9C%89%E5%93%AA%E4%BA%9B%E7%8A%B6%E6%80%81"><span class="nav-text">19 线程的生命周期，线程有哪些状态</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-sleep-%E3%80%81wait-%E3%80%81join-%E3%80%81yield-%E5%8C%BA%E5%88%AB"><span class="nav-text">20 sleep()、wait()、join()、yield()区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-%E5%AF%B9%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-text">21 对线程安全的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#32-Sring%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="nav-text">32 Sring是什么？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#33-%E5%AF%B9AOP%E7%9A%84%E7%90%86%E8%A7%A3"><span class="nav-text">33 对AOP的理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#34-%E5%AF%B9IOC%E7%90%86%E8%A7%A3"><span class="nav-text">34 对IOC理解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#35-BeanFactory%E5%92%8CApplicationContext%E5%8C%BA%E5%88%AB"><span class="nav-text">35 BeanFactory和ApplicationContext区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#36-Spring-Bean%E7%9A%84%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="nav-text">36 Spring Bean的生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#37-Spring%E6%94%AF%E6%8C%81%E7%9A%84Bean%E7%9A%84%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-text">37 Spring支持的Bean的作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#38-Spring%E6%A1%86%E6%9E%B6%E4%B8%AD%E7%9A%84%E5%8D%95%E4%BE%8BBean%E6%98%AF%E7%BA%BF%E7%A8%8B%E5%AE%89%E5%85%A8%E7%9A%84%E5%90%97"><span class="nav-text">38 Spring框架中的单例Bean是线程安全的吗</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#39-Spring-%E6%A1%86%E6%9E%B6%E4%BD%BF%E7%94%A8%E5%88%B0%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F"><span class="nav-text">39 Spring 框架使用到的设计模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#40-Spring%E4%BA%8B%E5%8A%A1%E7%9A%84%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F%E5%92%8C%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="nav-text">40 Spring事务的实现方式和原理以及隔离级别</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Mybatis映射文件的学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Mybatis】映射文件">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/18/%E3%80%90Mybatis%E3%80%91%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Mybatis映射文件的学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-18T03:40:08.000Z">
+<meta property="article:modified_time" content="2020-10-18T09:07:29.879Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/18/%E3%80%90Mybatis%E3%80%91%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Mybatis】映射文件 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/18/%E3%80%90Mybatis%E3%80%91%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Mybatis】映射文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-18 11:40:08 / 修改时间：17:07:29" itemprop="dateCreated datePublished" datetime="2020-10-18T11:40:08+08:00">2020-10-18</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Mybatis映射文件的学习笔记</p>
+<a id="more"></a>
+
+<h3 id="一、基本的增删改查"><a href="#一、基本的增删改查" class="headerlink" title="一、基本的增删改查"></a>一、基本的增删改查</h3><h4 id="1-1-操作实例"><a href="#1-1-操作实例" class="headerlink" title="1.1 操作实例"></a>1.1 操作实例</h4><ul>
+<li>（1）定义接口方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EmployeeMapper</span> </span>&#123;</span><br><span class="line">    <span class="comment">//增</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">addEmp</span><span class="params">(Employee emp)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">deleteEmpById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//改</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="keyword">void</span> <span class="title">updateEmp</span><span class="params">(Employee emp)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Employee <span class="title">getEmpById</span><span class="params">(<span class="keyword">int</span> id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）在映射文件中，填写相应的sql语句<ul>
+<li>增的标签为：<code>&lt;insert&gt;</code></li>
+<li>删的标签为：<code>&lt;delete&gt;</code></li>
+<li>改的标签为：<code>&lt;update&gt;</code></li>
+<li>查的标签为：<code>&lt;select&gt;</code><ul>
+<li>查的标签要额外添加<code>resultType</code>来确定返回值的类型</li>
+</ul>
+</li>
+<li><strong>传入的参数是个对象时，仍然可以直接使用#{}来获取对象属性</strong></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;Dao.EmployeeMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addEmp&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Dao.Employee&quot;</span> <span class="attr">useGeneratedKeys</span>=<span class="string">&quot;true&quot;</span> <span class="attr">keyProperty</span>=<span class="string">&quot;id&quot;</span>&gt;</span></span><br><span class="line">        insert into tbl_employee(last_name, email, gender)</span><br><span class="line">        values(#&#123;lastName&#125;, #&#123;email&#125;, #&#123;gender&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deleteEmpById&quot;</span>&gt;</span></span><br><span class="line">        delete from tbl_employee</span><br><span class="line">        where id=#&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updateEmp&quot;</span>&gt;</span></span><br><span class="line">        update tbl_employee</span><br><span class="line">        set last_name=#&#123;lastName&#125;, email=#&#123;email&#125;, gender=#&#123;gender&#125;</span><br><span class="line">        where id=#&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        select id, last_name lastName, gender, email</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（3）Java程序调用方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">	String resource = <span class="string">&quot;./Dao/mybatisConfig.xml&quot;</span>;</span><br><span class="line">	InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line"></span><br><span class="line">	SqlSessionFactory ssf = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//不会自动提交数据</span></span><br><span class="line">	SqlSession ss = ssf.openSession();<span class="comment">//参数true/false，true自动提交数据，flase需要手动提交数据，默认false</span></span><br><span class="line"></span><br><span class="line">	EmployeeMapper mapper = ss.getMapper(EmployeeMapper.class);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//增</span></span><br><span class="line">	Employee employee = <span class="keyword">new</span> Employee(<span class="keyword">null</span>, <span class="string">&quot;yjj&quot;</span>,<span class="string">&#x27;0&#x27;</span>, <span class="string">&quot;yyy.com&quot;</span>);</span><br><span class="line">	mapper.addEmp(employee);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//改</span></span><br><span class="line">	mapper.updateEmp(<span class="keyword">new</span> Employee(<span class="number">3</span>, <span class="string">&quot;yjj&quot;</span>, <span class="string">&#x27;0&#x27;</span>, <span class="string">&quot;丫丁丁.com&quot;</span>));</span><br><span class="line"></span><br><span class="line">	<span class="comment">//查</span></span><br><span class="line">	Employee emp = mapper.getEmpById(<span class="number">3</span>);</span><br><span class="line">	System.out.println(emp);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//删</span></span><br><span class="line">	mapper.deleteEmpById(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//手动提交数据</span></span><br><span class="line">	ss.commit();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-拓展：获取自增主键的值"><a href="#1-2-拓展：获取自增主键的值" class="headerlink" title="1.2 拓展：获取自增主键的值"></a>1.2 拓展：获取自增主键的值</h4><ul>
+<li>在插入时，mysql支持自增主键，自增主键的获取，mybatis底层是利用了JDBC的**statement.getGenreatedKeys()**的方法</li>
+</ul>
+<ul>
+<li>使用方法：<ul>
+<li>在<code>&lt;insert&gt;</code>标签添加额外的属性</li>
+<li><code>useGenerateKeys=&quot;true&quot;</code>：开启获取自增主键</li>
+<li><code>keyProperty=&quot;&quot;</code>：将获取的信息封装到JavaBean的哪个属性</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>举例</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1、修改映射文件中的<span class="tag">&lt;<span class="name">insert</span>&gt;</span>标签</span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addEmp&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Dao.Employee&quot;</span>  <span class="attr">useGeneratedKeys</span>=<span class="string">&quot;true&quot;</span> <span class="attr">keyProperty</span>=<span class="string">&quot;id&quot;</span>&gt;</span></span><br><span class="line">        insert into tbl_employee(last_name, email, gender)</span><br><span class="line">        values(#&#123;lastName&#125;, #&#123;email&#125;, #&#123;gender&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">2</span>、修改Java程序的增方法进行测试</span><br><span class="line">        Employee employee = <span class="keyword">new</span> Employee(<span class="keyword">null</span>, <span class="string">&quot;yjj&quot;</span>,<span class="string">&#x27;0&#x27;</span>, <span class="string">&quot;yyy.com&quot;</span>);</span><br><span class="line">        mapper.addEmp(employee);</span><br><span class="line">		<span class="comment">//上面创建employee并没有对id进行赋值，但是employee.getId()返回的并不是null</span></span><br><span class="line">		<span class="comment">//因为获取了自增值，并将该值封装到JavaBean的id属性中</span></span><br><span class="line">        System.out.println(employee.getId());</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-拓展：获取非自增主键的值"><a href="#1-3-拓展：获取非自增主键的值" class="headerlink" title="1.3 拓展：获取非自增主键的值"></a>1.3 拓展：获取非自增主键的值</h4><ul>
+<li>在<code>&lt;insert&gt;</code>中添加字标签<code>&lt;selectKey&gt;</code><ul>
+<li>keyProperty：sql查询出来的数据，封装给JavaBean的那个属性</li>
+<li>order：执行顺序”BEFORE/AFTER”，在sql语句之前/之后执行</li>
+<li>resultType：返回结果类型</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>举例：</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">以获取非自增主键的方式，来实现获取自增主键</span><br><span class="line">	<span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addEmp&quot;</span> <span class="attr">parameterType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        insert into tbl_employee(last_name, email, gender)</span><br><span class="line">        values(#&#123;lastName&#125;, #&#123;email&#125;, #&#123;gender&#125;)</span><br><span class="line">        </span><br><span class="line">	<span class="comment">&lt;!--在插入后执行，获取最后一条数据的id，将此id封装到JavaBean中--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">selectKey</span> <span class="attr">keyProperty</span>=<span class="string">&quot;id&quot;</span> <span class="attr">order</span>=<span class="string">&quot;AFTER&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Integer&quot;</span>&gt;</span></span><br><span class="line">            select id</span><br><span class="line">            from tbl_employee</span><br><span class="line">            order by id desc</span><br><span class="line">            limit 1;</span><br><span class="line">        <span class="tag">&lt;/<span class="name">selectKey</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="二、参数传递"><a href="#二、参数传递" class="headerlink" title="二、参数传递"></a>二、参数传递</h3><h4 id="2-1-单个参数"><a href="#2-1-单个参数" class="headerlink" title="2.1 单个参数"></a>2.1 单个参数</h4><ul>
+<li>对于单个参数，Mybatis不会做任何处理，参数名字可以随便起</li>
+<li>使用方法：<code>#&#123;参数名&#125;</code></li>
+</ul>
+<h4 id="2-2-多个参数"><a href="#2-2-多个参数" class="headerlink" title="2.2 多个参数"></a>2.2 多个参数</h4><ul>
+<li>对于过个参数。MyBatis对进行特殊处理，会将参数封装到为一个Map集合中</li>
+<li>若全局配置文件<code>useActualParamName=&quot;true&quot;</code>，则该Map存储格式为：<ul>
+<li>Key：param1, param2….paramN 或者 arg0, arg1 …. argN</li>
+<li>value：按顺序传入的参数</li>
+</ul>
+</li>
+<li>若全局配置文件<code>useActualParamName=&quot;false&quot;</code>，则该Map存储格式为：<ul>
+<li>Key：param1, param2….paramN 或者 0, 1 …. N</li>
+<li>value：按顺序传入的参数</li>
+</ul>
+</li>
+<li><strong>Mybaits版本不同，默认值可能发生变化</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">接口</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Employee <span class="title">getEmpByIdAndLastName</span><span class="params">(Integer id, String lastName)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpByIdAndLastName&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id=#&#123;arg0&#125; and last_name=#&#123;arg1&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<h4 id="2-3-命名参数"><a href="#2-3-命名参数" class="headerlink" title="2.3 命名参数"></a>2.3 命名参数</h4><ul>
+<li>由于参数一多，上面的方法就十分不便利，由此引出命名参数</li>
+<li>命名参数：【明确指定封装的参数时map的Key】 </li>
+<li>在接口传参时使用格式：<strong>Xxxx(@Param(“id”)int id, @Param(“name”)String name)</strong></li>
+<li>Map存储格式为：<ul>
+<li>Key：使用@Param注解指定的值</li>
+<li>value：按顺序传入的参数</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">接口方法</span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Employee <span class="title">getEmpByIdAndLastName</span><span class="params">(<span class="meta">@Param(&quot;id&quot;)</span> Integer id, <span class="meta">@Param(&quot;lastName&quot;)</span> String lastName)</span></span>;</span><br></pre></td></tr></table></figure>
+ <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpByIdAndLastName&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">       select *</span><br><span class="line">       from tbl_employee</span><br><span class="line">       where id=#&#123;id&#125; and last_name=#&#123;lastName&#125;</span><br><span class="line">   <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-Map集合"><a href="#2-4-Map集合" class="headerlink" title="2.4 Map集合"></a>2.4 Map集合</h4><ul>
+<li>为了方便，我们也可以传入map</li>
+<li>直接#{Key}：来取出对象的值</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">接口方法：</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Employee <span class="title">getEmpByMap</span><span class="params">(Map&lt;String, Object&gt; map)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpByMap&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id=#&#123;id&#125; and last_name=#&#123;lastName&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">方法测试</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;./Dao/mybatisConfig.xml&quot;</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line"></span><br><span class="line">        SqlSessionFactory ssf = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">        SqlSession ss = ssf.openSession();</span><br><span class="line"></span><br><span class="line">        EmployeeMapper mapper = ss.getMapper(EmployeeMapper.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建Map集合</span></span><br><span class="line">        Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">&quot;id&quot;</span>, <span class="number">2</span>);</span><br><span class="line">        map.put(<span class="string">&quot;lastName&quot;</span>, <span class="string">&quot;C酱&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Employee emp = mapper.getEmpByMap(map);</span><br><span class="line">        System.out.println(emp);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-5-集合-数组"><a href="#2-5-集合-数组" class="headerlink" title="2.5 集合/数组"></a>2.5 集合/数组</h4><ul>
+<li>Mybatis也会对集合、数组封装为Map</li>
+<li>Collection：<ul>
+<li>Key：collection[0], collection[1] … collection[N]</li>
+<li>使用方法：#{Key}</li>
+</ul>
+</li>
+<li>List：<ul>
+<li>Key：list[0], list[1] … list[N]</li>
+<li>使用方法：#{Key}</li>
+</ul>
+</li>
+<li>Set：<ul>
+<li>Key：set[0], set[1] … set[N]</li>
+<li>使用方法：#{Key}</li>
+</ul>
+</li>
+<li>Array：<ul>
+<li>Key：array[0], array[1] … array[2]</li>
+<li>使用方法：#{Key}</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>举例：以List集合为例</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">接口方法</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Employee <span class="title">getEmpByList</span><span class="params">(List&lt;Object&gt; list)</span></span>;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpByList&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id=#&#123;list[0]&#125; and last_name=#&#123;list[1]&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">方法测试</span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test3</span><span class="params">()</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        String resource = <span class="string">&quot;./Dao/mybatisConfig.xml&quot;</span>;</span><br><span class="line">        InputStream inputStream = Resources.getResourceAsStream(resource);</span><br><span class="line"></span><br><span class="line">        SqlSessionFactory ssf = <span class="keyword">new</span> SqlSessionFactoryBuilder().build(inputStream);</span><br><span class="line"></span><br><span class="line">        SqlSession ss = ssf.openSession();</span><br><span class="line"></span><br><span class="line">        EmployeeMapper mapper = ss.getMapper(EmployeeMapper.class);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//创建list集合</span></span><br><span class="line">        ArrayList&lt;Object&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list.add(<span class="number">2</span>);</span><br><span class="line">        list.add(<span class="string">&quot;C酱&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Employee emp = mapper.getEmpByList(list);</span><br><span class="line">        System.out.println(emp);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-6-补充"><a href="#2-6-补充" class="headerlink" title="2.6 补充"></a>2.6 补充</h4><ul>
+<li>（1）若接口定义返回类型为：集合<ul>
+<li>映射文件，resultType填写集合属性的类型</li>
+</ul>
+</li>
+<li>（2）若接口定义返回类型为：Map<ul>
+<li>映射文件中resultTyoe填写map</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-7-获取参数"><a href="#2-7-获取参数" class="headerlink" title="2.7 获取参数"></a>2.7 获取参数</h4><ul>
+<li>#{}：可以获取map中的值或pojo对象属性的值</li>
+<li>${}：可以获取map中的值或pojo对象属性的值</li>
+</ul>
+<ul>
+<li>#{} 和 ${} 的区别<ul>
+<li>#{}是以预编译的形式，将参数设置到sql语句中；类似PreparedStatement</li>
+<li>${}取出的值直接拼装在sql中，进行sql拼接；类似Statement</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>使用场景<ul>
+<li>大多情况下，使用#{}</li>
+<li>在原生JDBC不支持占位符的地方（表名），可以用${}进行取值</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-8-参数处理"><a href="#2-8-参数处理" class="headerlink" title="2.8 参数处理"></a>2.8 参数处理</h4><ul>
+<li>#{}，在取出参数时，可以进行一些规则</li>
+</ul>
+<ul>
+<li>支持的属性：javaType、jdbcType、mode、numericScale、resultMap、typeHandler、jdbcTypeName、expression<ul>
+<li>javaType：在Java中的属性</li>
+<li>jdbcType：在数据库中的属性</li>
+<li>mode：存储过程（后面讲）</li>
+<li>numericScale：保留几位小数</li>
+<li>resultMap：规定封装的结果集</li>
+<li>typeHandler：类型处理器</li>
+<li>jdbcTypeName：和jdbcType一样</li>
+<li>expression：表达式（未来支持的功能）</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>上述属性中，就jdbcType可能需要进行设置<ul>
+<li>在我们数据为null时，有些数据库可能不能识别mybatis对null的默认处理。比如Oracle(报错)</li>
+<li>解决方法：<ul>
+<li>因为mybatis对所有的null都映射为jdbc OTHER</li>
+<li>解决方法（1）：设置jdbcType=NULL</li>
+<li>解决方法（2）：全局配置文件<code>&lt;setting name=&quot;jdbcTypeForNull&quot; value=&quot;NULL&quot;&gt;</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="三、resultMap的使用"><a href="#三、resultMap的使用" class="headerlink" title="三、resultMap的使用"></a>三、resultMap的使用</h3><h4 id="3-1-基础介绍"><a href="#3-1-基础介绍" class="headerlink" title="3.1 基础介绍"></a>3.1 基础介绍</h4><ul>
+<li>resultMap和resultType类，来确定返回的类型，但resultMap可以进行自定义</li>
+<li>resultMap和resultType不能同时使用</li>
+</ul>
+<ul>
+<li><strong>reslutMap</strong></li>
+<li><code>&lt;resultMap id=&quot;&quot; type=&quot;&quot;&gt;&lt;/resultMap&gt;</code><ul>
+<li>id：resultMap的唯一标识</li>
+<li>type：自定义规则的JavaBean</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>子标签<code>&lt;id&gt;</code></strong></li>
+<li><code>&lt;id&gt;</code>是用来定义主键</li>
+<li><code>&lt;id column=&quot;&quot; property=&quot;&quot;/&gt;</code><ul>
+<li>column：数据库中列的字段名</li>
+<li>property：JavaBean的属性名</li>
+<li>将查询对象的字段名，封装到对应JavaBean的属性</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><p><strong>子标签<code>&lt;result&gt;</code></strong></p>
+</li>
+<li><p><code>&lt;result&gt;</code>用来定义非主键</p>
+</li>
+<li><p><code> &lt;result column=&quot;&quot; property=&quot;&quot;/&gt;</code></p>
+<ul>
+<li>column：数据库中列的字段名</li>
+<li>property：JavaBean的属性名</li>
+</ul>
+</li>
+<li><p>其他不指定的类会自动封装；但是一旦使用resultMap的话，建议全部指定</p>
+</li>
+<li><p>举例：</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;MyEmp&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;MyEmp&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-前期准备"><a href="#3-2-前期准备" class="headerlink" title="3.2 前期准备"></a>3.2 前期准备</h4><ul>
+<li>（1）为Employee类添加多一个属性为Department</li>
+<li>（2）创建相应的类(JavaBean)，接口，映射文件，并将映射文件注册到全局配置文件中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">类</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Department</span> </span>&#123;</span><br><span class="line">		<span class="keyword">private</span> Integer id;</span><br><span class="line">		<span class="keyword">private</span> String departmentName;</span><br><span class="line">		<span class="keyword">private</span> List&lt;String&gt; emps;</span><br><span class="line"></span><br><span class="line">		<span class="function"><span class="keyword">public</span> Integer <span class="title">getId</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> id;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setId</span><span class="params">(Integer id)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.id = id;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> String <span class="title">getDepartmentName</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> departmentName;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setDepartmentName</span><span class="params">(String departmentName)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.departmentName = departmentName;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> List&lt;String&gt; <span class="title">getEmps</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> emps;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setEmps</span><span class="params">(List&lt;String&gt; emps)</span> </span>&#123;</span><br><span class="line">			<span class="keyword">this</span>.emps = emps;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="meta">@Override</span></span><br><span class="line">		<span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">			<span class="keyword">return</span> <span class="string">&quot;Department&#123;&quot;</span> +</span><br><span class="line">					<span class="string">&quot;id=&quot;</span> + id +</span><br><span class="line">					<span class="string">&quot;, departmentName=&#x27;&quot;</span> + departmentName + <span class="string">&#x27;\&#x27;&#x27;</span> +</span><br><span class="line">					<span class="string">&#x27;&#125;&#x27;</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">接口</span><br><span class="line">	<span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">DepartmentMapper</span> </span>&#123;</span><br><span class="line">		<span class="function"><span class="keyword">public</span> Department <span class="title">getDeptById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line">	&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">	<span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line">	<span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">			<span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">			<span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">	<span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;Dao.DepartmentMapper&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getDeptById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Department&quot;</span>&gt;</span></span><br><span class="line">			select id, dept_name as departmentName</span><br><span class="line">			from tbl_department</span><br><span class="line">			where id = #&#123;id&#125;</span><br><span class="line">		<span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>（3）在数据库中创建相应的表部门表</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">创建部门表</span><br><span class="line">	<span class="keyword">create</span> <span class="keyword">table</span> tbl_department(</span><br><span class="line">	<span class="keyword">id</span> <span class="built_in">int</span>(<span class="number">11</span>) primary <span class="keyword">key</span> auto_increment,</span><br><span class="line">	dept_name <span class="built_in">varchar</span>(<span class="number">255</span>)</span><br><span class="line">	)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>（4）在数据库为员工表添加额外字段，并和部门表进行联系</li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">添加字段</span><br><span class="line">	<span class="keyword">alter</span> <span class="keyword">table</span> tbl_employee</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">column</span> dept_id <span class="built_in">int</span>(<span class="number">11</span>)</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">联系两表</span><br><span class="line">	<span class="keyword">alter</span> <span class="keyword">table</span> tbl_employee</span><br><span class="line">	<span class="keyword">add</span> <span class="keyword">constraint</span> fk_emp_dept</span><br><span class="line">	<span class="keyword">foreign</span> <span class="keyword">key</span>(dept_id)</span><br><span class="line">	<span class="keyword">references</span> tbl_department(<span class="keyword">id</span>)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-联合查询"><a href="#3-3-联合查询" class="headerlink" title="3.3 联合查询"></a>3.3 联合查询</h4><ul>
+<li>（1）级联属性封装结果集</li>
+<li>举例：在查询员工表时，根据员工表的部门号，把相应的部门查询出来</li>
+<li>在resultMap中的result，通过<code>对象.属性</code>进行对部门类赋值</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;EmpDept&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--级联赋值方式--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;dept_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;dept.id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;dept_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;dept.departmentName&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpAndDept&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;EmpDept&quot;</span>&gt;</span></span><br><span class="line">        select A.id, last_name, gender, email, B.id as dept_id, B.dept_name</span><br><span class="line">        from tbl_employee as A, tbl_department as B</span><br><span class="line">        where A.dept_id = B.id And A.id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）利用association对象实现</li>
+<li>子标签<code>&lt;association property=&quot;&quot; javaType=&quot;&quot;&gt;&lt;/association&gt;</code><ul>
+<li><code>&lt;assovaition&gt;</code>：指定联合的JavaBean对象</li>
+<li>property：指定哪个属性是联合对象</li>
+<li>javaType：联合的类的全类名</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;EmpDept2&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;dept&quot;</span> <span class="attr">javaType</span>=<span class="string">&quot;Dao.Department&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;dept_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;dept_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;departmentName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpAndDept&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;EmpDept2&quot;</span>&gt;</span></span><br><span class="line">        select A.id, last_name, gender, email, B.id as dept_id, B.dept_name</span><br><span class="line">        from tbl_employee as A, tbl_department as B</span><br><span class="line">        where A.dept_id = B.id And A.id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（3）关联的对象时集合时<ul>
+<li>关联的对象时多个值时使用</li>
+<li>举例：一个部门有多个员工，在查询一个部门时，把该部门的员工查询出来</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="comment">&lt;!--利用Collection实现集合关联--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;MyDept&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Department&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;dept_id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;dept_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;departmentName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--collection定义集合类型的属性的封装规则</span></span><br><span class="line"><span class="comment">            ofType：集合里面数据的类型</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;emps&quot;</span> <span class="attr">ofType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-4-分步查询"><a href="#3-4-分步查询" class="headerlink" title="3.4 分步查询"></a>3.4 分步查询</h4><ul>
+<li>利用assocation来实现</li>
+<li>分布查询的好处：以已有的方法，完成复杂的sql操作，不用额外写sql语句</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">Employee映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;EmpByStep&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--association：定义关联对象的封装规则</span></span><br><span class="line"><span class="comment">            select：查询的方法。关联对象的属性通过哪个sql语句来获取</span></span><br><span class="line"><span class="comment">            column：指定哪个值传递给sql语句来进行查询</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;dept&quot;</span> <span class="attr">select</span>=<span class="string">&quot;Dao.DepartmentMapper.getDeptById&quot;</span> <span class="attr">column</span>=<span class="string">&quot;dept_id&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--不填写，默认封装--&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br><span class="line">	</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpByIdStep&quot;</span> <span class="attr">resultMap</span>=<span class="string">&quot;DSM&quot;</span> &gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">Department映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getDeptById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Department&quot;</span>&gt;</span></span><br><span class="line">        select id, dept_name as departmentName</span><br><span class="line">        from tbl_department</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>拓展：分步查询传递多个数据<ul>
+<li>可以将多个值封装到Map中进行传递</li>
+<li><code>&lt;association property=&quot;&quot; select=&quot;&quot; column=&quot;&#123;key1=column1, key2=column2...&#125;&quot;&gt;</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>Collection实现分步查询<ul>
+<li>关联的对象时多个值时使用</li>
+<li>举例：一个部门有多个员工，在查询一个部门时，把该部门的员工查询出来</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="comment">&lt;!--Collection实现分步查询--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;MyDeptStep&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Department&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;dept_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;departmentName&quot;</span>/&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--collection分步查询使用方法和association类似--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">&quot;emps&quot;</span> <span class="attr">select</span>=<span class="string">&quot;resultMap.EmployeeMapperPlus.getEmpByDid&quot;</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--默认封装--&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">collection</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-5-延迟加载"><a href="#3-5-延迟加载" class="headerlink" title="3.5 延迟加载"></a>3.5 延迟加载</h4><ul>
+<li>我们每次查询Employee对象的时候，都将Department一起查询出来</li>
+<li>为了提升效率，希望部门信息在我们使用的时候再去查询，也就是延迟加载</li>
+<li>在分布查询的基础上，在全局配置文件加上两个配置即可实现延迟加载<ul>
+<li><code>&lt;setting name=&quot;lazyLoadingEnable&quot; value=&quot;true&quot;/&gt;</code>：开启所有关联对象都会延迟加载</li>
+<li><code>&lt;setting name=&quot;aggressiveLazyLoading&quot; value=&quot;false&quot;/&gt;</code>：关闭所有对象全部加载</li>
+</ul>
+</li>
+<li>可以不在全局配置文件中开启<code>lazyLoadingEnable</code><ul>
+<li>在<code>association</code>中添加<code>fetchType=&quot;lazy/enger</code>来开启延迟加载</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-6-鉴别器"><a href="#3-6-鉴别器" class="headerlink" title="3.6 鉴别器"></a>3.6 鉴别器</h4><ul>
+<li>mybatis可以使用discriminator判断某列的值，然后根据某列的值改变封装行为</li>
+<li>举例：封装Employee<ul>
+<li>如果是男生，把last_name这一列的值赋值给email</li>
+<li>如果查询的时女生，则把部门信息查询出来</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line">    <span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">&quot;DSM&quot;</span> <span class="attr">type</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">column</span>=<span class="string">&quot;id&quot;</span> <span class="attr">property</span>=<span class="string">&quot;id&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;lastName&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">property</span>=<span class="string">&quot;gender&quot;</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;email&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--鉴别器：</span></span><br><span class="line"><span class="comment">            column：指定判断的列名</span></span><br><span class="line"><span class="comment">            javaType：列值对应的java类型</span></span><br><span class="line"><span class="comment">        --&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">discriminator</span> <span class="attr">javaType</span>=<span class="string">&quot;String&quot;</span> <span class="attr">column</span>=<span class="string">&quot;gender&quot;</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 男生 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;0&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">result</span> <span class="attr">column</span>=<span class="string">&quot;last_name&quot;</span> <span class="attr">property</span>=<span class="string">&quot;email&quot;</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">case</span>&gt;</span></span><br><span class="line">            <span class="comment">&lt;!--女生 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">case</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">&quot;dept&quot;</span> <span class="attr">select</span>=<span class="string">&quot;Dao.DepartmentMapper.getDeptById&quot;</span> <span class="attr">column</span>=<span class="string">&quot;dept_id&quot;</span>&gt;</span></span><br><span class="line">                    <span class="comment">&lt;!--默认封装--&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">case</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">discriminator</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/17/%E3%80%90Mybatis%E3%80%91%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/" rel="prev" title="【Mybatis】全局配置文件">
+      <i class="fa fa-chevron-left"></i> 【Mybatis】全局配置文件
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/19/%E3%80%90Mybatis%E3%80%91%E5%8A%A8%E6%80%81sql/" rel="next" title="【Mybatis】动态sql">
+      【Mybatis】动态sql <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E6%9C%AC%E7%9A%84%E5%A2%9E%E5%88%A0%E6%94%B9%E6%9F%A5"><span class="nav-text">一、基本的增删改查</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%93%8D%E4%BD%9C%E5%AE%9E%E4%BE%8B"><span class="nav-text">1.1 操作实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E6%8B%93%E5%B1%95%EF%BC%9A%E8%8E%B7%E5%8F%96%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%80%BC"><span class="nav-text">1.2 拓展：获取自增主键的值</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E6%8B%93%E5%B1%95%EF%BC%9A%E8%8E%B7%E5%8F%96%E9%9D%9E%E8%87%AA%E5%A2%9E%E4%B8%BB%E9%94%AE%E7%9A%84%E5%80%BC"><span class="nav-text">1.3 拓展：获取非自增主键的值</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92"><span class="nav-text">二、参数传递</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%8D%95%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="nav-text">2.1 单个参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%A4%9A%E4%B8%AA%E5%8F%82%E6%95%B0"><span class="nav-text">2.2 多个参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%91%BD%E5%90%8D%E5%8F%82%E6%95%B0"><span class="nav-text">2.3 命名参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-Map%E9%9B%86%E5%90%88"><span class="nav-text">2.4 Map集合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E9%9B%86%E5%90%88-%E6%95%B0%E7%BB%84"><span class="nav-text">2.5 集合&#x2F;数组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-6-%E8%A1%A5%E5%85%85"><span class="nav-text">2.6 补充</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-7-%E8%8E%B7%E5%8F%96%E5%8F%82%E6%95%B0"><span class="nav-text">2.7 获取参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-8-%E5%8F%82%E6%95%B0%E5%A4%84%E7%90%86"><span class="nav-text">2.8 参数处理</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81resultMap%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">三、resultMap的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%9F%BA%E7%A1%80%E4%BB%8B%E7%BB%8D"><span class="nav-text">3.1 基础介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%89%8D%E6%9C%9F%E5%87%86%E5%A4%87"><span class="nav-text">3.2 前期准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E8%81%94%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-text">3.3 联合查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%88%86%E6%AD%A5%E6%9F%A5%E8%AF%A2"><span class="nav-text">3.4 分步查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E5%BB%B6%E8%BF%9F%E5%8A%A0%E8%BD%BD"><span class="nav-text">3.5 延迟加载</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-%E9%89%B4%E5%88%AB%E5%99%A8"><span class="nav-text">3.6 鉴别器</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

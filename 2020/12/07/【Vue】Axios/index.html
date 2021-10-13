@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Vue官方推荐使用的网络异步请求框架">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Vue】Axios">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/12/07/%E3%80%90Vue%E3%80%91Axios/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Vue官方推荐使用的网络异步请求框架">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-12-07T13:02:19.000Z">
+<meta property="article:modified_time" content="2020-12-07T13:06:09.311Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/12/07/%E3%80%90Vue%E3%80%91Axios/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Vue】Axios | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/12/07/%E3%80%90Vue%E3%80%91Axios/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Vue】Axios
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-12-07 21:02:19 / 修改时间：21:06:09" itemprop="dateCreated datePublished" datetime="2020-12-07T21:02:19+08:00">2020-12-07</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Vue/" itemprop="url" rel="index"><span itemprop="name">Vue</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Vue官方推荐使用的网络异步请求框架</p>
+<a id="more"></a>
+
+<h3 id="一、axios框架基本使用"><a href="#一、axios框架基本使用" class="headerlink" title="一、axios框架基本使用"></a>一、axios框架基本使用</h3><h4 id="1-1-axios请求方式"><a href="#1-1-axios请求方式" class="headerlink" title="1.1 axios请求方式"></a>1.1 axios请求方式</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">axios(config)</span><br><span class="line"></span><br><span class="line">axios.request(config)</span><br><span class="line"></span><br><span class="line">axios.get(url[, config])</span><br><span class="line"></span><br><span class="line">axios.delete(url[, config])</span><br><span class="line"></span><br><span class="line">axios.head(url[, config])</span><br><span class="line"></span><br><span class="line">axios.post(url[, config])</span><br><span class="line"></span><br><span class="line">axios.put(url[, config])</span><br><span class="line"></span><br><span class="line">axios.patch(url[, config])</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-axios框架安装"><a href="#1-2-axios框架安装" class="headerlink" title="1.2 axios框架安装"></a>1.2 axios框架安装</h4><p>vue-cli项目运行<code>npm install axios -save</code></p>
+<h4 id="1-3-基本使用"><a href="#1-3-基本使用" class="headerlink" title="1.3 基本使用"></a>1.3 基本使用</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在main.js中测试</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">//框架导入</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&quot;axios&quot;</span>;</span><br><span class="line"></span><br><span class="line">...</span><br><span class="line"><span class="comment">//请求方式一</span></span><br><span class="line">axios(&#123;</span><br><span class="line">  url: <span class="string">&quot;http://123.207.32.32:8000/home/multidata&quot;</span>, <span class="comment">//此接口已经在后端解决跨域问题了，所以暂时不用思考跨域问题</span></span><br><span class="line">  method: <span class="string">&quot;get&quot;</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求方式二</span></span><br><span class="line">axios.get(<span class="string">&quot;http://123.207.32.32:8000/home/multidata&quot;</span>, &#123;</span><br><span class="line">  <span class="comment">//配置内容</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求带参数</span></span><br><span class="line">axios(&#123;</span><br><span class="line">  url: <span class="string">&quot;http://123.207.32.32:8000/home/data&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span>,</span><br><span class="line">  params: &#123;</span><br><span class="line">    type: <span class="string">&quot;sell&quot;</span>,</span><br><span class="line">    page: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="二、axios实现并发请求"><a href="#二、axios实现并发请求" class="headerlink" title="二、axios实现并发请求"></a>二、axios实现并发请求</h3><p>之前在学Promise中了解多了并发请求的解决方法，axios也有属于自己的并发请求解决操作</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//发送并发请求，利用axios.all静态方法</span></span><br><span class="line">axios.all([</span><br><span class="line">  axios(&#123; <span class="comment">//请求1</span></span><br><span class="line">    url: <span class="string">&quot;http://123.207.32.32:8000/home/multidata&quot;</span></span><br><span class="line">  &#125;),</span><br><span class="line">  axios(&#123; <span class="comment">//请求2</span></span><br><span class="line">    url: <span class="string">&quot;http://123.207.32.32:8000/home/data&quot;</span>,</span><br><span class="line">    params: &#123;</span><br><span class="line">      type: <span class="string">&quot;sell&quot;</span>,</span><br><span class="line">      page: <span class="number">1</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">]).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">//返回的是一个数组</span></span><br><span class="line">  <span class="built_in">console</span>.log(res[<span class="number">0</span>]);</span><br><span class="line">  <span class="built_in">console</span>.log(res[<span class="number">1</span>]);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>补充：axios.spread静态方法</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">axios.all([</span><br><span class="line">  ...</span><br><span class="line">]).then(axios.spread(<span class="function">(<span class="params">res1, res2</span>) =&gt;</span> &#123; <span class="comment">//axios.spread自动展开数组</span></span><br><span class="line">  <span class="built_in">console</span>.log(res1);</span><br><span class="line">  <span class="built_in">console</span>.log(res2);</span><br><span class="line">&#125;))</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三、axios配置"><a href="#三、axios配置" class="headerlink" title="三、axios配置"></a>三、axios配置</h3><h4 id="3-1-全局配置"><a href="#3-1-全局配置" class="headerlink" title="3.1 全局配置"></a>3.1 全局配置</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">axios(&#123;</span><br><span class="line">  baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>, <span class="comment">//常用参数</span></span><br><span class="line">  url: <span class="string">&quot;/home/multidata&quot;</span>, </span><br><span class="line">  method: <span class="string">&quot;get&quot;</span>,</span><br><span class="line">  timeout: <span class="number">5</span> <span class="comment">//常用参数</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<ul>
+<li>像上面例子，baseURL和timeout参数是非常常用的，可以将这些参数抽取出来，变成全局配置，每个axios请求自带这些参数</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//全局配置实例</span></span><br><span class="line"><span class="comment">//利用axios.defaults来设置全局配置</span></span><br><span class="line">axios.defaults.baseURL = <span class="string">&quot;http://123.207.32.32:8000&quot;</span>;</span><br><span class="line">axios.defaults.timeout = <span class="number">5000</span>;</span><br><span class="line"></span><br><span class="line">axios(&#123;</span><br><span class="line">  url: <span class="string">&quot;/home/multidata&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-常见的配置选项"><a href="#3-2-常见的配置选项" class="headerlink" title="3.2 常见的配置选项"></a>3.2 常见的配置选项</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//请求地址</span></span><br><span class="line">    url: <span class="string">&quot;/xx/xx/xx&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//请求类型</span></span><br><span class="line">    method: <span class="string">&quot;get&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//请求根路径</span></span><br><span class="line">    baseURL: <span class="string">&quot;http://xxx.com&quot;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//请求前数据处理</span></span><br><span class="line">    transformRequest: [<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;&#125;]</span><br><span class="line"></span><br><span class="line"><span class="comment">//请求后数据处理</span></span><br><span class="line">    transformResponse: [<span class="function"><span class="keyword">function</span>(<span class="params">data</span>) </span>&#123;&#125;]</span><br><span class="line"></span><br><span class="line"><span class="comment">//自定义请求头</span></span><br><span class="line">    headers: &#123;<span class="string">&#x27;x-Requested-With&#x27;</span>:<span class="string">&#x27;XMLHttpREquest&#x27;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//URL查询对象</span></span><br><span class="line">    params: &#123;<span class="attr">id</span>: <span class="number">12</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//查询对象序列化函数</span></span><br><span class="line">    paramsSerializer: <span class="function"><span class="keyword">function</span>(<span class="params">params</span>) </span>&#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//request body(post请求参数存放位置)</span></span><br><span class="line">    data: &#123;<span class="attr">key</span>: value&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//超时设置</span></span><br><span class="line">    timeout: <span class="number">1000</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//跨域是否带Token</span></span><br><span class="line">    withCredentials: <span class="literal">false</span></span><br><span class="line"></span><br><span class="line"><span class="comment">//自定义请求处理</span></span><br><span class="line">    adapter: <span class="function"><span class="keyword">function</span>(<span class="params">resolve, reject, config</span>)</span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function">//身份验证信息</span></span><br><span class="line"><span class="function">    <span class="title">auth</span>: </span>&#123;username: <span class="string">&quot;&quot;</span>, <span class="attr">pwd</span>: <span class="string">&quot;123456&quot;</span>&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//响应的数据格式</span></span><br><span class="line">    responseType: <span class="string">&quot;json&quot;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="四、axios实例"><a href="#四、axios实例" class="headerlink" title="四、axios实例"></a>四、axios实例</h3><p>在分布式项目中，不是每个请求都是请求同一个服务器，这样导致而配置了全局默认配置baseURL写死了，不能切换服务器，这时候要考虑创建一个单独的实例，每个实例有自己对应的服务器</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//创建单独的axios实例</span></span><br><span class="line"><span class="keyword">const</span> axiosInstance = axios.create(&#123; <span class="comment">//利用create方式创建实例，里面的参数为全局默认配置</span></span><br><span class="line">  baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">  timeout: <span class="number">5000</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//之前的请求以实例的方式实现</span></span><br><span class="line">axiosInstance(&#123;</span><br><span class="line">  url: <span class="string">&quot;/home/multidata&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">axiosInstance(&#123;</span><br><span class="line">  url: <span class="string">&quot;/home/data&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span>,</span><br><span class="line">  params: &#123;</span><br><span class="line">    type: <span class="string">&quot;cell&quot;</span>,</span><br><span class="line">    page: <span class="number">1</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="五、axios模块化封装"><a href="#五、axios模块化封装" class="headerlink" title="五、axios模块化封装"></a>五、axios模块化封装</h3><p>在开发中，利用第三方框架时，我们要有意识对框架进行封装，不要每个组件都导入框架，使用框架。这样会导致对此框架的依赖十分严重，一旦此框架不再维护或者出现巨大bug时候，会导致每一个组件都要进行修改，十分蛋疼，所有要对框架进行封装解决，避免出现此问题</p>
+<h4 id="5-1-封装方式一"><a href="#5-1-封装方式一" class="headerlink" title="5.1 封装方式一"></a>5.1 封装方式一</h4><ul>
+<li>新建一个文件夹network，存放axios相关的js文件。新建一个request.js文件，里面存放主要的请求代码</li>
+<li>传递三个参数，利用回调函数的方式来执行请求后的相关代码</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//request.js</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&quot;axios&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">request</span>(<span class="params">config, success, failure</span>) </span>&#123;</span><br><span class="line">  <span class="comment">//1.创建axios实例</span></span><br><span class="line">  <span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">    baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">    timeout: <span class="number">5000</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//2.发送网络请求</span></span><br><span class="line">  instance(config).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    success(res); <span class="comment">//成功，失败都回调函数</span></span><br><span class="line">  &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    failure(err);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用方法</span></span><br><span class="line"><span class="keyword">import</span> &#123;request&#125; <span class="keyword">from</span> <span class="string">&quot;./network/request&quot;</span>;</span><br><span class="line">request(&#123;</span><br><span class="line">  url: <span class="string">&quot;/home/multidata&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span></span><br><span class="line">&#125;,<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(err);</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-封装方式二"><a href="#5-2-封装方式二" class="headerlink" title="5.2 封装方式二"></a>5.2 封装方式二</h4><ul>
+<li>对回调函数，封装在一个参数中</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//request.js</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&quot;axios&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">request2</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">    baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">    timeout: <span class="number">5000</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  instance(config.baseConfig).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    config.success(res);</span><br><span class="line">  &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    config.failure(err);</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用方法</span></span><br><span class="line"><span class="keyword">import</span> &#123;request2&#125; <span class="keyword">from</span> <span class="string">&quot;./network/request&quot;</span>;</span><br><span class="line">request2(&#123;</span><br><span class="line">  baseConfig: &#123;</span><br><span class="line">    url: <span class="string">&quot;/home/multidata&quot;</span>,</span><br><span class="line">    method: <span class="string">&quot;get&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  success(res) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(res);</span><br><span class="line">  &#125;,</span><br><span class="line">  failure(err) &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-3-封装方式三"><a href="#5-3-封装方式三" class="headerlink" title="5.3 封装方式三"></a>5.3 封装方式三</h4><ul>
+<li>封装成一个promise对象进行返回，使用方法变得和axios原生方式相似</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//request.js</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&quot;axios&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">request3</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> <span class="built_in">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">      baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">      timeout: <span class="number">5000</span></span><br><span class="line">    &#125;);</span><br><span class="line"></span><br><span class="line">    instance(config).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">      resolve(res);</span><br><span class="line">    &#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">      reject(err);</span><br><span class="line">    &#125;)</span><br><span class="line">  &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//使用方法</span></span><br><span class="line"><span class="keyword">import</span> &#123;request3&#125; <span class="keyword">from</span> <span class="string">&quot;./network/request&quot;</span>;</span><br><span class="line">request3(&#123;</span><br><span class="line">  url: <span class="string">&quot;/home/multidata&quot;</span>,</span><br><span class="line">  method: <span class="string">&quot;get&quot;</span></span><br><span class="line">&#125;).then(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(res);</span><br><span class="line">&#125;).catch(<span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(err);</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-4-封装方式四（推荐）"><a href="#5-4-封装方式四（推荐）" class="headerlink" title="5.4 封装方式四（推荐）"></a>5.4 封装方式四（推荐）</h4><ul>
+<li>由于axios的实例对象本身就是一个Promise对象，所以没有必要封装到一个Promise对象中进行返回，直接返回一个axios实例对象</li>
+<li>使用方法和方式三一样</li>
+</ul>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//request.js</span></span><br><span class="line"><span class="keyword">import</span> axios <span class="keyword">from</span> <span class="string">&quot;axios&quot;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="function"><span class="keyword">function</span> <span class="title">request4</span>(<span class="params">config</span>) </span>&#123;</span><br><span class="line">  <span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">    baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">    timeout: <span class="number">5000</span></span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="keyword">return</span> instance(config)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="六、拦截器"><a href="#六、拦截器" class="headerlink" title="六、拦截器"></a>六、拦截器</h3><h4 id="6-1-请求拦截"><a href="#6-1-请求拦截" class="headerlink" title="6.1 请求拦截"></a>6.1 请求拦截</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> instance = axios.create(&#123;</span><br><span class="line">  baseURL: <span class="string">&quot;http://123.207.32.32:8000&quot;</span>,</span><br><span class="line">  timeout: <span class="number">5000</span></span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"><span class="comment">//拦截请求</span></span><br><span class="line">instance.interceptors.request.use(<span class="function"><span class="params">config</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="comment">//拦截下来的是一些配置信息</span></span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;请求拦截成功！&quot;</span>);</span><br><span class="line">  <span class="keyword">return</span> config; <span class="comment">//拦截完后记得放行</span></span><br><span class="line">&#125;, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">  <span class="built_in">console</span>.log(<span class="string">&quot;请求拦截失败！&quot;</span>)</span><br><span class="line">&#125;);</span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  请求拦截使用场景：</span></span><br><span class="line"><span class="comment">    （1）config中一些信息不符合服务器需求，进行修改</span></span><br><span class="line"><span class="comment">    （2）请求过程中，显示一些加载画面</span></span><br><span class="line"><span class="comment">    （3）某些网络请求，必须携带一特殊的信息</span></span><br><span class="line"><span class="comment">   */</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-响应拦截"><a href="#6-2-响应拦截" class="headerlink" title="6.2 响应拦截"></a>6.2 响应拦截</h4><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//拦截响应</span></span><br><span class="line">  instance.interceptors.response.use(<span class="function"><span class="params">res</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;响应拦截成功！&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> res; <span class="comment">//拦截完后记得放行</span></span><br><span class="line">  &#125;, <span class="function"><span class="params">err</span> =&gt;</span> &#123;</span><br><span class="line">    <span class="built_in">console</span>.log(<span class="string">&quot;响应拦截失败！&quot;</span>);</span><br><span class="line">  &#125;);</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/12/06/%E3%80%90Vue%E3%80%91Vuex/" rel="prev" title="【Vue】Vuex">
+      <i class="fa fa-chevron-left"></i> 【Vue】Vuex
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/12/24/%E3%80%90Vue%E3%80%91Vue%E5%AE%9E%E6%88%98%E9%A1%B9%E7%9B%AE/" rel="next" title="【Vue】Vue实战项目">
+      【Vue】Vue实战项目 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81axios%E6%A1%86%E6%9E%B6%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">一、axios框架基本使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-axios%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F"><span class="nav-text">1.1 axios请求方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-axios%E6%A1%86%E6%9E%B6%E5%AE%89%E8%A3%85"><span class="nav-text">1.2 axios框架安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8"><span class="nav-text">1.3 基本使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81axios%E5%AE%9E%E7%8E%B0%E5%B9%B6%E5%8F%91%E8%AF%B7%E6%B1%82"><span class="nav-text">二、axios实现并发请求</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81axios%E9%85%8D%E7%BD%AE"><span class="nav-text">三、axios配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE"><span class="nav-text">3.1 全局配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E5%B8%B8%E8%A7%81%E7%9A%84%E9%85%8D%E7%BD%AE%E9%80%89%E9%A1%B9"><span class="nav-text">3.2 常见的配置选项</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81axios%E5%AE%9E%E4%BE%8B"><span class="nav-text">四、axios实例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81axios%E6%A8%A1%E5%9D%97%E5%8C%96%E5%B0%81%E8%A3%85"><span class="nav-text">五、axios模块化封装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%B0%81%E8%A3%85%E6%96%B9%E5%BC%8F%E4%B8%80"><span class="nav-text">5.1 封装方式一</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E5%B0%81%E8%A3%85%E6%96%B9%E5%BC%8F%E4%BA%8C"><span class="nav-text">5.2 封装方式二</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E5%B0%81%E8%A3%85%E6%96%B9%E5%BC%8F%E4%B8%89"><span class="nav-text">5.3 封装方式三</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-%E5%B0%81%E8%A3%85%E6%96%B9%E5%BC%8F%E5%9B%9B%EF%BC%88%E6%8E%A8%E8%8D%90%EF%BC%89"><span class="nav-text">5.4 封装方式四（推荐）</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-text">六、拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E8%AF%B7%E6%B1%82%E6%8B%A6%E6%88%AA"><span class="nav-text">6.1 请求拦截</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-%E5%93%8D%E5%BA%94%E6%8B%A6%E6%88%AA"><span class="nav-text">6.2 响应拦截</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

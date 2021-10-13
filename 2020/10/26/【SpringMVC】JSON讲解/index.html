@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="前端、后端如何使用JSON进行交互">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringMVC】JSON讲解">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="前端、后端如何使用JSON进行交互">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/JSON.png">
+<meta property="article:published_time" content="2020-10-26T12:15:47.000Z">
+<meta property="article:modified_time" content="2020-10-26T13:26:41.682Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/JSON.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringMVC】JSON讲解 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringMVC】JSON讲解
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2020-10-26 20:15:47 / 修改时间：21:26:41" itemprop="dateCreated datePublished" datetime="2020-10-26T20:15:47+08:00">2020-10-26</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringMVC/" itemprop="url" rel="index"><span itemprop="name">SpringMVC</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>前端、后端如何使用JSON进行交互</p>
+<a id="more"></a>
+
+<h3 id="一、认识JSON"><a href="#一、认识JSON" class="headerlink" title="一、认识JSON"></a>一、认识JSON</h3><h4 id="1-1-JSON介绍"><a href="#1-1-JSON介绍" class="headerlink" title="1.1 JSON介绍"></a>1.1 JSON介绍</h4><ul>
+<li>JSON为一个字符串，是前后端分离的重要工具</li>
+</ul>
+<ul>
+<li>前后端都可以正确解析JSON，所有前后端交流可以通过JSON来实现</li>
+</ul>
+<h4 id="1-2-前端对JSON的操作"><a href="#1-2-前端对JSON的操作" class="headerlink" title="1.2 前端对JSON的操作"></a>1.2 前端对JSON的操作</h4><ul>
+<li>解析JSON：<code>JSON.parse(JSON json)</code>方法</li>
+<li>封装JSON：<code>JSON.stringify(Object object)</code>方法</li>
+</ul>
+<ul>
+<li>创建一个html来演示</li>
+</ul>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">html</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">html</span> <span class="attr">lang</span>=<span class="string">&quot;en&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">head</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">meta</span> <span class="attr">charset</span>=<span class="string">&quot;UTF-8&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">title</span>&gt;</span>Title<span class="tag">&lt;/<span class="name">title</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span></span><br><span class="line"><span class="javascript">            <span class="comment">//1、编写一个JavaScript对象  ES6</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> user = &#123;</span></span><br><span class="line"><span class="javascript">                name : <span class="string">&quot;莱特雷&quot;</span>,</span></span><br><span class="line">                age : 3,</span><br><span class="line"><span class="javascript">                sex : <span class="string">&quot;男&quot;</span></span></span><br><span class="line">            &#125;</span><br><span class="line">			</span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(user); <span class="comment">//输出user对象</span></span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(<span class="string">&quot;============================&quot;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">            <span class="comment">//2、将js对象转换成json对象</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> json = <span class="built_in">JSON</span>.stringify(user);</span></span><br><span class="line">			</span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(json); <span class="comment">//输出json字符串</span></span></span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(<span class="string">&quot;============================&quot;</span>);</span></span><br><span class="line"></span><br><span class="line"><span class="javascript">            <span class="comment">//3、将JSON对象转化为javascript对象</span></span></span><br><span class="line"><span class="javascript">            <span class="keyword">var</span> object = <span class="built_in">JSON</span>.parse(json);</span></span><br><span class="line">			</span><br><span class="line"><span class="javascript">            <span class="built_in">console</span>.log(object);      </span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">head</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">body</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;/<span class="name">body</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">html</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>控制台打印结果</li>
+</ul>
+<img src="/blog/2020/10/26/%E3%80%90SpringMVC%E3%80%91JSON%E8%AE%B2%E8%A7%A3/JSON.png" class="">
+
+<hr>
+<h3 id="二、Jackson使用"><a href="#二、Jackson使用" class="headerlink" title="二、Jackson使用"></a>二、Jackson使用</h3><h4 id="2-1-导入第三方jar包"><a href="#2-1-导入第三方jar包" class="headerlink" title="2.1 导入第三方jar包"></a>2.1 导入第三方jar包</h4><ul>
+<li><code>jackson-databind-xx.xx.xx.jar</code><ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind">https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind</a></li>
+<li>选择对应的版本，进入页面在上面表格寻找<code>|File| bundle(x.xMB)|</code>，点击bundle即可下载</li>
+</ul>
+</li>
+<li>maven:<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.10.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="2-2-后端发送JSON步骤"><a href="#2-2-后端发送JSON步骤" class="headerlink" title="2.2 后端发送JSON步骤"></a>2.2 后端发送JSON步骤</h4><ul>
+<li>（1）在controller接口实现类，在请求映射方法添加新注解<code>@ResponseBody</code>，让方法不会被视图解析器识别</li>
+<li>（2）或者直接在来上添加<code>@RestController</code>来使类中所有方法都不会被视图解析器识别</li>
+<li>（3）方法中创建一个<code>ObjectMapper</code>对象，通过<code>writeValueAsString()</code>方法转变成JSON字符串</li>
+<li>（4）return JSON字符串来对前端发送数据</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/j2&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span> <span class="comment">//此注解，让此方法不会走视图解析器，会直接返回一个字符串</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">json2</span><span class="params">()</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="string">&quot;莱特雷&quot;</span>, <span class="number">21</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用Jackson，编程JSON字符串</span></span><br><span class="line">    ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    String str = mapper.writeValueAsString(user);<span class="comment">//把user变成一个字符串</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">    <span class="comment">//页面结果：&#123;&quot;name&quot;:&quot;???&quot;,&quot;age&quot;:21,&quot;sex&quot;:&quot;?&quot;&#125;， 出现乱码</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-乱码解决"><a href="#2-3-乱码解决" class="headerlink" title="2.3 乱码解决"></a>2.3 乱码解决</h4><ul>
+<li>（1）原生态解决方法<ul>
+<li>在请求映射注解添加额外参数<code>produce</code></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(value = &quot;/j3&quot;, produces = &quot;application/json;charset=utf-8&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span> </span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">json3</span><span class="params">()</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="string">&quot;莱特雷&quot;</span>, <span class="number">21</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line"></span><br><span class="line">    ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    String str = mapper.writeValueAsString(user);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>（2）在spring配置文件中进行设置</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--解决后端向前端传递数据乱码问题--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mvc:annotation-driven</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">mvc:message-converters</span> <span class="attr">register-defaults</span>=<span class="string">&quot;true&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.StringHttpMessageConverter&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">constructor-arg</span> <span class="attr">value</span>=<span class="string">&quot;UTF-8&quot;</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.MappingJackson2HttpMessageConverter&quot;</span>&gt;</span><span class="comment">&lt;!--注意：是json.Mappxxxxxx，不是cbor.Mappxxxxxxx，别导错包--&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;objectMapper&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">bean</span> <span class="attr">class</span>=<span class="string">&quot;org.springframework.http.converter.json.Jackson2ObjectMapperFactoryBean&quot;</span>&gt;</span></span><br><span class="line">                    <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;failOnEmptyBeans&quot;</span> <span class="attr">value</span>=<span class="string">&quot;false&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">property</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">bean</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">mvc:message-converters</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mvc:annotation-driven</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-4-返回多个对象的JSON"><a href="#2-4-返回多个对象的JSON" class="headerlink" title="2.4 返回多个对象的JSON"></a>2.4 返回多个对象的JSON</h4><ul>
+<li>方法没变，Jackson的<code>writeValueAsString()</code>支持集合</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回多个对象的JSON</span></span><br><span class="line"><span class="meta">@RequestMapping(&quot;/j4&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span> <span class="comment">//此注解，让此方法不会走视图解析器，会直接返回一个字符串</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">json4</span><span class="params">()</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    User user1 = <span class="keyword">new</span> User(<span class="string">&quot;莱特雷&quot;</span>, <span class="number">21</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line">    User user2 = <span class="keyword">new</span> User(<span class="string">&quot;C酱&quot;</span>, <span class="number">18</span>, <span class="string">&quot;女&quot;</span>);</span><br><span class="line">    User user3 = <span class="keyword">new</span> User(<span class="string">&quot;咕料&quot;</span>, <span class="number">30</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line">    User user4 = <span class="keyword">new</span> User(<span class="string">&quot;YJJ&quot;</span>, <span class="number">25</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line"></span><br><span class="line">    List&lt;User&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    list.add(user1);</span><br><span class="line">    list.add(user2);</span><br><span class="line">    list.add(user3);</span><br><span class="line">    list.add(user4);</span><br><span class="line"></span><br><span class="line">    ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    String str = mapper.writeValueAsString(list);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">    <span class="comment">//页面结果：[&#123;&quot;name&quot;:&quot;莱特雷&quot;,&quot;age&quot;:21,&quot;sex&quot;:&quot;男&quot;&#125;,&#123;&quot;name&quot;:&quot;C酱&quot;,&quot;age&quot;:18,&quot;sex&quot;:&quot;女&quot;&#125;,&#123;&quot;name&quot;:&quot;咕料&quot;,&quot;age&quot;:30,&quot;sex&quot;:&quot;男&quot;&#125;,&#123;&quot;name&quot;:&quot;YJJ&quot;,&quot;age&quot;:25,&quot;sex&quot;:&quot;男&quot;&#125;]</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-5-返回时间"><a href="#2-5-返回时间" class="headerlink" title="2.5 返回时间"></a>2.5 返回时间</h4><ul>
+<li>（1）使用<code>SimpleDateFormat</code>来对时间戳进行格式化</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/j5&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span> <span class="comment">//此注解，让此方法不会走视图解析器，会直接返回一个字符串</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">json5</span><span class="params">()</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    Date date = <span class="keyword">new</span> Date();<span class="comment">//时间戳</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//格式化时间</span></span><br><span class="line">    SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd HH:MM:ss&quot;</span>);</span><br><span class="line">    String format = sdf.format(date);</span><br><span class="line"></span><br><span class="line">    ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    String str = mapper.writeValueAsString(format);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">    <span class="comment">//页面结果：&quot;2020-10-25 04:10:11&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）利用<code>ObjectMapper</code>来格式化时间</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/j6&quot;)</span></span><br><span class="line"><span class="meta">@ResponseBody</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">json6</span><span class="params">()</span> <span class="keyword">throws</span> JsonProcessingException </span>&#123;</span><br><span class="line"></span><br><span class="line">    ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">    <span class="comment">//不使用时间戳</span></span><br><span class="line">    ObjectMapper configure = mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, <span class="keyword">false</span>);</span><br><span class="line"></span><br><span class="line">    <span class="comment">//自定义日期的格式</span></span><br><span class="line">    SimpleDateFormat sdf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">&quot;yyyy-MM-dd HH:MM:ss&quot;</span>);</span><br><span class="line">    mapper.setDateFormat(sdf);<span class="comment">//设置获取时间的格式</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//按格式获取时间（不再获取时间戳）</span></span><br><span class="line">    Date date = <span class="keyword">new</span> Date();</span><br><span class="line"></span><br><span class="line">    String str = mapper.writeValueAsString(date);</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> str;</span><br><span class="line">    <span class="comment">//页面结果：&quot;2020-10-25 16:10:08&quot;</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三、FastJson使用"><a href="#三、FastJson使用" class="headerlink" title="三、FastJson使用"></a>三、FastJson使用</h3><ul>
+<li>fastjson是阿里开发的一款专门用于Java开发的包</li>
+</ul>
+<h4 id="3-1-导入第三方jar包"><a href="#3-1-导入第三方jar包" class="headerlink" title="3.1 导入第三方jar包"></a>3.1 导入第三方jar包</h4><ul>
+<li>fastjson-xx.xx.xx.jar<ul>
+<li>下载地址：<a target="_blank" rel="noopener" href="https://mvnrepository.com/artifact/com.alibaba/fastjson">https://mvnrepository.com/artifact/com.alibaba/fastjson</a></li>
+<li>选择相应的版，进入页面，在上面的表格的<code>Files</code>中，点击<code>jar</code>进行下载</li>
+</ul>
+</li>
+<li>Maven</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.60<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-fastjson三个主要类"><a href="#3-2-fastjson三个主要类" class="headerlink" title="3.2 fastjson三个主要类"></a>3.2 fastjson三个主要类</h4><ul>
+<li>（1）JSONObject：代表Json对象</li>
+<li>（2）JSONArray：代表json对象数组</li>
+<li>（3）JSON：JSONObject和JSONArray转化</li>
+</ul>
+<h4 id="3-3-常用方法（静态方法）"><a href="#3-3-常用方法（静态方法）" class="headerlink" title="3.3 常用方法（静态方法）"></a>3.3 常用方法（静态方法）</h4><ul>
+<li>（1）Java对象 转变成 JSON字符串<ul>
+<li><code>JSON.toJSONString(Object object)</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）JSON字符串 转变成 Java对象<ul>
+<li><code>JSON.parseObject(String json)</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（3）Java对象 转变成 JSON对象<ul>
+<li><code>JSON.toJSON(Object object)</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（4）JSON对象 转变成 Java对象<ul>
+<li><code>JSON.toJavaObject(JSON json, Class&lt;T&gt; clazz)</code> <ul>
+<li>参数一：JSON对象，参数二：要转化成的Java对象</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/25/%E3%80%90SpringMVC%E3%80%91%E7%BB%86%E8%8A%82%E6%95%B4%E7%90%86/" rel="prev" title="【SpringMVC】细节整理">
+      <i class="fa fa-chevron-left"></i> 【SpringMVC】细节整理
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/26/%E3%80%90SSM%E6%95%B4%E5%90%88%E3%80%91Spring-SpringMVC-Mybatis%E6%A1%86%E6%9E%B6%E6%95%B4%E5%90%88/" rel="next" title="【SSM整合】Spring+SpringMVC+Mybatis框架整合">
+      【SSM整合】Spring+SpringMVC+Mybatis框架整合 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E8%AE%A4%E8%AF%86JSON"><span class="nav-text">一、认识JSON</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-JSON%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 JSON介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%89%8D%E7%AB%AF%E5%AF%B9JSON%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-text">1.2 前端对JSON的操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Jackson%E4%BD%BF%E7%94%A8"><span class="nav-text">二、Jackson使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9jar%E5%8C%85"><span class="nav-text">2.1 导入第三方jar包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E5%90%8E%E7%AB%AF%E5%8F%91%E9%80%81JSON%E6%AD%A5%E9%AA%A4"><span class="nav-text">2.2 后端发送JSON步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%B9%B1%E7%A0%81%E8%A7%A3%E5%86%B3"><span class="nav-text">2.3 乱码解决</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E8%BF%94%E5%9B%9E%E5%A4%9A%E4%B8%AA%E5%AF%B9%E8%B1%A1%E7%9A%84JSON"><span class="nav-text">2.4 返回多个对象的JSON</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-5-%E8%BF%94%E5%9B%9E%E6%97%B6%E9%97%B4"><span class="nav-text">2.5 返回时间</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81FastJson%E4%BD%BF%E7%94%A8"><span class="nav-text">三、FastJson使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%AF%BC%E5%85%A5%E7%AC%AC%E4%B8%89%E6%96%B9jar%E5%8C%85"><span class="nav-text">3.1 导入第三方jar包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-fastjson%E4%B8%89%E4%B8%AA%E4%B8%BB%E8%A6%81%E7%B1%BB"><span class="nav-text">3.2 fastjson三个主要类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E5%B8%B8%E7%94%A8%E6%96%B9%E6%B3%95%EF%BC%88%E9%9D%99%E6%80%81%E6%96%B9%E6%B3%95%EF%BC%89"><span class="nav-text">3.3 常用方法（静态方法）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

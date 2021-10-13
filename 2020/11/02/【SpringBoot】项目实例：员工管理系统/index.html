@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="简单用个实例来加深SpringBoot的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringBoot】项目实例：员工管理系统">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="简单用个实例来加深SpringBoot的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png">
+<meta property="article:published_time" content="2020-11-02T13:11:41.000Z">
+<meta property="article:modified_time" content="2020-11-04T13:49:44.004Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringBoot】项目实例：员工管理系统 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringBoot】项目实例：员工管理系统
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-02 21:11:41" itemprop="dateCreated datePublished" datetime="2020-11-02T21:11:41+08:00">2020-11-02</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-04 21:49:44" itemprop="dateModified" datetime="2020-11-04T21:49:44+08:00">2020-11-04</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>简单用个实例来加深SpringBoot的使用</p>
+<a id="more"></a>
+
+<h3 id="一、基础准备"><a href="#一、基础准备" class="headerlink" title="一、基础准备"></a>一、基础准备</h3><h4 id="1-1-创建JavaBean"><a href="#1-1-创建JavaBean" class="headerlink" title="1.1 创建JavaBean"></a>1.1 创建JavaBean</h4><ul>
+<li>（1）导入lombok依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>在SpringBoot中导入lombok依赖不能使用，还要进行插件安装<br>“Settings” –&gt; “Plugins” –&gt; 搜索”lomnok” –&gt; 安装</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png" class="">
+<ul>
+<li>（2）Department类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Department</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String departmentName;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（3）Employee类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Employee</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String lastName;</span><br><span class="line">    <span class="keyword">private</span> String email;</span><br><span class="line">    <span class="keyword">private</span> Integer gender;</span><br><span class="line">    <span class="keyword">private</span> Department department;</span><br><span class="line">    <span class="keyword">private</span> Date date;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="1-2-创建对应的DAO类"><a href="#1-2-创建对应的DAO类" class="headerlink" title="1.2 创建对应的DAO类"></a>1.2 创建对应的DAO类</h4><p>为了方便，就暂时不整合Mybatis，就将数据存放在Java类中，并直接实现其方法</p>
+<ul>
+<li>（1）DepartmentDao类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DepartmentDao</span> </span>&#123;</span><br><span class="line">    <span class="comment">//模拟数据库的数据</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Integer, Department&gt; departmentMap = <span class="keyword">null</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span> &#123;</span><br><span class="line">        departmentMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        departmentMap.put(<span class="number">101</span>, <span class="keyword">new</span> Department(<span class="number">101</span>, <span class="string">&quot;教学部&quot;</span>));</span><br><span class="line">        departmentMap.put(<span class="number">102</span>, <span class="keyword">new</span> Department(<span class="number">102</span>, <span class="string">&quot;市场部&quot;</span>));</span><br><span class="line">        departmentMap.put(<span class="number">103</span>, <span class="keyword">new</span> Department(<span class="number">103</span>, <span class="string">&quot;教研部&quot;</span>));</span><br><span class="line">        departmentMap.put(<span class="number">104</span>, <span class="keyword">new</span> Department(<span class="number">104</span>, <span class="string">&quot;运营部&quot;</span>));</span><br><span class="line">        departmentMap.put(<span class="number">105</span>, <span class="keyword">new</span> Department(<span class="number">105</span>, <span class="string">&quot;后勤部&quot;</span>));</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    <span class="comment">//查询所有部门</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Collection&lt;Department&gt; <span class="title">getDepartMents</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> departmentMap.values();</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//通过ID查找部门</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Department <span class="title">getDepartmentById</span><span class="params">(Integer id)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> departmentMap.get(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（2）EmployeeDao类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeDao</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//模拟数据库的数据</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Map&lt;Integer, Employee&gt; employees;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">static</span>&#123;</span><br><span class="line">        employees = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        employees.put(<span class="number">101</span>, <span class="keyword">new</span> Employee(<span class="number">101</span>, <span class="string">&quot;C酱&quot;</span>, <span class="string">&quot;CC.com&quot;</span>, <span class="number">1</span>, DepartmentDao.getDepartmentById(<span class="number">101</span>)));</span><br><span class="line">        employees.put(<span class="number">102</span>, <span class="keyword">new</span> Employee(<span class="number">102</span>, <span class="string">&quot;咕料&quot;</span>, <span class="string">&quot;gu.com&quot;</span>, <span class="number">0</span>, DepartmentDao.getDepartmentById(<span class="number">102</span>)));</span><br><span class="line">        employees.put(<span class="number">103</span>, <span class="keyword">new</span> Employee(<span class="number">103</span>, <span class="string">&quot;定春&quot;</span>, <span class="string">&quot;sadaharu.com&quot;</span>, <span class="number">0</span>, DepartmentDao.getDepartmentById(<span class="number">103</span>)));</span><br><span class="line">        employees.put(<span class="number">104</span>, <span class="keyword">new</span> Employee(<span class="number">104</span>, <span class="string">&quot;YJJ&quot;</span>, <span class="string">&quot;yjj.com&quot;</span>, <span class="number">0</span>, DepartmentDao.getDepartmentById(<span class="number">104</span>)));</span><br><span class="line">        employees.put(<span class="number">105</span>, <span class="keyword">new</span> Employee(<span class="number">105</span>, <span class="string">&quot;盐取&quot;</span>, <span class="string">&quot;tukubi.com&quot;</span>, <span class="number">0</span>, DepartmentDao.getDepartmentById(<span class="number">105</span>)));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//主键自增模拟</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> Integer initId = <span class="number">106</span>;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//添加员工</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">addEmployee</span><span class="params">(Employee employee, Integer id)</span></span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (employee.getId() == <span class="keyword">null</span>)&#123;</span><br><span class="line">            employee.setId(initId++);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (employee.getDepartment() == <span class="keyword">null</span>)&#123;</span><br><span class="line">            employee.setDepartment(DepartmentDao.getDepartmentById(id));</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        employees.put(employee.getId(), employee);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询所有员工</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Collection&lt;Employee&gt; <span class="title">getEmployees</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> employees.values();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//通过ID查询员工</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Employee <span class="title">getEmployeeById</span><span class="params">(Integer id)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> employees.get(id);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除员工</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(Integer id)</span></span>&#123;</span><br><span class="line">        employees.remove(id);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-拓展WebMvc配置类"><a href="#1-3-拓展WebMvc配置类" class="headerlink" title="1.3 拓展WebMvc配置类"></a>1.3 拓展WebMvc配置类</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="1-4-实例需要的静态资源下载"><a href="#1-4-实例需要的静态资源下载" class="headerlink" title="1.4 实例需要的静态资源下载"></a>1.4 实例需要的静态资源下载</h4><ul>
+<li><p><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1SbLbJG5WXU8ohSLrmaeHpg">百度网盘</a> 提取码：vi6a</p>
+</li>
+<li><p>asserts放在静态资源文件夹</p>
+</li>
+<li><p>其他html放在templates文件夹下</p>
+</li>
+</ul>
+<hr>
+<h3 id="二、设置主页"><a href="#二、设置主页" class="headerlink" title="二、设置主页"></a>二、设置主页</h3><p>虽然将index.html直接放在静态资源文件夹就可以自动设置主页，但真正的开发中一般将网页和静态资源区分，所以会将页面放在<strong>templates</strong>文件夹中</p>
+<p>因此需要导入模板引擎thymeleaf启动器</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-thymeleaf<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-1-通过Controller跳转"><a href="#2-1-通过Controller跳转" class="headerlink" title="2.1 通过Controller跳转"></a>2.1 通过Controller跳转</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IndexController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//跳转首页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&#123;&quot;/&quot;, &quot;/index.html&quot;&#125;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getIndex</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-通过拓展WebMvc配置类跳转"><a href="#2-2-通过拓展WebMvc配置类跳转" class="headerlink" title="2.2 通过拓展WebMvc配置类跳转"></a>2.2 通过拓展WebMvc配置类跳转</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-解决CSS样式丢失问题"><a href="#2-3-解决CSS样式丢失问题" class="headerlink" title="2.3 解决CSS样式丢失问题"></a>2.3 解决CSS样式丢失问题</h4><p>CSS样式丢失原因为thymeleaf模板引擎取值的方式不同</p>
+<ul>
+<li>修改方法如下</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png" class="">
+
+<p>也顺便把其他页面的本地资源位置重新按照thymeleaf方式修改</p>
+<hr>
+<h3 id="三、国际化设置"><a href="#三、国际化设置" class="headerlink" title="三、国际化设置"></a>三、国际化设置</h3><p>所谓国际化，就是支持页面语言的切换</p>
+<h4 id="3-1-创建配置文件"><a href="#3-1-创建配置文件" class="headerlink" title="3.1 创建配置文件"></a>3.1 创建配置文件</h4><ul>
+<li>（1）在resources文件夹下创建名为i18n的文件夹（国际化 –&gt; Internationalization –&gt; 首字母i 和 尾字母之间隔了18个字母）</li>
+</ul>
+<ul>
+<li>（2）并在i18n文件夹下创建login.properties（名字随意）【默认语言】，login_zh_CN.properties【中文】，login_en_US.propertirs【英文】，会自动合并为login</li>
+</ul>
+<ul>
+<li>（3）添加网页中需要语言的参数，IDEA中有便捷方式快速添加</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png" class="">
+
+<h4 id="3-2-配置信息"><a href="#3-2-配置信息" class="headerlink" title="3.2 配置信息"></a>3.2 配置信息</h4><ul>
+<li>（1）源码分析</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceAutoConfiguration</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    	<span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> Resource[] NO_RESOURCES = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">    	<span class="meta">@Bean</span></span><br><span class="line">    	<span class="meta">@ConfigurationProperties(prefix = &quot;spring.messages&quot;)</span> <span class="comment">//配置前缀</span></span><br><span class="line">    	<span class="function"><span class="keyword">public</span> MessageSourceProperties <span class="title">messageSourceProperties</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    		<span class="keyword">return</span> <span class="keyword">new</span> MessageSourceProperties();</span><br><span class="line">    	&#125;</span><br><span class="line"></span><br><span class="line">    	<span class="meta">@Bean</span>                <span class="comment">//从MessageSourceProperties中获取信息源</span></span><br><span class="line">    	<span class="function"><span class="keyword">public</span> MessageSource <span class="title">messageSource</span><span class="params">(MessageSourceProperties properties)</span> </span>&#123;</span><br><span class="line">    		ResourceBundleMessageSource messageSource = <span class="keyword">new</span> ResourceBundleMessageSource();</span><br><span class="line">    		<span class="keyword">if</span> (StringUtils.hasText(properties.getBasename())) &#123;</span><br><span class="line">    			messageSource.setBasenames(StringUtils</span><br><span class="line">    					.commaDelimitedListToStringArray(StringUtils.trimAllWhitespace(properties.getBasename())));</span><br><span class="line">    		&#125;</span><br><span class="line">    		<span class="keyword">if</span> (properties.getEncoding() != <span class="keyword">null</span>) &#123;</span><br><span class="line">    			messageSource.setDefaultEncoding(properties.getEncoding().name());</span><br><span class="line">    		&#125;</span><br><span class="line">    		messageSource.setFallbackToSystemLocale(properties.isFallbackToSystemLocale());</span><br><span class="line">    		Duration cacheDuration = properties.getCacheDuration();</span><br><span class="line">    		<span class="keyword">if</span> (cacheDuration != <span class="keyword">null</span>) &#123;</span><br><span class="line">    			messageSource.setCacheMillis(cacheDuration.toMillis());</span><br><span class="line">    		&#125;</span><br><span class="line">    		messageSource.setAlwaysUseMessageFormat(properties.isAlwaysUseMessageFormat());</span><br><span class="line">    		messageSource.setUseCodeAsDefaultMessage(properties.isUseCodeAsDefaultMessage());</span><br><span class="line">    		<span class="keyword">return</span> messageSource;</span><br><span class="line">    	&#125;</span><br><span class="line">    	                ||能配置的内容</span><br><span class="line">    	<span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageSourceProperties</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">        	<span class="keyword">private</span> String basename = <span class="string">&quot;messages&quot;</span>; <span class="comment">//信息名</span></span><br><span class="line"></span><br><span class="line">        	<span class="keyword">private</span> Charset encoding = StandardCharsets.UTF_8; <span class="comment">//编码集</span></span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>总结：在配置文件中填写配置信息的位置spring.messages.basename=””</strong></p>
+<ul>
+<li>（2）在配置文件设置信息的位置</li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">messages:</span></span><br><span class="line">    <span class="attr">basename:</span> <span class="string">i18n.login</span> <span class="comment">#信息位置</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-修改主页提取信息"><a href="#3-3-修改主页提取信息" class="headerlink" title="3.3 修改主页提取信息"></a>3.3 修改主页提取信息</h4><img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png" class="">
+
+<h4 id="3-4-语言切换设置"><a href="#3-4-语言切换设置" class="headerlink" title="3.4 语言切换设置"></a>3.4 语言切换设置</h4><ul>
+<li>（1）源码分析</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">WebMvcAutoConfiguration.java</span><br><span class="line">        <span class="meta">@Bean</span></span><br><span class="line">        <span class="meta">@ConditionalOnMissingBean</span></span><br><span class="line">        <span class="meta">@ConditionalOnProperty(prefix = &quot;spring.mvc&quot;, name = &quot;locale&quot;)</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">this</span>.mvcProperties.getLocaleResolver() == WebMvcProperties.LocaleResolver.FIXED) &#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">new</span> FixedLocaleResolver(<span class="keyword">this</span>.mvcProperties.getLocale()); <span class="comment">//如果用户配置了地区分解器，就使用用户</span></span><br><span class="line">            &#125;</span><br><span class="line">            AcceptHeaderLocaleResolver localeResolver = <span class="keyword">new</span> AcceptHeaderLocaleResolver(); <span class="comment">//没有配置则新建一个</span></span><br><span class="line">            localeResolver.setDefaultLocale(<span class="keyword">this</span>.mvcProperties.getLocale());</span><br><span class="line">            <span class="keyword">return</span> localeResolver;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">                    ||跳转</span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AcceptHeaderLocaleResolver</span> <span class="keyword">implements</span> <span class="title">LocaleResolver</span> </span>&#123; <span class="comment">//自定义地区分解器，实现localeResolver接口</span></span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">                Locale defaultLocale = getDefaultLocale();</span><br><span class="line">                <span class="keyword">if</span> (defaultLocale != <span class="keyword">null</span> &amp;&amp; request.getHeader(<span class="string">&quot;Accept-Language&quot;</span>) == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> defaultLocale;</span><br><span class="line">                &#125;</span><br><span class="line">                Locale requestLocale = request.getLocale();</span><br><span class="line">                List&lt;Locale&gt; supportedLocales = getSupportedLocales();</span><br><span class="line">                <span class="keyword">if</span> (supportedLocales.isEmpty() || supportedLocales.contains(requestLocale)) &#123;</span><br><span class="line">                    <span class="keyword">return</span> requestLocale;</span><br><span class="line">                &#125;</span><br><span class="line">                Locale supportedLocale = findSupportedLocale(request, supportedLocales);</span><br><span class="line">                <span class="keyword">if</span> (supportedLocale != <span class="keyword">null</span>) &#123;</span><br><span class="line">                    <span class="keyword">return</span> supportedLocale;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">return</span> (defaultLocale != <span class="keyword">null</span> ? defaultLocale : requestLocale);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>总结：新建一个自定义的地区分解器，将次注入的WebMvc配置类中</strong></p>
+<ul>
+<li>（2）修改主页<ul>
+<li>添加链接重新跳转会主页，并传递地区参数信息</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png" class="">
+
+<ul>
+<li>（3）自定义localeResolver（地区分解器）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyLocaleResolver</span> <span class="keyword">implements</span> <span class="title">LocaleResolver</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//解析请求</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Locale <span class="title">resolveLocale</span><span class="params">(HttpServletRequest request)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//获取请求的参数</span></span><br><span class="line">        String language = request.getParameter(<span class="string">&quot;l&quot;</span>);</span><br><span class="line"></span><br><span class="line">        Locale locale = Locale.getDefault();<span class="comment">//如果没有就使用默认的</span></span><br><span class="line">        <span class="keyword">if</span> (language != <span class="keyword">null</span>)&#123;</span><br><span class="line">            <span class="comment">//举例：zh_CN</span></span><br><span class="line">            String[] split = language.split(<span class="string">&quot;_&quot;</span>); <span class="comment">//按“_”进行分割</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//locale: 国家，地区</span></span><br><span class="line">            locale = <span class="keyword">new</span> Locale(split[<span class="number">0</span>], split[<span class="number">1</span>]);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> locale;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setLocale</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Locale locale)</span> </span>&#123;</span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>（4）将localeResolver注入WebMvc配置类中</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注入地区分解器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyLocaleResolver();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png" class=""> 
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png" class="">
+
+<hr>
+<h3 id="四、编写登录后的页面"><a href="#四、编写登录后的页面" class="headerlink" title="四、编写登录后的页面"></a>四、编写登录后的页面</h3><h4 id="4-1-编写主页"><a href="#4-1-编写主页" class="headerlink" title="4.1 编写主页"></a>4.1 编写主页</h4><img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png" class="">
+
+<h4 id="4-2-编写Controller跳转"><a href="#4-2-编写Controller跳转" class="headerlink" title="4.2 编写Controller跳转"></a>4.2 编写Controller跳转</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model model)</span></span>&#123;</span><br><span class="line">        <span class="comment">//具体的业务逻辑判端，瞎写</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;莱特雷&quot;</span>.equals(username) &amp;&amp; <span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;dashboard&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码出现错误&quot;</span>); <span class="comment">//登录失败，向前端发送消息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="4-3-隐藏账号密码"><a href="#4-3-隐藏账号密码" class="headerlink" title="4.3 隐藏账号密码"></a>4.3 隐藏账号密码</h4><ul>
+<li>（1）模拟登录出现问题</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png" class="">
+
+<ul>
+<li>（2）解决问题<ul>
+<li>在网页跳转在套一层跳转</li>
+<li>用Controller跳转 / 拓展WebMvc配置类编写</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Controller修改</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model modeln)</span></span>&#123;</span><br><span class="line">        <span class="comment">//具体的业务逻辑判端，瞎写</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;莱特雷&quot;</span>.equals(username) &amp;&amp; <span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;redirect:/main.html&quot;</span>; <span class="comment">//将页面跳转到/main.html（作为一个中间跳转）</span></span><br><span class="line">        &#125;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码出现错误&quot;</span>); <span class="comment">//登录失败，向前端发送消息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">WebMvc配置页面跳转</span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/main.html&quot;</span>).setViewName(<span class="string">&quot;dashboard&quot;</span>);<span class="comment">//隐藏登录后的用户密码</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png" class="">
+
+<hr>
+<h3 id="五、添加拦截器"><a href="#五、添加拦截器" class="headerlink" title="五、添加拦截器"></a>五、添加拦截器</h3><p>添加中间跳转隐藏密码出现新的问题：直接页面输入localhost:8080/main.html会绕过登录界面，此时需要配置拦截器来拦截下来</p>
+<h4 id="5-1-创建自定义的拦截器"><a href="#5-1-创建自定义的拦截器" class="headerlink" title="5.1 创建自定义的拦截器"></a>5.1 创建自定义的拦截器</h4><ul>
+<li>类实现HandlerInterceptor接口，重写方法</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyInterceptor</span> <span class="keyword">implements</span> <span class="title">HandlerInterceptor</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">preHandle</span><span class="params">(HttpServletRequest request, HttpServletResponse response, Object handler)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="comment">//登录成功后：应该有用户的Session</span></span><br><span class="line">        Object login = request.getSession().getAttribute(<span class="string">&quot;UserLogin&quot;</span>);</span><br><span class="line">        <span class="keyword">if</span> (login == <span class="keyword">null</span>)&#123;</span><br><span class="line">            request.setAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;没有权限，请先登录&quot;</span>);</span><br><span class="line">            request.getRequestDispatcher(<span class="string">&quot;/index.html&quot;</span>).forward(request, response);<span class="comment">//跳转回index页面</span></span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>; <span class="comment">//true：放行，进行跳转；false：不放行</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-2-修改Controller跳转"><a href="#5-2-修改Controller跳转" class="headerlink" title="5.2 修改Controller跳转"></a>5.2 修改Controller跳转</h4><ul>
+<li>为了用户登录后返回一个Session，方便拦截器拦截</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@RequestMapping(&quot;/login&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model model, HttpSession session)</span></span>&#123;</span><br><span class="line">    <span class="comment">//具体的业务逻辑判端，瞎写</span></span><br><span class="line">    <span class="keyword">if</span> (<span class="string">&quot;莱特雷&quot;</span>.equals(username) &amp;&amp; <span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">        session.setAttribute(<span class="string">&quot;UserLogin&quot;</span>, username);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/main.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码出现错误&quot;</span>); <span class="comment">//登录失败，向前端发送消息</span></span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="5-3-注册拦截器"><a href="#5-3-注册拦截器" class="headerlink" title="5.3 注册拦截器"></a>5.3 注册拦截器</h4><ul>
+<li>在WebMvc配置类中，注入拦截器（方法重写）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/main.html&quot;</span>).setViewName(<span class="string">&quot;dashboard&quot;</span>);<span class="comment">//隐藏登录后的用户密码</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注入地区分解器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyLocaleResolver();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注册拦截器</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addInterceptors</span><span class="params">(InterceptorRegistry registry)</span> </span>&#123;</span><br><span class="line">        registry.addInterceptor(<span class="keyword">new</span> MyInterceptor()).addPathPatterns(<span class="string">&quot;/**&quot;</span>).excludePathPatterns(<span class="string">&quot;/&quot;</span>, <span class="string">&quot;/index.html&quot;</span>, <span class="string">&quot;/login&quot;</span>, <span class="string">&quot;/asserts/**&quot;</span>);</span><br><span class="line">                                <span class="comment">//拦截所有请求，但不拦截主页，登录页，以及静态资源</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="六、员工管理页面"><a href="#六、员工管理页面" class="headerlink" title="六、员工管理页面"></a>六、员工管理页面</h3><p>为了方便管理，将展示员工list的页面放在”emp”文件夹下</p>
+<h4 id="6-1-编写Controller跳转"><a href="#6-1-编写Controller跳转" class="headerlink" title="6.1 编写Controller跳转"></a>6.1 编写Controller跳转</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询所有员工信息，封装到Model，并返回前端</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/getEmps&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getEmps</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">        Collection&lt;Employee&gt; employees = EmployeeDao.getEmployees();</span><br><span class="line">        model.addAttribute(<span class="string">&quot;emps&quot;</span>, employees);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;emp/list&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="6-2-修改页面"><a href="#6-2-修改页面" class="headerlink" title="6.2 修改页面"></a>6.2 修改页面</h4><p>（1）代码复用</p>
+<ul>
+<li>由于dashboard.html 和 list.html 有大量的重复代码（顶部导航栏、侧边栏）</li>
+<li>为了方便修改，将重复代码提取，进行统一修改</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png" class="">
+
+<hr>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png" class="">
+
+<p>（2）修改复用代码</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png" class="">
+
+<h4 id="6-3-解决高亮问题"><a href="#6-3-解决高亮问题" class="headerlink" title="6.3 解决高亮问题"></a>6.3 解决高亮问题</h4><p>点击页面时，总是首先那个按钮会发亮，点击员工管理没发亮</p>
+<ul>
+<li>（1）lsit页面，main页面修改</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png" class="">\
+
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png" class="">
+
+<ul>
+<li>（2）复用代码设置高亮</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png" class="">
+
+<h4 id="6-4-员工表单"><a href="#6-4-员工表单" class="headerlink" title="6.4 员工表单"></a>6.4 员工表单</h4><p>修改list.html页面，将后端的数据提取出来，并放在一个表单中</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png" class="">
+
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png" class="">
+
+<hr>
+<h3 id="七、添加员工功能"><a href="#七、添加员工功能" class="headerlink" title="七、添加员工功能"></a>七、添加员工功能</h3><h4 id="7-1-添加按钮"><a href="#7-1-添加按钮" class="headerlink" title="7.1 添加按钮"></a>7.1 添加按钮</h4><p>修改list.html页面，增加一个“添加员工”按钮，并跳转Contoller进行业务处理</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png" class="">
+
+<h4 id="7-2-添加员工页面"><a href="#7-2-添加员工页面" class="headerlink" title="7.2 添加员工页面"></a>7.2 添加员工页面</h4><p>复制list.html进行修改，变成add.html页面，把表内容删除，变成表单</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">main</span> <span class="attr">role</span>=<span class="string">&quot;main&quot;</span> <span class="attr">class</span>=<span class="string">&quot;col-md-9 ml-sm-auto col-lg-10 pt-3 px-4&quot;</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--表单--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/emp/addEmp&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span> <span class="comment">&lt;!--页面跳转--&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>LastName<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;lastName&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;莱特雷&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Email<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;email&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;letere.com&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Gender<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-check form-check-inline&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;form-check-input&quot;</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">name</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">&quot;form-check-label&quot;</span>&gt;</span>男<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-check form-check-inline&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;form-check-input&quot;</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">name</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">&quot;form-check-label&quot;</span>&gt;</span>女<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Department<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">select</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span> <span class="attr">name</span>=<span class="string">&quot;department.id&quot;</span>&gt;</span></span><br><span class="line">				<span class="comment">&lt;!--遍历departments集合，并添加value参数，来保证传递会后端的是部门ID--&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">option</span> <span class="attr">th:each</span>=<span class="string">&quot;dpet:$&#123;departments&#125;&quot;</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;dpet.getDepartmentName()&#125;&quot;</span> <span class="attr">th:value</span>=<span class="string">&quot;$&#123;dpet.getId()&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Date<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;date&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;2020-12-01&quot;</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!--注意日期格式为SpringBoot配置文件中设置，若没有设置，默认为yy/MM/dd --&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn btn-sm btn-primary&quot;</span>&gt;</span>添加<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">main</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-3-Controller创建相应的业务"><a href="#7-3-Controller创建相应的业务" class="headerlink" title="7.3 Controller创建相应的业务"></a>7.3 Controller创建相应的业务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//跳转到添加员工页面</span></span><br><span class="line">    <span class="meta">@GetMapping(&quot;/emp&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toAddEmp</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">        Collection&lt;Department&gt; departments = DepartmentDao.getDepartMents();</span><br><span class="line">        model.addAttribute(<span class="string">&quot;departments&quot;</span>, departments); <span class="comment">//向前端传递部门名称</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;emp/add&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//后端接收数据，添加员工，并返回员工列表主页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/addEmp&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">addEmp</span><span class="params">(Employee employee)</span></span>&#123;</span><br><span class="line">        EmployeeDao.addEmployee(employee, employee.getDepartment().getId());</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/emp/getEmps&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>效果图</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png" class="">
+
+<hr>
+<h3 id="八、修改员工功能"><a href="#八、修改员工功能" class="headerlink" title="八、修改员工功能"></a>八、修改员工功能</h3><h4 id="8-1-修改按钮"><a href="#8-1-修改按钮" class="headerlink" title="8.1 修改按钮"></a>8.1 修改按钮</h4><p>修改list.html，添加一个修改员工按钮</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png" class="">
+
+<ul>
+<li>效果图</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png" class="">
+
+<h4 id="8-2-创建修改页面"><a href="#8-2-创建修改页面" class="headerlink" title="8.2 创建修改页面"></a>8.2 创建修改页面</h4><p>复制add.html进行修改</p>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png" class="">
+
+<h4 id="8-3-Controller创建相应业务"><a href="#8-3-Controller创建相应业务" class="headerlink" title="8.3 Controller创建相应业务"></a>8.3 Controller创建相应业务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//跳转到修改员工页面</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toUpdateEmp</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> Integer id, Model model)</span></span>&#123; <span class="comment">//接受前端传来的员工id</span></span><br><span class="line">        Employee employee = EmployeeDao.getEmployeeById(id);</span><br><span class="line">        Collection&lt;Department&gt; departments = DepartmentDao.getDepartMents();</span><br><span class="line"></span><br><span class="line">        model.addAttribute(<span class="string">&quot;emp&quot;</span>, employee);</span><br><span class="line">        model.addAttribute(<span class="string">&quot;departments&quot;</span>, departments); <span class="comment">//向前端传递员工信息作为默认值</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;emp/update&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//后端接受数据，修改员工，并返回员工列表主页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/updateEmp&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">updateEmp</span><span class="params">(Employee employee)</span></span>&#123;</span><br><span class="line">        EmployeeDao.addEmployee(employee, employee.getDepartment().getId());</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/emp/getEmps&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>效果图</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png" class="">
+
+<hr>
+<h3 id="九、删除员工功能和收尾"><a href="#九、删除员工功能和收尾" class="headerlink" title="九、删除员工功能和收尾"></a>九、删除员工功能和收尾</h3><h4 id="9-1-Controller添加删除员工业务"><a href="#9-1-Controller添加删除员工业务" class="headerlink" title="9.1 Controller添加删除员工业务"></a>9.1 Controller添加删除员工业务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除员工并跳转回员工列表主页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/delemp/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">deleteEmp</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">        EmployeeDao.delete(id);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/emp/getEmps&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="9-2-添加错误页面"><a href="#9-2-添加错误页面" class="headerlink" title="9.2 添加错误页面"></a>9.2 添加错误页面</h4><ul>
+<li>在templates文件夹下创建”error”文件夹，将对应的错误页面改名为错误代码，放进”error”文件夹，thymeleaf会自动跳转，不用填写相应跳转</li>
+</ul>
+<h4 id="9-3-添加注销功能"><a href="#9-3-添加注销功能" class="headerlink" title="9.3 添加注销功能"></a>9.3 添加注销功能</h4><ul>
+<li>（1）修改commen.html页面</li>
+</ul>
+<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png" class="">
+
+
+<ul>
+<li>（2）Controller添加相应业务</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注销登录</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/logout&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">logout</span><span class="params">(HttpSession session)</span></span>&#123;</span><br><span class="line">        session.invalidate();<span class="comment">//销毁Session</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:index.html&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBootWeb%E5%BC%80%E5%8F%91/" rel="prev" title="【SpringBoot】SpringBootWeb开发">
+      <i class="fa fa-chevron-left"></i> 【SpringBoot】SpringBootWeb开发
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="【SpringBoot】整合数据库">
+      【SpringBoot】整合数据库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E7%A1%80%E5%87%86%E5%A4%87"><span class="nav-text">一、基础准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%88%9B%E5%BB%BAJavaBean"><span class="nav-text">1.1 创建JavaBean</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%88%9B%E5%BB%BA%E5%AF%B9%E5%BA%94%E7%9A%84DAO%E7%B1%BB"><span class="nav-text">1.2 创建对应的DAO类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E6%8B%93%E5%B1%95WebMvc%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">1.3 拓展WebMvc配置类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E5%AE%9E%E4%BE%8B%E9%9C%80%E8%A6%81%E7%9A%84%E9%9D%99%E6%80%81%E8%B5%84%E6%BA%90%E4%B8%8B%E8%BD%BD"><span class="nav-text">1.4 实例需要的静态资源下载</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E8%AE%BE%E7%BD%AE%E4%B8%BB%E9%A1%B5"><span class="nav-text">二、设置主页</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%80%9A%E8%BF%87Controller%E8%B7%B3%E8%BD%AC"><span class="nav-text">2.1 通过Controller跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%80%9A%E8%BF%87%E6%8B%93%E5%B1%95WebMvc%E9%85%8D%E7%BD%AE%E7%B1%BB%E8%B7%B3%E8%BD%AC"><span class="nav-text">2.2 通过拓展WebMvc配置类跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E8%A7%A3%E5%86%B3CSS%E6%A0%B7%E5%BC%8F%E4%B8%A2%E5%A4%B1%E9%97%AE%E9%A2%98"><span class="nav-text">2.3 解决CSS样式丢失问题</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E5%9B%BD%E9%99%85%E5%8C%96%E8%AE%BE%E7%BD%AE"><span class="nav-text">三、国际化设置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%88%9B%E5%BB%BA%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-text">3.1 创建配置文件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E9%85%8D%E7%BD%AE%E4%BF%A1%E6%81%AF"><span class="nav-text">3.2 配置信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BF%AE%E6%94%B9%E4%B8%BB%E9%A1%B5%E6%8F%90%E5%8F%96%E4%BF%A1%E6%81%AF"><span class="nav-text">3.3 修改主页提取信息</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E8%AF%AD%E8%A8%80%E5%88%87%E6%8D%A2%E8%AE%BE%E7%BD%AE"><span class="nav-text">3.4 语言切换设置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E7%BC%96%E5%86%99%E7%99%BB%E5%BD%95%E5%90%8E%E7%9A%84%E9%A1%B5%E9%9D%A2"><span class="nav-text">四、编写登录后的页面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E7%BC%96%E5%86%99%E4%B8%BB%E9%A1%B5"><span class="nav-text">4.1 编写主页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E7%BC%96%E5%86%99Controller%E8%B7%B3%E8%BD%AC"><span class="nav-text">4.2 编写Controller跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E9%9A%90%E8%97%8F%E8%B4%A6%E5%8F%B7%E5%AF%86%E7%A0%81"><span class="nav-text">4.3 隐藏账号密码</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81%E6%B7%BB%E5%8A%A0%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-text">五、添加拦截器</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%88%9B%E5%BB%BA%E8%87%AA%E5%AE%9A%E4%B9%89%E7%9A%84%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-text">5.1 创建自定义的拦截器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E4%BF%AE%E6%94%B9Controller%E8%B7%B3%E8%BD%AC"><span class="nav-text">5.2 修改Controller跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E6%B3%A8%E5%86%8C%E6%8B%A6%E6%88%AA%E5%99%A8"><span class="nav-text">5.3 注册拦截器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E9%A1%B5%E9%9D%A2"><span class="nav-text">六、员工管理页面</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E7%BC%96%E5%86%99Controller%E8%B7%B3%E8%BD%AC"><span class="nav-text">6.1 编写Controller跳转</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-%E4%BF%AE%E6%94%B9%E9%A1%B5%E9%9D%A2"><span class="nav-text">6.2 修改页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-3-%E8%A7%A3%E5%86%B3%E9%AB%98%E4%BA%AE%E9%97%AE%E9%A2%98"><span class="nav-text">6.3 解决高亮问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-4-%E5%91%98%E5%B7%A5%E8%A1%A8%E5%8D%95"><span class="nav-text">6.4 员工表单</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%83%E3%80%81%E6%B7%BB%E5%8A%A0%E5%91%98%E5%B7%A5%E5%8A%9F%E8%83%BD"><span class="nav-text">七、添加员工功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E6%B7%BB%E5%8A%A0%E6%8C%89%E9%92%AE"><span class="nav-text">7.1 添加按钮</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-%E6%B7%BB%E5%8A%A0%E5%91%98%E5%B7%A5%E9%A1%B5%E9%9D%A2"><span class="nav-text">7.2 添加员工页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-Controller%E5%88%9B%E5%BB%BA%E7%9B%B8%E5%BA%94%E7%9A%84%E4%B8%9A%E5%8A%A1"><span class="nav-text">7.3 Controller创建相应的业务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AB%E3%80%81%E4%BF%AE%E6%94%B9%E5%91%98%E5%B7%A5%E5%8A%9F%E8%83%BD"><span class="nav-text">八、修改员工功能</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1-%E4%BF%AE%E6%94%B9%E6%8C%89%E9%92%AE"><span class="nav-text">8.1 修改按钮</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-%E5%88%9B%E5%BB%BA%E4%BF%AE%E6%94%B9%E9%A1%B5%E9%9D%A2"><span class="nav-text">8.2 创建修改页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-Controller%E5%88%9B%E5%BB%BA%E7%9B%B8%E5%BA%94%E4%B8%9A%E5%8A%A1"><span class="nav-text">8.3 Controller创建相应业务</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%9D%E3%80%81%E5%88%A0%E9%99%A4%E5%91%98%E5%B7%A5%E5%8A%9F%E8%83%BD%E5%92%8C%E6%94%B6%E5%B0%BE"><span class="nav-text">九、删除员工功能和收尾</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#9-1-Controller%E6%B7%BB%E5%8A%A0%E5%88%A0%E9%99%A4%E5%91%98%E5%B7%A5%E4%B8%9A%E5%8A%A1"><span class="nav-text">9.1 Controller添加删除员工业务</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-2-%E6%B7%BB%E5%8A%A0%E9%94%99%E8%AF%AF%E9%A1%B5%E9%9D%A2"><span class="nav-text">9.2 添加错误页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#9-3-%E6%B7%BB%E5%8A%A0%E6%B3%A8%E9%94%80%E5%8A%9F%E8%83%BD"><span class="nav-text">9.3 添加注销功能</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

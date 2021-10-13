@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Mybatis全局配置文件学习笔记">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Mybatis】全局配置文件">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/10/17/%E3%80%90Mybatis%E3%80%91%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Mybatis全局配置文件学习笔记">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2020-10-17T12:40:13.000Z">
+<meta property="article:modified_time" content="2020-10-19T12:42:33.255Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/10/17/%E3%80%90Mybatis%E3%80%91%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Mybatis】全局配置文件 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/10/17/%E3%80%90Mybatis%E3%80%91%E5%85%A8%E5%B1%80%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Mybatis】全局配置文件
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-10-17 20:40:13" itemprop="dateCreated datePublished" datetime="2020-10-17T20:40:13+08:00">2020-10-17</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-10-19 20:42:33" itemprop="dateModified" datetime="2020-10-19T20:42:33+08:00">2020-10-19</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Mybatis/" itemprop="url" rel="index"><span itemprop="name">Mybatis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Mybatis全局配置文件学习笔记</p>
+<a id="more"></a>
+<h3 id="一、properties（属性）"><a href="#一、properties（属性）" class="headerlink" title="一、properties（属性）"></a>一、properties（属性）</h3><ul>
+<li>（1）properties标签：可以引入外部properties配置文件内容，可以读取连接数据库的基本配置文件</li>
+</ul>
+<ul>
+<li>（2）Mybatis与Spring进行整合时，读取配置文件的工作，一般交给Spring处理，此标签了解即可</li>
+</ul>
+<ul>
+<li>（3）resource：引入类路径下的资源；url：网络路径或磁盘路径的内容</li>
+</ul>
+<ul>
+<li>（4）使用实例：</li>
+</ul>
+<figure class="highlight maxima"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">配置文件</span><br><span class="line">jdbc.driver=com.mysql.cj.jdbc.Driver</span><br><span class="line">jdbc.url=jdbc:mysql://localhost:<span class="number">3306</span>/mybatis?serverTimezone=GMT%<span class="number">2B8</span></span><br><span class="line">jdbc.username=root</span><br><span class="line">jdbc.password=<span class="number">123</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件</span><br><span class="line">	<span class="comment">&lt;!--properties，引入配置文件信息--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">properties</span> <span class="attr">resource</span>=<span class="string">&quot;./properties/jdbcConfig.properties&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">properties</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;development&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">				<span class="comment">&lt;!--读取配置文件信息，使用$&#123;属性名&#125;来读取--&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;jdbc.password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="二、settings（设定）"><a href="#二、settings（设定）" class="headerlink" title="二、settings（设定）"></a>二、settings（设定）</h3><ul>
+<li>（1）settting：包含很多重要设定项</li>
+</ul>
+<ul>
+<li>（2）setting：用来设定某一个设定项<ul>
+<li>name：设定项名</li>
+<li>value：设定项取值</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（3）setting的设定项名（查看官方文档）：<ul>
+<li><a target="_blank" rel="noopener" href="https://mybatis.org/mybatis-3/zh/configuration.html#settings">https://mybatis.org/mybatis-3/zh/configuration.html#settings</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（4）使用实例</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">  <span class="tag">&lt;<span class="name">settings</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!--启用驼峰命名--&gt;</span></span><br><span class="line">      <span class="tag">&lt;<span class="name">setting</span> <span class="attr">name</span>=<span class="string">&quot;mapUnderscoreToCamelCase&quot;</span> <span class="attr">value</span>=<span class="string">&quot;true&quot;</span>/&gt;</span></span><br><span class="line">  <span class="tag">&lt;/<span class="name">settings</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="三、typeAliases（类型别名）"><a href="#三、typeAliases（类型别名）" class="headerlink" title="三、typeAliases（类型别名）"></a>三、typeAliases（类型别名）</h3><ul>
+<li>（1）typeAliases：为Java某个类型起别名<ul>
+<li>type：起别名类的全类名</li>
+<li>alias：别名。若不添加此字段，默认为类名小写</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）单个起别名实例：</li>
+<li><strong>别名启用前</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">映射文件</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;properties.EmployeeMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;Dao.Employee&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li><strong>别名启用后</strong></li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件--配置别名</span><br><span class="line">    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">typeAlias</span> <span class="attr">type</span>=<span class="string">&quot;properties.Employee&quot;</span> <span class="attr">alias</span>=<span class="string">&quot;employee&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">typeAlias</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">映射文件--引用别名</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;properties.EmployeeMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--resultType：引用类型别名--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;employee&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（3）批量起别名<ul>
+<li>typeAliases标签下的字标签</li>
+<li>package：为指定包下的所有类起别名<ul>
+<li>name：指定包名（为当前包，以及下面所有的后带包的每一个类都起一个默认别名）</li>
+</ul>
+</li>
+<li><strong>在批量起别名的情况下，防止包与子包出现重名，可以在某个类使用@Alias(“别名”)，自定义别名</strong></li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件--批量起别名</span><br><span class="line">    <span class="tag">&lt;<span class="name">typeAliases</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">package</span> <span class="attr">name</span>=<span class="string">&quot;properties&quot;</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">typeAliases</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">类--自定义批量别名</span><br><span class="line"><span class="meta">@Alias(&quot;OtherName&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Empioyee</span></span>&#123;</span><br><span class="line">	xxxxxxxx</span><br><span class="line">	xxxxxxxx</span><br><span class="line">	xxxxxxxx</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="四、typeHandlers（类型处理器）"><a href="#四、typeHandlers（类型处理器）" class="headerlink" title="四、typeHandlers（类型处理器）"></a>四、typeHandlers（类型处理器）</h3><ul>
+<li>（1）Java类型与数据库类型映射的桥梁<ul>
+<li><strong>以后细说</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="五、objectFactory（对象工厂）"><a href="#五、objectFactory（对象工厂）" class="headerlink" title="五、objectFactory（对象工厂）"></a>五、objectFactory（对象工厂）</h3><ul>
+<li>（1）一般都不会修改此配置属性，都是使用默认方法<ul>
+<li><strong>不细说</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="六、plugin（插件）"><a href="#六、plugin（插件）" class="headerlink" title="六、plugin（插件）"></a>六、plugin（插件）</h3><ul>
+<li>（1）plugin对语句执行的偶一点进行拦截调用<ul>
+<li>拦截方法：<ul>
+<li>Executor：执行器</li>
+<li>ParameterHandler：参数处理器</li>
+<li>ResultSetHandler：结果集处理器，拿出结果集并封装成JavaBean对象</li>
+<li>StatementHandler：sql语句处理器</li>
+</ul>
+</li>
+<li><strong>以后细说</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="七、envrionments（环境）"><a href="#七、envrionments（环境）" class="headerlink" title="七、envrionments（环境）"></a>七、envrionments（环境）</h3><ul>
+<li>（1）标签介绍</li>
+<li>environments：存放多个环境<ul>
+<li>default：指定某个环境，来进行环境切换</li>
+<li>environment：配置一个具体的环境信息，必须有两个标签<ul>
+<li>id：当前环境的唯一标识</li>
+<li>transactionManager：事务管理器<ul>
+<li>type：事务管理器类型（JDBC、MANAGED）<ul>
+<li>自定义事务管理器：类实现TransactionFactory接口，type指定为全类名</li>
+</ul>
+</li>
+<li><strong>事务管理：一般交给Spring来进行</strong></li>
+</ul>
+</li>
+<li>dataSource：数据源<ul>
+<li>type：数据源类型（UNPOOLED、POOLED、JNDI）<ul>
+<li>自定义连接池：类实现DataSoutceFactory接口，type是该类的全类名</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）使用实例<ul>
+<li>创建两个数据库环境，”mysql”和”Oracle”</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件--环境配置</span><br><span class="line"><span class="tag">&lt;<span class="name">environments</span> <span class="attr">default</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--mysql数据库环境--&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;mysql.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;mysql.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;mysql.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;mysql.password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">		<span class="comment">&lt;!--Oracle数据库环境--&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">environment</span> <span class="attr">id</span>=<span class="string">&quot;oracle&quot;</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">transactionManager</span> <span class="attr">type</span>=<span class="string">&quot;JDBC&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">dataSource</span> <span class="attr">type</span>=<span class="string">&quot;POOLED&quot;</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;driver&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;oracle.driver&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;url&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;oracle.url&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;username&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;oracle.username&#125;&quot;</span>/&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;password&quot;</span> <span class="attr">value</span>=<span class="string">&quot;$&#123;oracle.password&#125;&quot;</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="name">dataSource</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">environment</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">environments</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="八、databaseIdProvider（数据库厂商标识）"><a href="#八、databaseIdProvider（数据库厂商标识）" class="headerlink" title="八、databaseIdProvider（数据库厂商标识）"></a>八、databaseIdProvider（数据库厂商标识）</h3><ul>
+<li><p>（1）标签介绍</p>
+<ul>
+<li>databaseIdProvider：设置数据库厂商标识，来指定某条sql语句是指定数据来执行的<ul>
+<li>type=”DB_VENDOR”：得到数据库厂商标识（驱动自带），mybatis就能根据数据库厂商标识来执行<ul>
+<li>举例驱动：MYSQL、Oracle、SQL Server</li>
+</ul>
+</li>
+<li>也可以使用子标签property来为驱动起别名</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>（2）使用实例</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件--数据库厂商标识</span><br><span class="line">	<span class="tag">&lt;<span class="name">databaseIdProvider</span> <span class="attr">type</span>=<span class="string">&quot;DB_VENDOR&quot;</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!--为不同厂商起别名--&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;MySQL&quot;</span> <span class="attr">value</span>=<span class="string">&quot;mysql&quot;</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;Oracle&quot;</span> <span class="attr">value</span>=<span class="string">&quot;oracle&quot;</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">property</span> <span class="attr">name</span>=<span class="string">&quot;SQL Server&quot;</span> <span class="attr">value</span>=<span class="string">&quot;sqlServer&quot;</span>/&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">databaseIdProvider</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">映射文件--设定sql语句执行的数据库</span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;properties.EmployeeMapper&quot;</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--databaseId：设置语句执行使用的数据库类型--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;getEmpById&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;employee&quot;</span> <span class="attr">databaseId</span>=<span class="string">&quot;mysql&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from tbl_employee</span><br><span class="line">        where id = #&#123;id&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="九、mappers（映射器）"><a href="#九、mappers（映射器）" class="headerlink" title="九、mappers（映射器）"></a>九、mappers（映射器）</h3><ul>
+<li>（1）标签介绍</li>
+<li>mappers：存放一组映射文件注册<ul>
+<li>mapper：注册一个sql映射<ul>
+<li>resource：引用类路径下的sql映射文件</li>
+<li>url：引用网络路径/磁盘路径下的sql映射文件</li>
+</ul>
+</li>
+<li><strong>开发中：一般将mapper映射文件，存放在mybatis.mapper的包中</strong></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）利用接口注册<ul>
+<li>情况一：有sql映射文件<ul>
+<li>创建一个接口，接口名与sql映射文件名一样，且放在同一目录下</li>
+<li>用mapper的class：类的全类名</li>
+</ul>
+</li>
+<li>情况二：没有sql映射文件<ul>
+<li>创建一个接口，在接口方法上添加相应的注解：<ul>
+<li>增：@Insert(“sql语句”)</li>
+<li>删：@Delete(“sql语句”)</li>
+<li>改：@Update(“sql语句”)</li>
+<li>查：@Select(“sql语句”)</li>
+</ul>
+</li>
+<li>用mapper的class：类的全类名</li>
+</ul>
+</li>
+<li><strong>使用推荐</strong> ：比较重要的Dao接口，sql写在xml配置文件中；不重要的，简单Dao接口为了快速开发，使用注解</li>
+</ul>
+</li>
+</ul>
+<p><strong>情况二演示</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">接口</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">EmployeeMapperAnnotation</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Select(&quot;select * from tbl_employee where id=#&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Employee <span class="title">getEmpById</span><span class="params">(Integer id)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">全局配置文件--注册接口</span><br><span class="line"><span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">mapper</span> <span class="attr">class</span>=<span class="string">&quot;mapper.EmployeeMapperAnnotation&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">mappers</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+<ul>
+<li>（3）批量注册<ul>
+<li>要求和接口注册一样</li>
+<li>利用package标签<ul>
+<li>name：接口和映射文件所在的包名</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/14/%E3%80%90Mybatis%E3%80%91Mybatis%E5%85%A5%E9%97%A8/" rel="prev" title="【Mybatis】Mybatis入门">
+      <i class="fa fa-chevron-left"></i> 【Mybatis】Mybatis入门
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/10/18/%E3%80%90Mybatis%E3%80%91%E6%98%A0%E5%B0%84%E6%96%87%E4%BB%B6/" rel="next" title="【Mybatis】映射文件">
+      【Mybatis】映射文件 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81properties%EF%BC%88%E5%B1%9E%E6%80%A7%EF%BC%89"><span class="nav-text">一、properties（属性）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81settings%EF%BC%88%E8%AE%BE%E5%AE%9A%EF%BC%89"><span class="nav-text">二、settings（设定）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81typeAliases%EF%BC%88%E7%B1%BB%E5%9E%8B%E5%88%AB%E5%90%8D%EF%BC%89"><span class="nav-text">三、typeAliases（类型别名）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%9B%E3%80%81typeHandlers%EF%BC%88%E7%B1%BB%E5%9E%8B%E5%A4%84%E7%90%86%E5%99%A8%EF%BC%89"><span class="nav-text">四、typeHandlers（类型处理器）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%94%E3%80%81objectFactory%EF%BC%88%E5%AF%B9%E8%B1%A1%E5%B7%A5%E5%8E%82%EF%BC%89"><span class="nav-text">五、objectFactory（对象工厂）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AD%E3%80%81plugin%EF%BC%88%E6%8F%92%E4%BB%B6%EF%BC%89"><span class="nav-text">六、plugin（插件）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%83%E3%80%81envrionments%EF%BC%88%E7%8E%AF%E5%A2%83%EF%BC%89"><span class="nav-text">七、envrionments（环境）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%AB%E3%80%81databaseIdProvider%EF%BC%88%E6%95%B0%E6%8D%AE%E5%BA%93%E5%8E%82%E5%95%86%E6%A0%87%E8%AF%86%EF%BC%89"><span class="nav-text">八、databaseIdProvider（数据库厂商标识）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B9%9D%E3%80%81mappers%EF%BC%88%E6%98%A0%E5%B0%84%E5%99%A8%EF%BC%89"><span class="nav-text">九、mappers（映射器）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

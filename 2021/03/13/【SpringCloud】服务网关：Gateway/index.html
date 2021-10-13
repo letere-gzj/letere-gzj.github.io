@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Spring Cloud Gateway的使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringCloud】服务网关：Gateway">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Spring Cloud Gateway的使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/gateway%E4%BD%9C%E7%94%A8%E4%BD%8D%E7%BD%AE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/gateway%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E7%BC%96%E7%A0%81%E9%85%8D%E7%BD%AE.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BC%96%E7%A0%81%E7%BD%91%E5%85%B3%E6%B5%8B%E8%AF%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E6%B7%BB%E5%8A%A0%E7%BD%91%E5%85%B3%E5%89%8D.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E6%B7%BB%E5%8A%A0%E7%BD%91%E5%85%B3%E5%90%8E.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/predicates.png">
+<meta property="article:published_time" content="2021-03-13T09:37:04.000Z">
+<meta property="article:modified_time" content="2021-03-13T09:42:19.857Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/gateway%E4%BD%9C%E7%94%A8%E4%BD%8D%E7%BD%AE.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringCloud】服务网关：Gateway | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringCloud】服务网关：Gateway
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-03-13 17:37:04 / 修改时间：17:42:19" itemprop="dateCreated datePublished" datetime="2021-03-13T17:37:04+08:00">2021-03-13</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringCloud/" itemprop="url" rel="index"><span itemprop="name">SpringCloud</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Spring Cloud Gateway的使用</p>
+<a id="more"></a>
+
+<h3 id="1-Gateway介绍"><a href="#1-Gateway介绍" class="headerlink" title="1 Gateway介绍"></a>1 Gateway介绍</h3><h4 id="1-1-基本介绍"><a href="#1-1-基本介绍" class="headerlink" title="1.1 基本介绍"></a>1.1 基本介绍</h4><ul>
+<li>官网：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html">https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html</a></li>
+</ul>
+<ul>
+<li>Gateway是在spring生态系统上构建的API网关服务，基于Spring5，SpringBoot2 和 Project Reactor等技术</li>
+<li>Gateway提供亦庄简单而有效的方式来对API进行路由，以及提供一些强大的过滤能力，例如：熔断、限流、重试等</li>
+</ul>
+<ul>
+<li>Gateway使用的Webflux种的reactor-netty响应式编程组件，底层使用了Netty</li>
+</ul>
+<h4 id="1-2-功能"><a href="#1-2-功能" class="headerlink" title="1.2 功能"></a>1.2 功能</h4><ul>
+<li>反向代理</li>
+<li>鉴权</li>
+<li>流量控制</li>
+<li>熔断</li>
+<li>日志监控</li>
+</ul>
+<h4 id="1-3-使用位置"><a href="#1-3-使用位置" class="headerlink" title="1.3 使用位置"></a>1.3 使用位置</h4><img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/gateway%E4%BD%9C%E7%94%A8%E4%BD%8D%E7%BD%AE.png" class="">
+
+<h4 id="1-4-选择gateway原因"><a href="#1-4-选择gateway原因" class="headerlink" title="1.4 选择gateway原因"></a>1.4 选择gateway原因</h4><ul>
+<li>（1）zuul1.0进入了维护阶段，而Gateway是SpringCloud团队研发的，是亲儿子产品</li>
+<li>（2）Gateway是基于<code>异步非阻塞模型上进行开发的</code>，性能方面不需要担心</li>
+<li>（3）Netflix虽然发布最新的Zuul2.x，但没有与SpringCloud整合的计划</li>
+</ul>
+<hr>
+<h3 id="2-三大核心概念"><a href="#2-三大核心概念" class="headerlink" title="2 三大核心概念"></a>2 三大核心概念</h3><h4 id="2-1-Route（路由）"><a href="#2-1-Route（路由）" class="headerlink" title="2.1 Route（路由）"></a>2.1 Route（路由）</h4><ul>
+<li>路由是构建网关的基本模块，它有ID，目标URI，一系列的断言和过滤器组成，如果断言为true，则匹配该路由</li>
+</ul>
+<h4 id="2-2-Predicate（断言）"><a href="#2-2-Predicate（断言）" class="headerlink" title="2.2 Predicate（断言）"></a>2.2 Predicate（断言）</h4><ul>
+<li>断言表示为一些布尔表达式，程序员相信在程序中的某个特定点该表达式值为真，可以在任何时候启用和禁用断言验证，因此可以在测试时启用断言而在部署时禁用断言</li>
+<li>开发人员可以匹配HTTP请求中的所有内容（例如请求头或请求参数），如果请求与断言相匹配则进行路由</li>
+</ul>
+<h4 id="2-3-Filter（过滤）"><a href="#2-3-Filter（过滤）" class="headerlink" title="2.3 Filter（过滤）"></a>2.3 Filter（过滤）</h4><ul>
+<li>使用过滤器，可以在请求被路由前或者之后对请求进行修改</li>
+</ul>
+<h4 id="2-4-总结"><a href="#2-4-总结" class="headerlink" title="2.4 总结"></a>2.4 总结</h4><ul>
+<li>web请求，通过一些匹配条件，定位到真正的服务器。并在这个转发过程的前后，进行一些精细化控制。</li>
+<li>predicate就是我们的匹配条件</li>
+<li>filter，就可以理解为一个无所不能的拦截器。有了这两个元素，再加上目标uri，就可以实现一个具体的路由</li>
+</ul>
+<hr>
+<h3 id="3-Gateway工作流程"><a href="#3-Gateway工作流程" class="headerlink" title="3 Gateway工作流程"></a>3 Gateway工作流程</h3><img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/gateway%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B.png" class="">
+
+<ul>
+<li>路由转发+执行过滤器链</li>
+</ul>
+<hr>
+<h3 id="4-Gateway配置"><a href="#4-Gateway配置" class="headerlink" title="4 Gateway配置"></a>4 Gateway配置</h3><h4 id="4-1-服务搭建"><a href="#4-1-服务搭建" class="headerlink" title="4.1 服务搭建"></a>4.1 服务搭建</h4><ul>
+<li>（1）新建Module<code>cloud-gateway-gatway9527</code></li>
+</ul>
+<ul>
+<li>（2）修改POM（引入依赖）<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- eureka-client --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- gateway --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-gateway<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（3）修改配置文件yaml<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9527</span></span><br><span class="line"></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">cloud-gateway</span> <span class="comment">#服务器名称</span></span><br><span class="line"></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">cloud-gateway-service</span> <span class="comment">#eureka上主机别名</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">register-with-eureka:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">fetch-registry:</span> <span class="literal">true</span></span><br><span class="line">    <span class="attr">defaultZone:</span> <span class="string">http://eurka7001.com:7001/eureka</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（4）主启动类<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@SpringBootApplication</span></span><br><span class="line"><span class="meta">@EnableEurekaClient</span> <span class="comment">//注册到eureka服务中心</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GatewayMain9527</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SpringApplication.run(GatewayMain9527.class, args);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="4-2-网关配置"><a href="#4-2-网关配置" class="headerlink" title="4,2 网关配置"></a>4,2 网关配置</h4><ul>
+<li>（1）修改yaml配置<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">gateway:</span></span><br><span class="line">      <span class="attr">routes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">payment-route</span> <span class="comment"># 路由ID，名字随意（建议配合服务名）</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">http://localhost:8001</span> <span class="comment">#断言匹配成功后，转发的路由地址</span></span><br><span class="line">          <span class="attr">predicates:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">Path=/payment/get/**</span> <span class="comment"># 断言。路径相匹配的进行路由转发，注意Path是大写开头</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li>（2）测试<ul>
+<li>启动eurka服务注册中心，启动服务器，再启动网关</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E6%B5%8B%E8%AF%95.png" class="">
+
+<img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B.png" class="">
+
+<hr>
+<h3 id="5-通过编码形式配置网关"><a href="#5-通过编码形式配置网关" class="headerlink" title="5 通过编码形式配置网关"></a>5 通过编码形式配置网关</h3><img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BD%91%E5%85%B3%E7%BC%96%E7%A0%81%E9%85%8D%E7%BD%AE.png" class="">
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GatewayConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RouteLocator <span class="title">customerLocator</span><span class="params">(RouteLocatorBuilder builder)</span> </span>&#123;</span><br><span class="line">        RouteLocatorBuilder.Builder routes = builder.routes();</span><br><span class="line">        <span class="comment">//参数1：路径名，参数二：函数，断言匹配路径，路由转发路径</span></span><br><span class="line">        routes.route(<span class="string">&quot;path_name&quot;</span>, r -&gt; r.path(<span class="string">&quot;/guonei&quot;</span>).uri(<span class="string">&quot;https://news.baidu.com&quot;</span>));</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> routes.build(); <span class="comment">//构建</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E7%BC%96%E7%A0%81%E7%BD%91%E5%85%B3%E6%B5%8B%E8%AF%95.png" class="">
+
+<hr>
+<h3 id="6-微服务名实现动态路由"><a href="#6-微服务名实现动态路由" class="headerlink" title="6 微服务名实现动态路由"></a>6 微服务名实现动态路由</h3><h4 id="6-1-路由访问变化"><a href="#6-1-路由访问变化" class="headerlink" title="6.1 路由访问变化"></a>6.1 路由访问变化</h4><ul>
+<li>添加网关前：</li>
+</ul>
+<img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E6%B7%BB%E5%8A%A0%E7%BD%91%E5%85%B3%E5%89%8D.png" class="">
+
+
+
+<ul>
+<li>使用网关</li>
+</ul>
+<img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/%E6%B7%BB%E5%8A%A0%E7%BD%91%E5%85%B3%E5%90%8E.png" class="">
+
+<ul>
+<li>但是上面的网关配置是将转发路由写死的，打不到负载均衡，所以需要动态路由实现负载均衡</li>
+</ul>
+<h4 id="6-2-配置动态路由"><a href="#6-2-配置动态路由" class="headerlink" title="6.2 配置动态路由"></a>6.2 配置动态路由</h4><ul>
+<li><p>修改yaml配置文件</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cloud:</span></span><br><span class="line">    <span class="attr">gateway:</span></span><br><span class="line">      <span class="attr">discovery:</span></span><br><span class="line">        <span class="attr">locator:</span></span><br><span class="line">          <span class="attr">enabled:</span> <span class="literal">true</span> <span class="comment"># 开启从注册中心动态创建路由的功能，利用微服务名进行路由转发</span></span><br><span class="line">      <span class="attr">routes:</span></span><br><span class="line">        <span class="bullet">-</span> <span class="attr">id:</span> <span class="string">payment-route</span> <span class="comment"># 路由ID，名字随意（建议配合服务名）</span></span><br><span class="line">          <span class="attr">uri:</span> <span class="string">lb://cloud-payment-service</span> <span class="comment">#lb：loadBalance负载均衡，从服务注册中心获取对应服务名的服务器</span></span><br><span class="line">          <span class="attr">predicates:</span></span><br><span class="line">          <span class="bullet">-</span> <span class="string">Path=/payment/lb/**</span> <span class="comment"># 断言。路径相匹配的进行路由转发，注意Path是大写开头</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>测试：</p>
+<ul>
+<li>开启eureka7001, payment8001, payment8002，gateway9527调用接口测试</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="7-Predicates断言使用"><a href="#7-Predicates断言使用" class="headerlink" title="7 Predicates断言使用"></a>7 Predicates断言使用</h3><h4 id="7-1-断言类型"><a href="#7-1-断言类型" class="headerlink" title="7.1 断言类型"></a>7.1 断言类型</h4><img src="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E7%BD%91%E5%85%B3%EF%BC%9AGateway/predicates.png" class="">
+
+<ul>
+<li>官方文档说明：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories">https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gateway-request-predicates-factories</a></li>
+</ul>
+<h4 id="7-2-After"><a href="#7-2-After" class="headerlink" title="7.2 After"></a>7.2 After</h4><ul>
+<li>后面跟指定时间，当当前时间在指定时间之后，此路径访问才生效</li>
+<li>使用场景：提前上架服务器，但不允许服务器被访问（游戏开服）</li>
+</ul>
+<ul>
+<li>时间格式：可以通过代码来获取时间格式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ZonedDateTime now = ZonedDateTime.now();</span><br><span class="line">System.out.println(now);</span><br><span class="line"><span class="comment">//2021-03-13T16:47:32.605+08:00[Asia/Shanghai]</span></span><br><span class="line"><span class="comment">//日期 T 时间 xxxx[xx/xx]</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<h4 id="7-3-Before"><a href="#7-3-Before" class="headerlink" title="7.3 Before"></a>7.3 Before</h4><ul>
+<li>在指定时间之前，路径访问才生效，和After相反</li>
+</ul>
+<h4 id="7-4-Between"><a href="#7-4-Between" class="headerlink" title="7.4 Between"></a>7.4 Between</h4><ul>
+<li>在两个指定之间之内，路径访问才生效，参数为两个时间，就比前面多一个时间参数</li>
+</ul>
+<h4 id="7-5-Cookie"><a href="#7-5-Cookie" class="headerlink" title="7.5 Cookie"></a>7.5 Cookie</h4><ul>
+<li>Cookie Route Predicate需要两个参数，一个是Cookie name，一个是正则表达式</li>
+<li>路由规则会通过获取对应的Cookie name值（key）和正则表达式（value）去匹配，如果匹配上就会执行路由，如果没有匹配上则不执行</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">- Cookie=username, letere <span class="comment">//要cookies要带上&quot;username=letere&quot;参数</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="7-6-Header"><a href="#7-6-Header" class="headerlink" title="7.6 Header"></a>7.6 Header</h4><ul>
+<li>请求头和Cookie样，两个参数，kv键值对</li>
+<li>带有此kv键值对就匹配成功，进行路由转发</li>
+</ul>
+<hr>
+<h3 id="8-Filter过滤器使用"><a href="#8-Filter过滤器使用" class="headerlink" title="8 Filter过滤器使用"></a>8 Filter过滤器使用</h3><h4 id="8-1-Filter介绍"><a href="#8-1-Filter介绍" class="headerlink" title="8.1 Filter介绍"></a>8.1 Filter介绍</h4><ul>
+<li>路由过滤器可用于修改进入HTTP请求和返回的HTTP响应，路由过滤器只能指定路由进行使用</li>
+<li>Spring Cloud Gateway内置了多种路由过滤器，他们都由GatewayFilter的工厂类来产生</li>
+</ul>
+<h4 id="8-2-Filter分类"><a href="#8-2-Filter分类" class="headerlink" title="8.2 Filter分类"></a>8.2 Filter分类</h4><ul>
+<li>生命周期<ul>
+<li><code>pre</code></li>
+<li><code>post</code></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>种类<ul>
+<li>GatewayFilter：单一过滤器<ul>
+<li>官网：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gatewayfilter-factories">https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#gatewayfilter-factories</a> （共31个）</li>
+</ul>
+</li>
+<li>GlobalFilter：全局过滤器<ul>
+<li>官网：<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#global-filters">https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/#global-filters</a> （共10个）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="8-3-自定义过滤器"><a href="#8-3-自定义过滤器" class="headerlink" title="8.3 自定义过滤器"></a>8.3 自定义过滤器</h4><ul>
+<li>（1）实现<code>GlobalFilter</code>和Ordered接口</li>
+</ul>
+<ul>
+<li>（2）重写里面的方法</li>
+</ul>
+<ul>
+<li>例子：配置一个过滤器，请求参数必须要带”uname”才放行<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@Slf4j</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LogGatewayFilter</span> <span class="keyword">implements</span> <span class="title">GlobalFilter</span>, <span class="title">Ordered</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Mono&lt;Void&gt; <span class="title">filter</span><span class="params">(ServerWebExchange exchange, GatewayFilterChain chain)</span> </span>&#123;</span><br><span class="line">        log.info(<span class="string">&quot;******** come from LogGatewayFilter：&quot;</span> + <span class="keyword">new</span> Date());</span><br><span class="line">        String uname = exchange.getRequest() <span class="comment">//获取请求</span></span><br><span class="line">                .getQueryParams() <span class="comment">//获取查询参数</span></span><br><span class="line">                .getFirst(<span class="string">&quot;uname&quot;</span>); <span class="comment">//获取对应参数值</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span>(uname == <span class="keyword">null</span>) &#123;</span><br><span class="line">            log.info(<span class="string">&quot;********用户名为null，非法用户，o(╥﹏╥)o&quot;</span>);</span><br><span class="line">            exchange.getResponse() <span class="comment">//获取响应</span></span><br><span class="line">                    .setStatusCode(HttpStatus.NOT_ACCEPTABLE); <span class="comment">//响应会状态码</span></span><br><span class="line">            <span class="keyword">return</span> exchange.getResponse().setComplete(); <span class="comment">//拦截返回信息</span></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> chain.filter(exchange); <span class="comment">//放行</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">getOrder</span><span class="params">()</span> </span>&#123; <span class="comment">//过滤器执行顺序，越小优先级越高</span></span><br><span class="line">        <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/13/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java100%E9%9D%A2%E8%AF%95%E9%A2%98/" rel="prev" title="【面试】Java100面试题">
+      <i class="fa fa-chevron-left"></i> 【面试】Java100面试题
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/13/%E3%80%90SpringCloud%E3%80%91%E6%9C%8D%E5%8A%A1%E9%85%8D%E7%BD%AE%EF%BC%9AConfig/" rel="next" title="【SpringCloud】服务配置：Config">
+      【SpringCloud】服务配置：Config <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-Gateway%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 Gateway介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%8A%9F%E8%83%BD"><span class="nav-text">1.2 功能</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E4%BD%BF%E7%94%A8%E4%BD%8D%E7%BD%AE"><span class="nav-text">1.3 使用位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E9%80%89%E6%8B%A9gateway%E5%8E%9F%E5%9B%A0"><span class="nav-text">1.4 选择gateway原因</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%89%E5%A4%A7%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="nav-text">2 三大核心概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-Route%EF%BC%88%E8%B7%AF%E7%94%B1%EF%BC%89"><span class="nav-text">2.1 Route（路由）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Predicate%EF%BC%88%E6%96%AD%E8%A8%80%EF%BC%89"><span class="nav-text">2.2 Predicate（断言）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-Filter%EF%BC%88%E8%BF%87%E6%BB%A4%EF%BC%89"><span class="nav-text">2.3 Filter（过滤）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-%E6%80%BB%E7%BB%93"><span class="nav-text">2.4 总结</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Gateway%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="nav-text">3 Gateway工作流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-Gateway%E9%85%8D%E7%BD%AE"><span class="nav-text">4 Gateway配置</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%9C%8D%E5%8A%A1%E6%90%AD%E5%BB%BA"><span class="nav-text">4.1 服务搭建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E7%BD%91%E5%85%B3%E9%85%8D%E7%BD%AE"><span class="nav-text">4,2 网关配置</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E9%80%9A%E8%BF%87%E7%BC%96%E7%A0%81%E5%BD%A2%E5%BC%8F%E9%85%8D%E7%BD%AE%E7%BD%91%E5%85%B3"><span class="nav-text">5 通过编码形式配置网关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%90%8D%E5%AE%9E%E7%8E%B0%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-text">6 微服务名实现动态路由</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-%E8%B7%AF%E7%94%B1%E8%AE%BF%E9%97%AE%E5%8F%98%E5%8C%96"><span class="nav-text">6.1 路由访问变化</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-%E9%85%8D%E7%BD%AE%E5%8A%A8%E6%80%81%E8%B7%AF%E7%94%B1"><span class="nav-text">6.2 配置动态路由</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-Predicates%E6%96%AD%E8%A8%80%E4%BD%BF%E7%94%A8"><span class="nav-text">7 Predicates断言使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E6%96%AD%E8%A8%80%E7%B1%BB%E5%9E%8B"><span class="nav-text">7.1 断言类型</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-After"><span class="nav-text">7.2 After</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-Before"><span class="nav-text">7.3 Before</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-4-Between"><span class="nav-text">7.4 Between</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-5-Cookie"><span class="nav-text">7.5 Cookie</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-6-Header"><span class="nav-text">7.6 Header</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-Filter%E8%BF%87%E6%BB%A4%E5%99%A8%E4%BD%BF%E7%94%A8"><span class="nav-text">8 Filter过滤器使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#8-1-Filter%E4%BB%8B%E7%BB%8D"><span class="nav-text">8.1 Filter介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-2-Filter%E5%88%86%E7%B1%BB"><span class="nav-text">8.2 Filter分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#8-3-%E8%87%AA%E5%AE%9A%E4%B9%89%E8%BF%87%E6%BB%A4%E5%99%A8"><span class="nav-text">8.3 自定义过滤器</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

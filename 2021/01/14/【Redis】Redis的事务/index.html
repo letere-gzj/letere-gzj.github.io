@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="虽然Redis是非关系型数据库，但是也是拥有一定的事务功能">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Redis】Redis的事务">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="虽然Redis是非关系型数据库，但是也是拥有一定的事务功能">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E6%AD%A3%E5%B8%B8.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E6%94%BE%E5%BC%83.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E5%85%A8%E4%BD%93%E8%BF%9E%E5%9D%90.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E5%86%A4%E5%A4%B4%E5%80%BA%E4%B8%BB.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E7%9B%91%E6%8E%A7.png">
+<meta property="article:published_time" content="2021-01-14T07:39:49.000Z">
+<meta property="article:modified_time" content="2021-01-14T11:10:18.125Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E6%AD%A3%E5%B8%B8.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Redis】Redis的事务 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Redis】Redis的事务
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-01-14 15:39:49 / 修改时间：19:10:18" itemprop="dateCreated datePublished" datetime="2021-01-14T15:39:49+08:00">2021-01-14</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/Redis/" itemprop="url" rel="index"><span itemprop="name">Redis</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>虽然Redis是非关系型数据库，但是也是拥有一定的事务功能</p>
+<a id="more"></a>
+<h3 id="1-事务介绍"><a href="#1-事务介绍" class="headerlink" title="1. 事务介绍"></a>1. 事务介绍</h3><ul>
+<li>可以一次执行多个命令，本质是一组命令的集合。</li>
+<li>一个事务中的所有命令都会序列化，按顺序地串行化执行而不会被其他命令插入，不许加塞</li>
+</ul>
+<hr>
+<h3 id="2-事物使用"><a href="#2-事物使用" class="headerlink" title="2.事物使用"></a>2.事物使用</h3><ul>
+<li>在命令行使用<code>multi</code>，命令行会返回一个<code>OK</code>，表示事务开启，这时候可以输入一系列操作命令。</li>
+<li>输入完一系列操作命令，使用<code>exec</code>来执行事事务</li>
+<li>一旦不想使用事务的时候，命令行输入<code>discard</code>来取消使用事务</li>
+</ul>
+<hr>
+<h3 id="3-事务操作指令"><a href="#3-事务操作指令" class="headerlink" title="3.事务操作指令"></a>3.事务操作指令</h3><h4 id="3-1-常用指令"><a href="#3-1-常用指令" class="headerlink" title="3.1 常用指令"></a>3.1 常用指令</h4><table>
+<thead>
+<tr>
+<th align="center">命令</th>
+<th align="center">描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">multi</td>
+<td align="center">标记一个事务块的开启</td>
+</tr>
+<tr>
+<td align="center">discard</td>
+<td align="center">取消事务，放弃执行事务块内的所有事物</td>
+</tr>
+<tr>
+<td align="center">exec</td>
+<td align="center">执行所有事物块里面的命令</td>
+</tr>
+<tr>
+<td align="center">watch [key …]</td>
+<td align="center">监视一个或多个key，如果在事务执行之前key被其他命令所改动，事务中断</td>
+</tr>
+<tr>
+<td align="center">unwatch</td>
+<td align="center">取消watch命令对所有key的监视</td>
+</tr>
+</tbody></table>
+<h4 id="3-2-正常执行"><a href="#3-2-正常执行" class="headerlink" title="3.2 正常执行"></a>3.2 正常执行</h4><img src="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E6%AD%A3%E5%B8%B8.png" class="">
+
+<h4 id="3-3-放弃执行"><a href="#3-3-放弃执行" class="headerlink" title="3.3 放弃执行"></a>3.3 放弃执行</h4><img src="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E6%94%BE%E5%BC%83.png" class="">
+
+<h4 id="3-4-全体连坐"><a href="#3-4-全体连坐" class="headerlink" title="3.4 全体连坐"></a>3.4 全体连坐</h4><img src="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E5%85%A8%E4%BD%93%E8%BF%9E%E5%9D%90.png" class="">
+
+<h4 id="3-5-冤头债主"><a href="#3-5-冤头债主" class="headerlink" title="3.5 冤头债主"></a>3.5 冤头债主</h4><img src="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E5%86%A4%E5%A4%B4%E5%80%BA%E4%B8%BB.png" class="">
+
+<ul>
+<li>与全体连坐的区别：<ul>
+<li>全体连坐在编译的时候已经报错了，所以执行全部不执行</li>
+<li>冤头债主则是编译没有报错，所以执行时出现错误不影响其他语句执行</li>
+<li>总结：Redis的事务是部分支持，不是全部都支持</li>
+</ul>
+</li>
+</ul>
+<h4 id="3-6-watch监控"><a href="#3-6-watch监控" class="headerlink" title="3.6 watch监控"></a>3.6 watch监控</h4><ul>
+<li>锁<ul>
+<li>乐观锁：在每条记录后面都添加一个版本号(Version)，对记录进行操作时获取当前版本号，操作完准备提交前也获取一次版本号，一旦版本号不同，报出异常。版本号一样就成功提交。</li>
+<li>悲观锁：一旦数据被人拿来就修改，就将整个数据库锁起来，等修改完后，才能给下一个人进行修改。</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>watch使用例子（乐观锁）：信用卡可用余额和欠债</li>
+</ul>
+<img src="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E4%BA%8B%E5%8A%A1/%E7%9B%91%E6%8E%A7.png" class="">
+
+
+
+<ul>
+<li>取消监控：<ul>
+<li>（1）输入命令<code>unwatch</code></li>
+<li>（2）一旦事务使用<code>exec</code>执行后，自动取消监控</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4. 总结"></a>4. 总结</h3><h4 id="4-1-事务三阶段"><a href="#4-1-事务三阶段" class="headerlink" title="4.1 事务三阶段"></a>4.1 事务三阶段</h4><ul>
+<li>（1）开启：用<code>multi</code>命令开启一个事务</li>
+<li>（2）入队：将多个命令入队到十五中，接到这些命令并不会立即执行，而是方法哦等待执行的事务队列里面</li>
+<li>（3）执行：用<code>exec</code>命令执行事务</li>
+</ul>
+<h4 id="4-2-事务三特性"><a href="#4-2-事务三特性" class="headerlink" title="4.2 事务三特性"></a>4.2 事务三特性</h4><ul>
+<li>（1）单独的隔离操作：事务中的所用命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断</li>
+<li>（2）没有隔离级别的概念：队列中的命令没有提交之前都不会实际的执行，因为事务提交前任何指令都不会被实际执行，也就不存在“事务内的查询要看到事务里面的更新，在事务外查询不能看到”这个让人万分头疼的问题</li>
+<li>（3）不保证原子性：redis同一个事务中如果有一条命令执行失败，气候的命令仍然会被执行，没有回滚</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/13/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E6%8C%81%E4%B9%85%E5%8C%96/" rel="prev" title="【Redis】Redis的持久化">
+      <i class="fa fa-chevron-left"></i> 【Redis】Redis的持久化
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/01/14/%E3%80%90Redis%E3%80%91Redis%E7%9A%84%E5%8F%91%E5%B8%83%E8%AE%A2%E9%98%85/" rel="next" title="【Redis】Redis的发布订阅">
+      【Redis】Redis的发布订阅 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BA%8B%E5%8A%A1%E4%BB%8B%E7%BB%8D"><span class="nav-text">1. 事务介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%BA%8B%E7%89%A9%E4%BD%BF%E7%94%A8"><span class="nav-text">2.事物使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%BA%8B%E5%8A%A1%E6%93%8D%E4%BD%9C%E6%8C%87%E4%BB%A4"><span class="nav-text">3.事务操作指令</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-text">3.1 常用指令</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%AD%A3%E5%B8%B8%E6%89%A7%E8%A1%8C"><span class="nav-text">3.2 正常执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%94%BE%E5%BC%83%E6%89%A7%E8%A1%8C"><span class="nav-text">3.3 放弃执行</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%85%A8%E4%BD%93%E8%BF%9E%E5%9D%90"><span class="nav-text">3.4 全体连坐</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E5%86%A4%E5%A4%B4%E5%80%BA%E4%B8%BB"><span class="nav-text">3.5 冤头债主</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-6-watch%E7%9B%91%E6%8E%A7"><span class="nav-text">3.6 watch监控</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%BB%E7%BB%93"><span class="nav-text">4. 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E4%BA%8B%E5%8A%A1%E4%B8%89%E9%98%B6%E6%AE%B5"><span class="nav-text">4.1 事务三阶段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E4%BA%8B%E5%8A%A1%E4%B8%89%E7%89%B9%E6%80%A7"><span class="nav-text">4.2 事务三特性</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

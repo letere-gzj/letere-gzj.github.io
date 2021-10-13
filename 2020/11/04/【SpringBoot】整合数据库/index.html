@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SpringBoot如何整合数据库，实现CURD操作">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【SpringBoot】整合数据库">
+<meta property="og:url" content="http://letere.gitee.io/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="SpringBoot如何整合数据库，实现CURD操作">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/druid-1.png">
+<meta property="article:published_time" content="2020-11-04T13:50:54.000Z">
+<meta property="article:modified_time" content="2020-11-05T12:33:11.284Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/druid-1.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【SpringBoot】整合数据库 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【SpringBoot】整合数据库
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2020-11-04 21:50:54" itemprop="dateCreated datePublished" datetime="2020-11-04T21:50:54+08:00">2020-11-04</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2020-11-05 20:33:11" itemprop="dateModified" datetime="2020-11-05T20:33:11+08:00">2020-11-05</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>SpringBoot如何整合数据库，实现CURD操作</p>
+<a id="more"></a>
+
+<h3 id="一、整合原生JDBC"><a href="#一、整合原生JDBC" class="headerlink" title="一、整合原生JDBC"></a>一、整合原生JDBC</h3><h4 id="1-1-导入相关依赖"><a href="#1-1-导入相关依赖" class="headerlink" title="1.1 导入相关依赖"></a>1.1 导入相关依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--SpringBoot JDBC启动器依赖--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-jdbc<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!--MySQL驱动--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-配置文件连接数据库"><a href="#1-2-配置文件连接数据库" class="headerlink" title="1.2 配置文件连接数据库"></a>1.2 配置文件连接数据库</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span> <span class="comment">#基础JDBC连接</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/jdbctest?serverTimezone=GMT%2B8</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-3-CURD测试"><a href="#1-3-CURD测试" class="headerlink" title="1.3 CURD测试"></a>1.3 CURD测试</h4><p>在Controller层实现相关业务，数据库操作方法全部封装在jdbcTemplate类中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JDBCController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    JdbcTemplate jdbcTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//查询</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/select&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="keyword">public</span> List&lt;Map&lt;String, Object&gt;&gt; selectPerson()&#123;</span><br><span class="line">        String sql = <span class="string">&quot;select * from person&quot;</span>;</span><br><span class="line">        List&lt;Map&lt;String, Object&gt;&gt; mapList = jdbcTemplate.queryForList(sql);</span><br><span class="line">        <span class="keyword">return</span> mapList;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//增加</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/update&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">addPerson</span><span class="params">()</span></span>&#123;</span><br><span class="line">        String sql = <span class="string">&quot;insert into person value(&#x27;盐取&#x27;, 80, 45787)&quot;</span>;</span><br><span class="line"><span class="comment">//        jdbcTemplate.execute(sql); 都可以</span></span><br><span class="line">        jdbcTemplate.update(sql);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;add-ok&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//删除</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/delete/&#123;name&#125;&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">deletePerson</span><span class="params">(<span class="meta">@PathVariable(&quot;name&quot;)</span> String name)</span></span>&#123;</span><br><span class="line">        <span class="comment">//预编译SQL（占位符）</span></span><br><span class="line">        String sql = <span class="string">&quot;delete from person where name = ?&quot;</span>;</span><br><span class="line">        jdbcTemplate.update(sql, name);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;delete OK!&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//修改</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/add/&#123;name&#125;/&#123;age&#125;/&#123;passowrd&#125;&quot;)</span></span><br><span class="line">    <span class="meta">@ResponseBody</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">addPerson</span><span class="params">(<span class="meta">@PathVariable(&quot;name&quot;)</span> String name, <span class="meta">@PathVariable(&quot;age&quot;)</span> Integer age, <span class="meta">@PathVariable(&quot;password&quot;)</span> String password)</span></span>&#123;</span><br><span class="line">        String sql = <span class="string">&quot;update `person` value(?, ?, ?)&quot;</span>;</span><br><span class="line">        jdbcTemplate.update(sql, name, age, password);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;update-ok&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//使用方式是原生JDBC的方法封装好了，直接使用</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="二、整合Mybatis"><a href="#二、整合Mybatis" class="headerlink" title="二、整合Mybatis"></a>二、整合Mybatis</h3><h4 id="2-1-导入相关依赖"><a href="#2-1-导入相关依赖" class="headerlink" title="2.1 导入相关依赖"></a>2.1 导入相关依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--Mybatis和SpringBoot整合包(非springboot官方)--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.1.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line"><span class="comment">&lt;!--MySQL驱动--&gt;</span>		</span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>mysql<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>mysql-connector-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-2-配置文件连接数据库"><a href="#2-2-配置文件连接数据库" class="headerlink" title="2.2 配置文件连接数据库"></a>2.2 配置文件连接数据库</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/jdbctest?serverTimezone=GMT%2B8</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">#整合Mybatis全局配置文件，直接在此设置</span></span><br><span class="line"><span class="attr">mybatis:</span></span><br><span class="line">  <span class="attr">configuration:</span></span><br><span class="line">    <span class="attr">map-underscore-to-camel-case:</span> <span class="literal">true</span> <span class="comment">#开启驼峰命名</span></span><br><span class="line">  <span class="attr">mapper-locations:</span> <span class="string">classpath:mybatis/mapper/*.xml</span> <span class="comment">#Mapper文件路径</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="2-3-Mybatis基础操作"><a href="#2-3-Mybatis基础操作" class="headerlink" title="2.3 Mybatis基础操作"></a>2.3 Mybatis基础操作</h4><ul>
+<li>其他操作和使用Mybtias差异不大，只是Mapper.xml文件，放进resources/mapper目录下</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">JavaBean</span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Person</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String password;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">Mapper接口</span><br><span class="line"><span class="comment">//此注解标识：此类为Mybatis的Mapper类</span></span><br><span class="line"><span class="meta">@Mapper</span></span><br><span class="line"><span class="meta">@Repository</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">PersonMapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function">List&lt;Person&gt;  <span class="title">queryPersons</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function">Person <span class="title">queryPersonByName</span><span class="params">(String name)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">addPerson</span><span class="params">(Person person)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">deletePersonByName</span><span class="params">(String name)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">int</span> <span class="title">updatePerson</span><span class="params">(Person person)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">Mapper.xml文件</span><br><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;</span></span><br><span class="line"><span class="meta">&lt;!DOCTYPE <span class="meta-keyword">mapper</span></span></span><br><span class="line"><span class="meta">        <span class="meta-keyword">PUBLIC</span> <span class="meta-string">&quot;-//mybatis.org//DTD Mapper 3.0//EN&quot;</span></span></span><br><span class="line"><span class="meta">        <span class="meta-string">&quot;http://mybatis.org/dtd/mybatis-3-mapper.dtd&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">mapper</span> <span class="attr">namespace</span>=<span class="string">&quot;com.letere.mapper.PersonMapper&quot;</span>&gt;</span> <span class="comment">&lt;!--绑定接口文件--&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;queryPersons&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.letere.bean.Person&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from `person`</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">select</span> <span class="attr">id</span>=<span class="string">&quot;queryPersonByName&quot;</span> <span class="attr">resultType</span>=<span class="string">&quot;com.letere.bean.Person&quot;</span>&gt;</span></span><br><span class="line">        select *</span><br><span class="line">        from `person`</span><br><span class="line">        where name like #&#123;name&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">insert</span> <span class="attr">id</span>=<span class="string">&quot;addPerson&quot;</span>&gt;</span></span><br><span class="line">        insert into `person`</span><br><span class="line">        value (#&#123;name&#125;, #&#123;age&#125;, #&#123;password&#125;)</span><br><span class="line">    <span class="tag">&lt;/<span class="name">insert</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">delete</span> <span class="attr">id</span>=<span class="string">&quot;deletePersonByName&quot;</span>&gt;</span></span><br><span class="line">        delet from `person`</span><br><span class="line">        where name = #&#123;name&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">delete</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">update</span> <span class="attr">id</span>=<span class="string">&quot;updatePerson&quot;</span>&gt;</span></span><br><span class="line">        update `person`</span><br><span class="line">        set age = #&#123;age&#125;, password = #&#123;password&#125;</span><br><span class="line">        where name = #&#123;name&#125;</span><br><span class="line">    <span class="tag">&lt;/<span class="name">update</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">mapper</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line">Service层实现类</span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonService</span> <span class="keyword">implements</span> <span class="title">PersonMapper</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> PersonMapper mapper;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Person&gt; <span class="title">queryPersons</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mapper.queryPersons();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">queryPersonByName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        name = <span class="string">&#x27;%&#x27;</span> + name + <span class="string">&#x27;%&#x27;</span>;</span><br><span class="line">        <span class="keyword">return</span> mapper.queryPersonByName(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">addPerson</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mapper.addPerson(person);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">deletePersonByName</span><span class="params">(String name)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mapper.deletePersonByName(name);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">int</span> <span class="title">updatePerson</span><span class="params">(Person person)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> mapper.updatePerson(person);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Controller层调用Service层</span><br><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PersonController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> PersonService server;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/person/queryAll&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> List&lt;Person&gt; <span class="title">queryAll</span><span class="params">(Model model)</span></span>&#123;</span><br><span class="line">        List&lt;Person&gt; persons = server.queryPersons();</span><br><span class="line">        <span class="keyword">return</span> persons;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/person/queryByName/&#123;name&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Person <span class="title">queryByName</span><span class="params">(<span class="meta">@PathVariable(&quot;name&quot;)</span> String name)</span></span>&#123;</span><br><span class="line">        Person person = server.queryPersonByName(name);</span><br><span class="line">        <span class="keyword">return</span> person;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="三、整合druid数据连接池"><a href="#三、整合druid数据连接池" class="headerlink" title="三、整合druid数据连接池"></a>三、整合druid数据连接池</h3><h4 id="3-1-导入相关依赖"><a href="#3-1-导入相关依赖" class="headerlink" title="3.1 导入相关依赖"></a>3.1 导入相关依赖</h4><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--druid数据源--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>druid-spring-boot-starter<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.1<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line">		</span><br><span class="line"><span class="comment">&lt;!--log4j日志记录--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>log4j<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>log4j<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.17<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-2-配置文件设置"><a href="#3-2-配置文件设置" class="headerlink" title="3.2 配置文件设置"></a>3.2 配置文件设置</h4><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">datasource:</span></span><br><span class="line">    <span class="attr">username:</span> <span class="string">root</span></span><br><span class="line">    <span class="attr">password:</span> <span class="number">123</span></span><br><span class="line">    <span class="attr">url:</span> <span class="string">jdbc:mysql://localhost:3306/jdbctest?serverTimezone=GMT%2B8</span></span><br><span class="line">    <span class="attr">driver-class-name:</span> <span class="string">com.mysql.cj.jdbc.Driver</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">com.alibaba.druid.pool.DruidDataSource</span> <span class="comment">#切换druid数据源</span></span><br><span class="line"></span><br><span class="line">    <span class="attr">druid:</span></span><br><span class="line">      <span class="comment">#druid数据源特有设置</span></span><br><span class="line">      <span class="comment">#配置监控统计拦截filters：stat(监控统计)、log4j(日志记录)、wall(防止sql注入)</span></span><br><span class="line">      <span class="attr">filters:</span> <span class="string">stat,wall,log4j</span></span><br><span class="line">      <span class="attr">max-pool-prepared-statement-per-connection-size:</span> <span class="number">20</span></span><br><span class="line">      <span class="attr">use-global-data-source-stat:</span> <span class="literal">true</span></span><br><span class="line">      <span class="attr">connection-properties:</span> <span class="string">druid.stat.mergeSql=true;druid.stat.slowSqlMillus=500</span></span><br><span class="line"></span><br><span class="line">      <span class="comment">#基础设置</span></span><br><span class="line">      <span class="comment">#初始化连接数大小</span></span><br><span class="line">      <span class="attr">initial-size:</span> <span class="number">3</span></span><br><span class="line">      <span class="comment">#最小连接数</span></span><br><span class="line">      <span class="attr">min-idle:</span> <span class="number">3</span></span><br><span class="line">      <span class="comment">#最大连接数</span></span><br><span class="line">      <span class="attr">max-active:</span> <span class="number">10</span></span><br><span class="line">      <span class="comment">#连接超时时间</span></span><br><span class="line">      <span class="attr">max-wait:</span> <span class="number">60000</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="3-3-配置druid后台监控"><a href="#3-3-配置druid后台监控" class="headerlink" title="3.3 配置druid后台监控"></a>3.3 配置druid后台监控</h4><ul>
+<li>创建一个druid的配置类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//druid配置类</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DruidConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//绑定配置文件的数据源</span></span><br><span class="line">    <span class="meta">@ConfigurationProperties(prefix = &quot;spring.datasource&quot;)</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> DataSource <span class="title">druidDataSource</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> DruidDataSource();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//后台监控功能 注册Servlet 类似web.xml</span></span><br><span class="line">    <span class="comment">//因为SpringBoot内置了servlet容器，所有没有web.xml，替代方法ServletRegistrationBean</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ServletRegistrationBean <span class="title">servletRegistrationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">        ServletRegistrationBean bean = <span class="keyword">new</span> ServletRegistrationBean(<span class="keyword">new</span> StatViewServlet(), <span class="string">&quot;/druid/*&quot;</span>);<span class="comment">//后台监控地址</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//后台需要有人登陆，账号密码配置</span></span><br><span class="line">        HashMap&lt;String, String&gt; initParameters = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">		</span><br><span class="line">        <span class="comment">//-----------------后台监控设置---------------------</span></span><br><span class="line">        <span class="comment">//增加配置（参数名为固定的，不能修改）</span></span><br><span class="line">        initParameters.put(<span class="string">&quot;loginUsername&quot;</span>, <span class="string">&quot;莱特雷&quot;</span>);</span><br><span class="line">        initParameters.put(<span class="string">&quot;loginPassword&quot;</span>, <span class="string">&quot;123&quot;</span>);</span><br><span class="line"></span><br><span class="line">        <span class="comment">//允许谁可以访问</span></span><br><span class="line">        initParameters.put(<span class="string">&quot;allow&quot;</span>, <span class="string">&quot;&quot;</span>); <span class="comment">//值为空，所有人都可以访问</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//禁止谁可以访问</span></span><br><span class="line">        initParameters.put(<span class="string">&quot;用户名&quot;</span>, <span class="string">&quot;ip地址&quot;</span>); <span class="comment">//里面参数自定义</span></span><br><span class="line">        <span class="comment">//----------------------------------------------------------</span></span><br><span class="line">		</span><br><span class="line">        bean.setInitParameters(initParameters);<span class="comment">//设置初始化参数</span></span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> bean;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注册过滤器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> FilterRegistrationBean <span class="title">filterRegistrationBean</span><span class="params">()</span></span>&#123;</span><br><span class="line">        FilterRegistrationBean&lt;Filter&gt; filterBean = <span class="keyword">new</span> FilterRegistrationBean&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//配置过滤器</span></span><br><span class="line">        filterBean.setFilter(<span class="keyword">new</span> WebStatFilter());<span class="comment">//druid过滤器</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">//过滤请求</span></span><br><span class="line">        HashMap&lt;String, String&gt; initParameters = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">        <span class="comment">//不过滤的内容</span></span><br><span class="line">        initParameters.put(<span class="string">&quot;exclusions&quot;</span>, <span class="string">&quot;*.js, *.css, /druid/*&quot;</span>);</span><br><span class="line"></span><br><span class="line">        filterBean.setInitParameters(initParameters);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> filterBean;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>网页输入：”<a target="_blank" rel="noopener" href="http://localhost:8080/druid&quot;">http://localhost:8080/druid&quot;</a><ul>
+<li>会进入登录页面，填写配置的账号，密码进入后台</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/druid-1.png" class="">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/" rel="prev" title="【SpringBoot】项目实例：员工管理系统">
+      <i class="fa fa-chevron-left"></i> 【SpringBoot】项目实例：员工管理系统
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2020/11/05/%E3%80%90SpringBoot%E3%80%91Shiro%E5%AE%89%E5%85%A8%E6%A1%86%E6%9E%B6/" rel="next" title="【SpringBoot】Shiro安全框架">
+      【SpringBoot】Shiro安全框架 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E3%80%81%E6%95%B4%E5%90%88%E5%8E%9F%E7%94%9FJDBC"><span class="nav-text">一、整合原生JDBC</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96"><span class="nav-text">1.1 导入相关依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">1.2 配置文件连接数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-CURD%E6%B5%8B%E8%AF%95"><span class="nav-text">1.3 CURD测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BA%8C%E3%80%81%E6%95%B4%E5%90%88Mybatis"><span class="nav-text">二、整合Mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96"><span class="nav-text">2.1 导入相关依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="nav-text">2.2 配置文件连接数据库</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-Mybatis%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C"><span class="nav-text">2.3 Mybatis基础操作</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E3%80%81%E6%95%B4%E5%90%88druid%E6%95%B0%E6%8D%AE%E8%BF%9E%E6%8E%A5%E6%B1%A0"><span class="nav-text">三、整合druid数据连接池</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%AF%BC%E5%85%A5%E7%9B%B8%E5%85%B3%E4%BE%9D%E8%B5%96"><span class="nav-text">3.1 导入相关依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AE%BE%E7%BD%AE"><span class="nav-text">3.2 配置文件设置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E9%85%8D%E7%BD%AEdruid%E5%90%8E%E5%8F%B0%E7%9B%91%E6%8E%A7"><span class="nav-text">3.3 配置druid后台监控</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

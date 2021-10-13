@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="MySQL的简单入门">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL】MySQL入门">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="MySQL的简单入门">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/mysql%E7%99%BB%E5%BD%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/mysql%E9%80%80%E5%87%BA.png">
+<meta property="article:published_time" content="2021-04-03T07:51:01.000Z">
+<meta property="article:modified_time" content="2021-04-03T07:55:44.514Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/mysql%E7%99%BB%E5%BD%95.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MySQL】MySQL入门 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MySQL】MySQL入门
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-04-03 15:51:01 / 修改时间：15:55:44" itemprop="dateCreated datePublished" datetime="2021-04-03T15:51:01+08:00">2021-04-03</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>MySQL的简单入门</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-数据库介绍"><a href="#1-数据库介绍" class="headerlink" title="1 数据库介绍"></a>1 数据库介绍</h3><h4 id="1-1-数据存储"><a href="#1-1-数据存储" class="headerlink" title="1.1 数据存储"></a>1.1 数据存储</h4><ul>
+<li>（1）未引入数据库前：<ul>
+<li>通过IO流将数据库<strong>序列化</strong>存储到本地文件中，来对数据进行存储</li>
+<li>通过IO流将本地文件<strong>反序列化</strong>，提取数据到java对象中</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>（2）引入数据库后：<ul>
+<li>通过简单的sql数据，即可对数据进行增、删、改、查操作</li>
+</ul>
+</li>
+</ul>
+<h4 id="1-2-常用数据库管理系统"><a href="#1-2-常用数据库管理系统" class="headerlink" title="1.2 常用数据库管理系统"></a>1.2 常用数据库管理系统</h4><ul>
+<li>Oracle：传统企业使用居多</li>
+<li>MySQL：互联网公司用的多（集群搭建）</li>
+<li>DB2</li>
+<li>Sybase</li>
+<li>MS SqlServer</li>
+</ul>
+<hr>
+<h3 id="2-MySQL安装"><a href="#2-MySQL安装" class="headerlink" title="2 MySQL安装"></a>2 MySQL安装</h3><ul>
+<li>安装教程1：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/37152572">https://zhuanlan.zhihu.com/p/37152572</a></li>
+<li>安装教程2：<a target="_blank" rel="noopener" href="https://blog.csdn.net/missing2011/article/details/81474857">https://blog.csdn.net/missing2011/article/details/81474857</a></li>
+<li>安装教程3：<a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/fc07f989bf2cc712ffe51902.html">https://jingyan.baidu.com/article/fc07f989bf2cc712ffe51902.html</a></li>
+</ul>
+<h4 id="2-1-MySQL安装测试"><a href="#2-1-MySQL安装测试" class="headerlink" title="2.1 MySQL安装测试"></a>2.1 MySQL安装测试</h4><ul>
+<li>（1）MySQL登录</li>
+<li>命令行输入<code>mysql -u root -p</code></li>
+</ul>
+<img src="/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/mysql%E7%99%BB%E5%BD%95.png" class="">
+
+
+<ul>
+<li>（2）MySQL退出</li>
+<li>命令行输入<code>exit</code></li>
+</ul>
+<img src="/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/mysql%E9%80%80%E5%87%BA.png" class="">
+
+<hr>
+<h3 id="3-MySQL基础知识"><a href="#3-MySQL基础知识" class="headerlink" title="3 MySQL基础知识"></a>3 MySQL基础知识</h3><h4 id="3-1-sql、DB、DBMS关系"><a href="#3-1-sql、DB、DBMS关系" class="headerlink" title="3.1 sql、DB、DBMS关系"></a>3.1 sql、DB、DBMS关系</h4><ul>
+<li>（1） <strong>DB</strong>：DataBase（数据库，数据库实际实际上再硬盘上是以文件的形式存在）</li>
+<li>（2）<strong>DBMS</strong>：DataBase Management System（数据库管理系统，常见有：mysql orcal…）</li>
+<li>（3）<strong>SQL</strong>：Structured Query Language（结构化查询语言，一门标准通用的语言，适用所有的数据库产品）<ul>
+<li>SQL属于高级语言。只要能看懂英文，写出来的sql语句，可以读懂意思</li>
+<li>SQL语句执行时，有DBMS进行编译，在进行执行</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>三者关系</strong>：DBMS编译SQL，来操作DB中的数据</li>
+</ul>
+<h4 id="3-2-表的含义"><a href="#3-2-表的含义" class="headerlink" title="3.2 表的含义"></a>3.2 表的含义</h4><ul>
+<li>表：Table，是数据库的基本组成单位，所有的数据都以表格的形式组织，目的是可读性强。</li>
+</ul>
+<ul>
+<li>一个表拥有行和列：<ul>
+<li>行：数据（Data）</li>
+<li>列：字段（Column）</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>一个字段包含一下属性：字段名、数据类型、相关约束</li>
+</ul>
+<h4 id="3-3-SQL语句分类"><a href="#3-3-SQL语句分类" class="headerlink" title="3.3 SQL语句分类"></a>3.3 SQL语句分类</h4><ul>
+<li>（1）<strong>DQL</strong>：Data Query Language，数据查询语言，凡是select语句都是DQL</li>
+<li>（2）<strong>DML</strong>：Data Manipulation Language，数据操纵语言，对数据进行增（insert）、删（delete）、改（update）</li>
+<li>（3）<strong>DDL</strong>：Data Definition Language，数据定义语言，对表结构进行增（create）、删（drop）、改（alter）</li>
+<li>（4）<strong>TCL</strong>：Transaction Control Language，事务控制语言，提交事务（commit），回滚事务（rollback）</li>
+<li>（5）<strong>DCL</strong>：Data Control Language：数据控制语言，授权（grant），撤销权限（revoke）</li>
+</ul>
+<h4 id="3-4-sql脚本文件"><a href="#3-4-sql脚本文件" class="headerlink" title="3.4 sql脚本文件"></a>3.4 sql脚本文件</h4><ul>
+<li>sql脚本文件：以sql结尾的文件。里面编写大量的sql语句，用来以另外一种形式存储数据库。</li>
+</ul>
+<hr>
+<h3 id="4-MySQL常用指令"><a href="#4-MySQL常用指令" class="headerlink" title="4 MySQL常用指令"></a>4 MySQL常用指令</h3><figure class="highlight cmd"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"># mysql登录</span><br><span class="line">mysql -u root -p</span><br><span class="line"></span><br><span class="line"># 查看数据库</span><br><span class="line">show databases;</span><br><span class="line"></span><br><span class="line"># 创建数据库</span><br><span class="line">create database 数据库名;</span><br><span class="line"></span><br><span class="line"># 使用（切换）数据库</span><br><span class="line">use 数据库名;</span><br><span class="line"></span><br><span class="line"># 查看当前数据库中的表</span><br><span class="line">show tables;</span><br><span class="line"></span><br><span class="line"># 查看创建表的sql语句</span><br><span class="line">show create table 表名;</span><br><span class="line"></span><br><span class="line"># 执行sql文件</span><br><span class="line">sources sql文件路径;</span><br><span class="line"></span><br><span class="line"># 查看表结构</span><br><span class="line">desc 表名;</span><br><span class="line"></span><br><span class="line"># 查询当前使用的数据库</span><br><span class="line">select database();</span><br><span class="line"></span><br><span class="line"># 查询mysql版本</span><br><span class="line">select version();</span><br><span class="line"></span><br><span class="line"># 终止sql语句</span><br><span class="line">\c</span><br><span class="line"></span><br><span class="line"># 退出mysql</span><br><span class="line"><span class="keyword">exit</span></span><br></pre></td></tr></table></figure>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/" rel="prev" title="【SpringCloudAlibaba】Sentinel实现熔断和限流">
+      <i class="fa fa-chevron-left"></i> 【SpringCloudAlibaba】Sentinel实现熔断和限流
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/04/04/%E3%80%90MySQL%E3%80%91DQL%E5%9F%BA%E7%A1%80/" rel="next" title="【MySQL】DQL基础">
+      【MySQL】DQL基础 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 数据库介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8"><span class="nav-text">1.1 数据存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E5%BA%93%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F"><span class="nav-text">1.2 常用数据库管理系统</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-MySQL%E5%AE%89%E8%A3%85"><span class="nav-text">2 MySQL安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-MySQL%E5%AE%89%E8%A3%85%E6%B5%8B%E8%AF%95"><span class="nav-text">2.1 MySQL安装测试</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-MySQL%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-text">3 MySQL基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-sql%E3%80%81DB%E3%80%81DBMS%E5%85%B3%E7%B3%BB"><span class="nav-text">3.1 sql、DB、DBMS关系</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E8%A1%A8%E7%9A%84%E5%90%AB%E4%B9%89"><span class="nav-text">3.2 表的含义</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-SQL%E8%AF%AD%E5%8F%A5%E5%88%86%E7%B1%BB"><span class="nav-text">3.3 SQL语句分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-sql%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-text">3.4 sql脚本文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-MySQL%E5%B8%B8%E7%94%A8%E6%8C%87%E4%BB%A4"><span class="nav-text">4 MySQL常用指令</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">185</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
