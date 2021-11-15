@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="关于Tomcat的认识">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【JavaWeb】Tomcat">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="关于Tomcat的认识">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E7%9B%AE%E5%BD%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E9%A6%96%E9%A1%B5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E5%90%AF%E5%8A%A8%E7%AB%AF%E5%8F%A3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B21.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B22.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B23.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B24.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat3.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat4.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat5.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat6.png">
+<meta property="article:published_time" content="2021-10-25T02:57:02.000Z">
+<meta property="article:modified_time" content="2021-10-25T09:34:06.211Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【JavaWeb】Tomcat | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【JavaWeb】Tomcat
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-10-25 10:57:02 / 修改时间：17:34:06" itemprop="dateCreated datePublished" datetime="2021-10-25T10:57:02+08:00">2021-10-25</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>关于Tomcat的认识</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-web概念"><a href="#1-web概念" class="headerlink" title="1 web概念"></a>1 web概念</h3><h4 id="1-1-JavaWeb"><a href="#1-1-JavaWeb" class="headerlink" title="1.1 JavaWeb"></a>1.1 JavaWeb</h4><ul>
+<li><code>JavaWeb</code>：指通过Java语言编写，可以通过浏览器访问的程序的总称，叫JavaWeb</li>
+<li><code>请求request</code>：指客户端给服务器发送数据</li>
+<li><code>响应response</code>：指服务器给客户端回传数据</li>
+<li><code>请求和响应的关系</code>：请求与响应是成对出现，有请求就会有响应</li>
+</ul>
+<hr>
+<h4 id="1-2-Web资源分类"><a href="#1-2-Web资源分类" class="headerlink" title="1.2 Web资源分类"></a>1.2 Web资源分类</h4><ul>
+<li><code>静态资源</code>：html、css、js、txt、mp4、jpg图片</li>
+<li><code>动态资源</code>：jsp页面、servlet程序</li>
+</ul>
+<hr>
+<h4 id="1-3-常用web服务器"><a href="#1-3-常用web服务器" class="headerlink" title="1.3 常用web服务器"></a>1.3 常用web服务器</h4><ul>
+<li><code>Tomcat</code>：由apache组织提供的一种web服务器，提供对jsp和servlet的支持，它是一种轻量级的JavaWeb容器，也是当前应用最广的JavaWeb服务器（免费）</li>
+<li><code>Jboss</code>：是一个遵从JavaEE规范的、开发源代码的，纯Java的EJB服务器，支持所有的JavaEE规范（免费）</li>
+<li><code>GLassFish</code>：由Oracle公司开发的一款JavaWeb服务器，是一款强健的商业服务器，达到产品级质量（应用很少）</li>
+<li><code>Resin</code>：是由AUCHO公司的产品，是一个非常流行的服务器，对servlet和jsp提供了良好的支持，性能也比较优良，resin自身采用Java语言开发（收费，应用比较多）</li>
+<li><code>WebLogic</code>：是Oracle公司的产品，是目前应用最广泛的Web服务器，支持JavaEE规范，而且不断的完善以适应新的开发需求，适合大型项目（收费，用的不多，适合大公司）</li>
+</ul>
+<hr>
+<h3 id="2-Tomcat入门"><a href="#2-Tomcat入门" class="headerlink" title="2 Tomcat入门"></a>2 Tomcat入门</h3><h4 id="2-1-下载安装"><a href="#2-1-下载安装" class="headerlink" title="2.1 下载安装"></a>2.1 下载安装</h4><ul>
+<li><code>下载地址</code>：<a target="_blank" rel="noopener" href="https://tomcat.apache.org/">https://tomcat.apache.org/</a></li>
+<li><code>安装</code>：解压，配置环境变量<code>CATALINA_HOME</code></li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F.png" class="">
+
+<hr>
+<h4 id="2-2-目录介绍"><a href="#2-2-目录介绍" class="headerlink" title="2.2 目录介绍"></a>2.2 目录介绍</h4><img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E7%9B%AE%E5%BD%95.png" class="">
+
+<hr>
+<h4 id="2-3-使用"><a href="#2-3-使用" class="headerlink" title="2.3 使用"></a>2.3 使用</h4><ul>
+<li>（1）进入tomcat目录/bin文件</li>
+<li>（2）双击打开startup.bat，即已启动tomcat（若启动窗口乱码：<a target="_blank" rel="noopener" href="https://jingyan.baidu.com/article/c910274b39fbdc8d371d2d23.html">解决方案</a> )</li>
+<li>（2.1）启动方式也可以使用命令行运行<code>catalina run</code></li>
+<li>（3）浏览器输入：<a target="_blank" rel="noopener" href="http://localhost:8080/">http://localhost:8080</a> ，打开tomcat默认页面</li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E9%A6%96%E9%A1%B5.png" class="">
+
+<hr>
+<h3 id="3-Tomcat进阶"><a href="#3-Tomcat进阶" class="headerlink" title="3 Tomcat进阶"></a>3 Tomcat进阶</h3><h4 id="3-1-修改启动端口号"><a href="#3-1-修改启动端口号" class="headerlink" title="3.1 修改启动端口号"></a>3.1 修改启动端口号</h4><ul>
+<li>打开<code>tomcat目录/conf/server.xml</code>文件</li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/tomcat%E5%90%AF%E5%8A%A8%E7%AB%AF%E5%8F%A3.png" class="">
+
+<hr>
+<h4 id="3-2-部署项目到tomcat"><a href="#3-2-部署项目到tomcat" class="headerlink" title="3.2 部署项目到tomcat"></a>3.2 部署项目到tomcat</h4><ul>
+<li><strong>方法一</strong>：在<code>tomcat目录/webapps</code>目录下创建一个新的目录，将项目工程拷贝到该目录下</li>
+<li>访问方法：<code>http://localhost:8080/项目目录名/资源路径</code></li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B21.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B22.png" class="">
+
+
+<ul>
+<li><strong>方法二</strong>：在<code>tomcat目录/conf/Catalina/localhost</code>目录下，创建一个xml文件<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!--</span></span><br><span class="line"><span class="comment">	docBase: 项目访问的本地路径</span></span><br><span class="line"><span class="comment">--&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">Context</span> <span class="attr">docBase</span>=<span class="string">&quot;D:\Environment\Tomcat\hello&quot;</span>/&gt;</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B23.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%83%A8%E7%BD%B24.png" class="">
+
+<hr>
+<h4 id="3-3-ROOT工程和index-html"><a href="#3-3-ROOT工程和index-html" class="headerlink" title="3.3 ROOT工程和index.html"></a>3.3 ROOT工程和index.html</h4><ul>
+<li>若浏览器直接输入<a target="_blank" rel="noopener" href="http://localhost:8080/">http://localhost:8080</a> ，后面没有接上项目名，默认是访问ROOT工程下的资源</li>
+<li>若访问地址没有资源路径的话，会默认访问，项目的中的index.html文件</li>
+</ul>
+<hr>
+<h3 id="4-IDEA整合Tomcat"><a href="#4-IDEA整合Tomcat" class="headerlink" title="4 IDEA整合Tomcat"></a>4 IDEA整合Tomcat</h3><ul>
+<li><strong>（1）设置Tomcat服务器位置</strong></li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat1.png" class="">
+
+
+<ul>
+<li><strong>（2）创建JavaWeb工程</strong></li>
+<li>首先创建一个普通的Java工程，右键新增web框架支持</li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat2.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/idea%E6%95%B4%E5%90%88tomcat3.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/web%E9%A1%B9%E7%9B%AE%E7%9B%AE%E5%BD%95.png" class="">
+
+<ul>
+<li><strong>（3）配置tomcat服务器启动</strong></li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat1.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat2.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat3.png" class="">
+
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat4.png" class="">
+
+
+<ul>
+<li><strong>（4）启动测试</strong></li>
+<li>修改项目中的index.jsp，随便添加内容，方便确认启动成功</li>
+<li>运行配置好的tomcat服务器（跟java程序运行一样），会自动弹出默认浏览器的页面</li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat5.png" class="">
+
+
+<ul>
+<li><strong>（5）设置热部署</strong></li>
+</ul>
+<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/%E9%85%8D%E7%BD%AEtomcat6.png" class="">
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/10/24/%E3%80%90JavaWeb%E3%80%91XML/" rel="prev" title="【JavaWeb】XML">
+      <i class="fa fa-chevron-left"></i> 【JavaWeb】XML
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/" rel="next" title="【JavaWeb】Servlet">
+      【JavaWeb】Servlet <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-web%E6%A6%82%E5%BF%B5"><span class="nav-text">1 web概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-JavaWeb"><span class="nav-text">1.1 JavaWeb</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-Web%E8%B5%84%E6%BA%90%E5%88%86%E7%B1%BB"><span class="nav-text">1.2 Web资源分类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E5%B8%B8%E7%94%A8web%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="nav-text">1.3 常用web服务器</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Tomcat%E5%85%A5%E9%97%A8"><span class="nav-text">2 Tomcat入门</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85"><span class="nav-text">2.1 下载安装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E7%9B%AE%E5%BD%95%E4%BB%8B%E7%BB%8D"><span class="nav-text">2.2 目录介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E4%BD%BF%E7%94%A8"><span class="nav-text">2.3 使用</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Tomcat%E8%BF%9B%E9%98%B6"><span class="nav-text">3 Tomcat进阶</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E4%BF%AE%E6%94%B9%E5%90%AF%E5%8A%A8%E7%AB%AF%E5%8F%A3%E5%8F%B7"><span class="nav-text">3.1 修改启动端口号</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E9%83%A8%E7%BD%B2%E9%A1%B9%E7%9B%AE%E5%88%B0tomcat"><span class="nav-text">3.2 部署项目到tomcat</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-ROOT%E5%B7%A5%E7%A8%8B%E5%92%8Cindex-html"><span class="nav-text">3.3 ROOT工程和index.html</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-IDEA%E6%95%B4%E5%90%88Tomcat"><span class="nav-text">4 IDEA整合Tomcat</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">193</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
