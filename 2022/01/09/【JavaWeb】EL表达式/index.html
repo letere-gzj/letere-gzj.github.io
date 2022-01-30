@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="EL表达式说明和使用方式">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【JavaWeb】EL表达式">
+<meta property="og:url" content="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="EL表达式说明和使用方式">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/el%E4%BB%8B%E7%BB%8D.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/el%E5%8F%96%E5%80%BC.png">
+<meta property="article:published_time" content="2022-01-09T12:38:04.000Z">
+<meta property="article:modified_time" content="2022-01-10T15:09:06.512Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/el%E4%BB%8B%E7%BB%8D.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【JavaWeb】EL表达式 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【JavaWeb】EL表达式
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-01-09 20:38:04" itemprop="dateCreated datePublished" datetime="2022-01-09T20:38:04+08:00">2022-01-09</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-10 23:09:06" itemprop="dateModified" datetime="2022-01-10T23:09:06+08:00">2022-01-10</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>EL表达式说明和使用方式</p>
+<a id="more"></a>
+<h3 id="1-EL表达式介绍"><a href="#1-EL表达式介绍" class="headerlink" title="1 EL表达式介绍"></a>1 EL表达式介绍</h3><ul>
+<li><strong>EL</strong>：Expression Language（表达式语言）</li>
+</ul>
+<ul>
+<li><strong>作用</strong>：简化并替换JSP页面的表达式脚本，用来在JSP页面输出数据</li>
+</ul>
+<ul>
+<li><strong>示例</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%  request.setAttribute(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;value&quot;</span>); %&gt;</span><br><span class="line">    JSP表达式：&lt;%= request.getAttribute(<span class="string">&quot;key&quot;</span>) %&gt; &lt;br/&gt;</span><br><span class="line">    EL表达式：$&#123;key&#125;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/el%E4%BB%8B%E7%BB%8D.png" class="">
+
+<hr>
+<h3 id="2-EL表达式作用域"><a href="#2-EL表达式作用域" class="headerlink" title="2 EL表达式作用域"></a>2 EL表达式作用域</h3><ul>
+<li>EL表达式主要用来输出四大域对象中的数据</li>
+<li>四大域对象存储相同key名的数据，优先输出范围最小的域对象的数据</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        pageContext.setAttribute(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;pageContext&quot;</span>);</span><br><span class="line">        request.setAttribute(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;request&quot;</span>);</span><br><span class="line">        session.setAttribute(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;session&quot;</span>);</span><br><span class="line">        application.setAttribute(<span class="string">&quot;key&quot;</span>, <span class="string">&quot;application&quot;</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">    $&#123;key&#125; &lt;%-- 输出结果为<span class="string">&quot;pageContext&quot;</span> --%&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-常用数据结构取值"><a href="#3-常用数据结构取值" class="headerlink" title="3 常用数据结构取值"></a>3 常用数据结构取值</h3><ul>
+<li><strong>实例</strong></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建一个类， 里面包含平时常见的数据结构</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Sample</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> String param;</span><br><span class="line">    <span class="keyword">private</span> String[] arr;</span><br><span class="line">    <span class="keyword">private</span> List&lt;String&gt; list;</span><br><span class="line">    <span class="keyword">private</span> Map&lt;String, String&gt; map;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">getEl</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;el表达式获取对象数值，只是通过get方法获取&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        Sample sample = <span class="keyword">new</span> Sample();</span><br><span class="line">        sample.setParam(<span class="string">&quot;属性&quot;</span>);</span><br><span class="line">        <span class="comment">// 数组</span></span><br><span class="line">        sample.setArr(<span class="keyword">new</span> String[]&#123;<span class="string">&quot;数组1&quot;</span>, <span class="string">&quot;数组2&quot;</span>&#125;);</span><br><span class="line">        <span class="comment">// List集合</span></span><br><span class="line">        List&lt;String&gt; list = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">        list.add(<span class="string">&quot;list1&quot;</span>);</span><br><span class="line">        list.add(<span class="string">&quot;list2&quot;</span>);</span><br><span class="line">        sample.setList(list);</span><br><span class="line">        <span class="comment">// Map集合</span></span><br><span class="line">        Map&lt;String, String&gt; map = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">        map.put(<span class="string">&quot;key1&quot;</span>, <span class="string">&quot;map1&quot;</span>);</span><br><span class="line">        map.put(<span class="string">&quot;key2&quot;</span>, <span class="string">&quot;map2&quot;</span>);</span><br><span class="line">        sample.setMap(map);</span><br><span class="line">        <span class="comment">// 放入域对象</span></span><br><span class="line">        pageContext.setAttribute(<span class="string">&quot;sample&quot;</span>, sample);</span><br><span class="line">    %&gt;</span><br><span class="line">    Param：$&#123;sample.param&#125; &lt;br/&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    Arr: $&#123;sample.arr&#125; &lt;br/&gt;</span><br><span class="line">    Arr[<span class="number">0</span>]: $&#123;sample.arr[<span class="number">0</span>]&#125; &lt;br/&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    List: $&#123;sample.list&#125; &lt;br/&gt;</span><br><span class="line">    List.get(<span class="number">0</span>): $&#123;sample.list[<span class="number">0</span>]&#125; &lt;br/&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    Map: $&#123;sample.map&#125; &lt;br/&gt;</span><br><span class="line">    Map.get(<span class="string">&quot;key1&quot;</span>): $&#123;sample.map.key1&#125; &lt;br/&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    EL表达式取值原理：$&#123;sample.el&#125;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/el%E5%8F%96%E5%80%BC.png" class="">
+
+<hr>
+<h3 id="4-运算"><a href="#4-运算" class="headerlink" title="4 运算"></a>4 运算</h3><h4 id="4-1-关系运算"><a href="#4-1-关系运算" class="headerlink" title="4.1 关系运算"></a>4.1 关系运算</h4><table>
+<thead>
+<tr>
+<th align="center">关系运算符</th>
+<th align="center">说明</th>
+<th align="center">示例</th>
+<th align="center">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">== 或 eq</td>
+<td align="center">等于</td>
+<td align="center"><code>$&#123;5 == 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">!= 或 ne</td>
+<td align="center">不等于</td>
+<td align="center"><code>$&#123;5 != 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">&lt; 或 lt</td>
+<td align="center">小于</td>
+<td align="center"><code>$&#123;5 &lt; 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">&lt;= 或 le</td>
+<td align="center">小于等于</td>
+<td align="center"><code>$&#123;5 &lt;= 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">&gt; 或 gt</td>
+<td align="center">大于</td>
+<td align="center"><code>$&#123;5 &gt; 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">&gt;= 或 ge</td>
+<td align="center">大于等于</td>
+<td align="center"><code>$&#123;5 &gt;= 5&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="4-2-逻辑运算"><a href="#4-2-逻辑运算" class="headerlink" title="4.2 逻辑运算"></a>4.2 逻辑运算</h4><table>
+<thead>
+<tr>
+<th align="center">逻辑运算符</th>
+<th align="center">说明</th>
+<th align="center">示例</th>
+<th align="center">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">&amp;&amp; 或 and</td>
+<td align="center">与运算</td>
+<td align="center"><code>$&#123;5 == 5 &amp;&amp; 11 == 11&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">ll 或 or</td>
+<td align="center">或运算</td>
+<td align="center"><code>$&#123;5 == 5 ll 11 == 11&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+<tr>
+<td align="center">! 或 not</td>
+<td align="center">取反运算</td>
+<td align="center"><code>$&#123;!true&#125;</code></td>
+<td align="center">true 或 false</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="4-3-算术运算"><a href="#4-3-算术运算" class="headerlink" title="4.3 算术运算"></a>4.3 算术运算</h4><table>
+<thead>
+<tr>
+<th align="center">算术运算符</th>
+<th align="center">说明</th>
+<th align="center">示例</th>
+<th align="center">结果</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">+</td>
+<td align="center">加法</td>
+<td align="center"><code>$&#123; 1 + 1 &#125;</code></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">-</td>
+<td align="center">减法</td>
+<td align="center"><code>$&#123; 1 - 1 &#125;</code></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">*</td>
+<td align="center">乘法</td>
+<td align="center"><code>$&#123; 1 * 1 &#125;</code></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">/ 或 div</td>
+<td align="center">除法</td>
+<td align="center"><code>$&#123; 1 / 1 &#125;</code></td>
+<td align="center"></td>
+</tr>
+<tr>
+<td align="center">% 或 mod</td>
+<td align="center">取模</td>
+<td align="center"><code>$&#123; 1 % 1 &#125;</code></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="4-4-empty运算"><a href="#4-4-empty运算" class="headerlink" title="4.4 empty运算"></a>4.4 empty运算</h4><ul>
+<li><strong>empty运算</strong>：判断一个数据是否为空，为空则true，反之false</li>
+</ul>
+<ul>
+<li><strong>语法</strong>：<code>$&#123; empty 数据 &#125;</code></li>
+</ul>
+<ul>
+<li><strong>数据为空的情况</strong><ul>
+<li>值为null</li>
+<li>空字符串</li>
+<li>数组长度为0，且类型为Object</li>
+<li>list集合长度为0</li>
+<li>map集合长度为0</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="4-5-三元运算"><a href="#4-5-三元运算" class="headerlink" title="4.5 三元运算"></a>4.5 三元运算</h4><ul>
+<li><strong>语法</strong>：<code>$&#123; 表达式1 ? 表达式2 : 表达式3 &#125;</code></li>
+<li>表达式1为true，执行表达式2，反之执行表达式3</li>
+</ul>
+<hr>
+<h3 id="5-11个隐含对象"><a href="#5-11个隐含对象" class="headerlink" title="5 11个隐含对象"></a>5 11个隐含对象</h3><ul>
+<li>EL表达式中，自定义了11个隐含对象，可以直接拿来使用</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">变量名</th>
+<th align="center">类型</th>
+<th align="center">作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">pageContext</td>
+<td align="center"><code>PageContextImpl</code></td>
+<td align="center">获取Jsp中九大内置对象</td>
+</tr>
+<tr>
+<td align="center">pageScope</td>
+<td align="center"><code>Map&lt;String, Object&gt;</code></td>
+<td align="center">获取pageContext域中的数据</td>
+</tr>
+<tr>
+<td align="center">requestScope</td>
+<td align="center"><code>Map&lt;String, Object&gt;</code></td>
+<td align="center">获取requestContext域中的数据</td>
+</tr>
+<tr>
+<td align="center">sessionScope</td>
+<td align="center"><code>Map&lt;String, Object&gt;</code></td>
+<td align="center">获取session域中的数据</td>
+</tr>
+<tr>
+<td align="center">applicationScope</td>
+<td align="center"><code>Map&lt;String, Object&gt;</code></td>
+<td align="center">获取application域中的数据</td>
+</tr>
+<tr>
+<td align="center">param</td>
+<td align="center"><code>Map&lt;String, String&gt;</code></td>
+<td align="center">获取request中的请求参数值</td>
+</tr>
+<tr>
+<td align="center">paramValues</td>
+<td align="center"><code>Map&lt;String, String[]&gt;</code></td>
+<td align="center">获取request中的请求参数值，存在多个值时使用</td>
+</tr>
+<tr>
+<td align="center">header</td>
+<td align="center"><code>Map&lt;String, String&gt;</code></td>
+<td align="center">获取request中请求头参数值</td>
+</tr>
+<tr>
+<td align="center">headerValues</td>
+<td align="center"><code>Map&lt;String, String[]&gt;</code></td>
+<td align="center">获取request中的请求参数值，存在多个值时使用</td>
+</tr>
+<tr>
+<td align="center">cookies</td>
+<td align="center"><code>Map&lt;String, Cookie&gt;</code></td>
+<td align="center">获取当前请求中的cookie信息</td>
+</tr>
+<tr>
+<td align="center">initParam</td>
+<td align="center"><code>Map&lt;String, String&gt;</code></td>
+<td align="center">获取在web.xml中<code>&lt;context-param&gt;</code>的参数值</td>
+</tr>
+</tbody></table>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/" rel="prev" title="【JavaWeb】JSP">
+      <i class="fa fa-chevron-left"></i> 【JavaWeb】JSP
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/01/10/%E3%80%90JavaWeb%E3%80%91JSTL%E6%A0%87%E7%AD%BE%E5%BA%93/" rel="next" title="【JavaWeb】JSTL标签库">
+      【JavaWeb】JSTL标签库 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-EL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 EL表达式介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-EL%E8%A1%A8%E8%BE%BE%E5%BC%8F%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="nav-text">2 EL表达式作用域</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E5%B8%B8%E7%94%A8%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%8F%96%E5%80%BC"><span class="nav-text">3 常用数据结构取值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E8%BF%90%E7%AE%97"><span class="nav-text">4 运算</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97"><span class="nav-text">4.1 关系运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97"><span class="nav-text">4.2 逻辑运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97"><span class="nav-text">4.3 算术运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-empty%E8%BF%90%E7%AE%97"><span class="nav-text">4.4 empty运算</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-%E4%B8%89%E5%85%83%E8%BF%90%E7%AE%97"><span class="nav-text">4.5 三元运算</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-11%E4%B8%AA%E9%9A%90%E5%90%AB%E5%AF%B9%E8%B1%A1"><span class="nav-text">5 11个隐含对象</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

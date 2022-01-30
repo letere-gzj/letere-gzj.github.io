@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="微信支付对接">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【工作技能】微信支付-native支付">
+<meta property="og:url" content="http://letere.gitee.io/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="微信支付对接">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/%E5%95%86%E6%88%B7%E7%A7%81%E9%92%A5.png">
+<meta property="article:published_time" content="2022-01-29T07:36:42.000Z">
+<meta property="article:modified_time" content="2022-01-29T07:41:23.143Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/%E5%95%86%E6%88%B7%E7%A7%81%E9%92%A5.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【工作技能】微信支付-native支付 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【工作技能】微信支付-native支付
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-01-29 15:36:42 / 修改时间：15:41:23" itemprop="dateCreated datePublished" datetime="2022-01-29T15:36:42+08:00">2022-01-29</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD/" itemprop="url" rel="index"><span itemprop="name">工作技能</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>微信支付对接</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-参数准备"><a href="#1-参数准备" class="headerlink" title="1 参数准备"></a>1 参数准备</h3><ul>
+<li>按照官方文档步骤操作：<a target="_blank" rel="noopener" href="https://pay.weixin.qq.com/wiki/doc/apiv3/open/pay/chapter2_7_1.shtml">https://pay.weixin.qq.com/wiki/doc/apiv3/open/pay/chapter2_7_1.shtml</a></li>
+</ul>
+<ul>
+<li><strong>最终需要的参数</strong>：<ul>
+<li>appid：应用id</li>
+<li>mchid：商户id</li>
+<li>mchSerialNo：证书序列号</li>
+<li>apiV3key：apiV3密钥</li>
+<li>apiclient_key.pem：商户私钥文件</li>
+</ul>
+</li>
+</ul>
+<img src="/blog/2022/01/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-native%E6%94%AF%E4%BB%98/%E5%95%86%E6%88%B7%E7%A7%81%E9%92%A5.png" class="">
+
+<hr>
+<h3 id="2-环境准备"><a href="#2-环境准备" class="headerlink" title="2 环境准备"></a>2 环境准备</h3><ul>
+<li><strong>（1）yaml文件</strong><figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">wechat:</span></span><br><span class="line">  <span class="attr">appId:</span> <span class="string">应用id</span></span><br><span class="line">  <span class="attr">mchId:</span> <span class="string">商户id</span></span><br><span class="line">  <span class="attr">mchSerialNo:</span> <span class="string">证书序列号</span></span><br><span class="line">  <span class="attr">apiV3Key:</span> <span class="string">apiV3密钥</span></span><br><span class="line">  <span class="attr">mchPrivateKeyPath:</span> <span class="string">商户私钥文件地址路径</span></span><br><span class="line">  <span class="attr">notifyUrl:</span> <span class="string">通知接受接口地址（按实际情况填写）</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（2）依赖引入</strong><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- web启动 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- yaml参数注入 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-configuration-processor<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">optional</span>&gt;</span>true<span class="tag">&lt;/<span class="name">optional</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 注解生成get、set方法 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- 微信支付SDK --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.github.wechatpay-apiv3<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>wechatpay-apache-httpclient<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>0.3.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- json处理 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.alibaba<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>fastjson<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>1.2.78<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）微信支付配置（工具）类</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="meta">@ConfigurationProperties(prefix = &quot;wechat&quot;)</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WechatConfig</span> </span>&#123;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 应用id</span></span><br><span class="line">    <span class="keyword">private</span> String appId;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 商户id</span></span><br><span class="line">    <span class="keyword">private</span> String mchId;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 证书序列号</span></span><br><span class="line">    <span class="keyword">private</span> String mchSerialNo;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// apiV3密钥</span></span><br><span class="line">    <span class="keyword">private</span> String apiV3Key;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 商户私钥文件路径</span></span><br><span class="line">    <span class="keyword">private</span> String mchPrivateKeyPath;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 通知接收地址</span></span><br><span class="line">    <span class="keyword">private</span> String notifyUrl;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取商户私钥文件</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 私钥</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PrivateKey <span class="title">getPrivateKey</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">return</span> PemUtil.loadPrivateKey(<span class="keyword">new</span> FileInputStream(<span class="keyword">this</span>.mchPrivateKeyPath));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (FileNotFoundException e) &#123;</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;私钥文件不存在&quot;</span>, e);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取签名验证器</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> privateKey 商户私钥</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> ScheduledUpdateCertificatesVerifier <span class="title">getVerifier</span><span class="params">(PrivateKey privateKey)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 私钥签名</span></span><br><span class="line">        PrivateKeySigner privateKeySigner = <span class="keyword">new</span> PrivateKeySigner(<span class="keyword">this</span>.mchSerialNo, privateKey);</span><br><span class="line">        <span class="comment">// 身份认证</span></span><br><span class="line">        WechatPay2Credentials wechatPay2Credentials = <span class="keyword">new</span> WechatPay2Credentials(<span class="keyword">this</span>.mchId, privateKeySigner);</span><br><span class="line">        <span class="comment">// 验证器</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ScheduledUpdateCertificatesVerifier(wechatPay2Credentials, <span class="keyword">this</span>.apiV3Key.getBytes(StandardCharsets.UTF_8));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 获取http请求客户端</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span></span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> CloseableHttpClient <span class="title">getHttpClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 商户私钥</span></span><br><span class="line">        PrivateKey privateKey = <span class="keyword">this</span>.getPrivateKey();</span><br><span class="line">        <span class="comment">// 验证器</span></span><br><span class="line">        ScheduledUpdateCertificatesVerifier verifier = <span class="keyword">this</span>.getVerifier(privateKey);</span><br><span class="line">        WechatPay2Validator validator = <span class="keyword">new</span> WechatPay2Validator(verifier);</span><br><span class="line">        <span class="comment">// httpClient</span></span><br><span class="line">        <span class="keyword">return</span> WechatPayHttpClientBuilder.create()</span><br><span class="line">                .withMerchant(<span class="keyword">this</span>.mchId, <span class="keyword">this</span>.mchSerialNo, privateKey)</span><br><span class="line">                .withValidator(validator)</span><br><span class="line">                .build();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h3 id="3-下单（获取qrCode）"><a href="#3-下单（获取qrCode）" class="headerlink" title="3 下单（获取qrCode）"></a>3 下单（获取qrCode）</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Autowired</span></span><br><span class="line"><span class="keyword">private</span> WechatConfig wechatConfig;</span><br><span class="line"></span><br><span class="line"><span class="meta">@GetMapping(&quot;/createOrder&quot;)</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">createOrder</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">	String orderNo = <span class="string">&quot;NO&quot;</span> + System.currentTimeMillis();</span><br><span class="line">	<span class="comment">// 封装必填参数（具体看文档：https://pay.weixin.qq.com/wiki/doc/apiv3/apis/chapter3_4_1.shtml）</span></span><br><span class="line">	Map&lt;String, Object&gt; paramsMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	paramsMap.put(<span class="string">&quot;appid&quot;</span>, wechatConfig.getAppId());</span><br><span class="line">	paramsMap.put(<span class="string">&quot;mchid&quot;</span>, wechatConfig.getMchId());</span><br><span class="line">	paramsMap.put(<span class="string">&quot;description&quot;</span>, <span class="string">&quot;下单测试&quot;</span>);</span><br><span class="line">	paramsMap.put(<span class="string">&quot;out_trade_no&quot;</span>, orderNo);</span><br><span class="line">	paramsMap.put(<span class="string">&quot;notify_url&quot;</span>, wechatConfig.getNotifyUrl());</span><br><span class="line">	Map&lt;String, Object&gt; amountMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">	amountMap.put(<span class="string">&quot;total&quot;</span>, <span class="number">1</span>);</span><br><span class="line">	paramsMap.put(<span class="string">&quot;amount&quot;</span>, amountMap);</span><br><span class="line">	<span class="comment">// 参数处理</span></span><br><span class="line">	String paramsJson = JSONObject.toJSONString(paramsMap);</span><br><span class="line">	StringEntity entity = <span class="keyword">new</span> StringEntity(paramsJson, StandardCharsets.UTF_8);</span><br><span class="line">	entity.setContentType(<span class="string">&quot;application/json&quot;</span>);</span><br><span class="line">	<span class="comment">// 请求封装</span></span><br><span class="line">	String uri = <span class="string">&quot;https://api.mch.weixin.qq.com/v3/pay/transactions/native&quot;</span>;</span><br><span class="line">	HttpPost httpPost = <span class="keyword">new</span> HttpPost(uri);</span><br><span class="line">	httpPost.setEntity(entity);</span><br><span class="line">	httpPost.setHeader(<span class="string">&quot;Accept&quot;</span>, <span class="string">&quot;application/json&quot;</span>);</span><br><span class="line">	<span class="comment">// 发送请求</span></span><br><span class="line">	CloseableHttpClient httpClient = wechatConfig.getHttpClient();</span><br><span class="line">	CloseableHttpResponse response = httpClient.execute(httpPost);</span><br><span class="line">	<span class="comment">// 处理响应</span></span><br><span class="line">	<span class="keyword">int</span> statusCode = response.getStatusLine().getStatusCode();</span><br><span class="line">	<span class="keyword">if</span> (statusCode == <span class="number">200</span>) &#123;</span><br><span class="line">		String qrCode = JSONObject.parseObject(EntityUtils.toString(response.getEntity())).getString(<span class="string">&quot;code_url&quot;</span>);</span><br><span class="line">		<span class="keyword">return</span> orderNo + <span class="string">&quot;：&quot;</span> + qrCode;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;发送失败 or 无响应数据&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>获取到的qrCode，可以返回给前端，让前端生成二维码</li>
+<li>也可以后端生成二维码【<a href="http://letere.gitee.io/blog/2021/06/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%94%9F%E6%88%90">http://letere.gitee.io/blog/2021/06/29/【工作技能】二维码生成</a></li>
+</ul>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2022/01/17/%E3%80%90JavaWeb%E3%80%91%E6%96%87%E4%BB%B6%E4%B8%8A%E4%BC%A0%E5%92%8C%E4%B8%8B%E8%BD%BD/" rel="prev" title="【JavaWeb】文件上传和下载">
+      <i class="fa fa-chevron-left"></i> 【JavaWeb】文件上传和下载
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/01/29/%E3%80%90%E6%8B%93%E5%B1%95%E3%80%91%E5%9B%BA%E6%80%81%E7%A1%AC%E7%9B%98/" rel="next" title="【拓展】固态硬盘">
+      【拓展】固态硬盘 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%8F%82%E6%95%B0%E5%87%86%E5%A4%87"><span class="nav-text">1 参数准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-text">2 环境准备</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%8B%E5%8D%95%EF%BC%88%E8%8E%B7%E5%8F%96qrCode%EF%BC%89"><span class="nav-text">3 下单（获取qrCode）</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

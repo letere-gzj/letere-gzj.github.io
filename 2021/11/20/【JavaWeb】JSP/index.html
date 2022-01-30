@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="JavaWeb关于JSP页面的学习">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【JavaWeb】JSP">
+<meta property="og:url" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="JavaWeb关于JSP页面的学习">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png">
+<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png">
+<meta property="article:published_time" content="2021-11-20T04:12:14.000Z">
+<meta property="article:modified_time" content="2022-01-16T15:03:48.173Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【JavaWeb】JSP | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【JavaWeb】JSP
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-11-20 12:12:14" itemprop="dateCreated datePublished" datetime="2021-11-20T12:12:14+08:00">2021-11-20</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-01-16 23:03:48" itemprop="dateModified" datetime="2022-01-16T23:03:48+08:00">2022-01-16</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>JavaWeb关于JSP页面的学习</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1 介绍"></a>1 介绍</h3><h4 id="1-1-基本介绍"><a href="#1-1-基本介绍" class="headerlink" title="1.1 基本介绍"></a>1.1 基本介绍</h4><ul>
+<li><strong>JSP</strong>：java server page</li>
+</ul>
+<ul>
+<li><strong>作用</strong>：代替servlet程序回传html页面数据<ul>
+<li>因为servlet程序回传html页面数据是非常繁琐的事情，开发成本和维护成本极高</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="1-2-servlet回传页面数据"><a href="#1-2-servlet回传页面数据" class="headerlink" title="1.2 servlet回传页面数据"></a>1.2 servlet回传页面数据</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// servlet</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">PrintHtmlServlet</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 动态返回页面</span></span><br><span class="line">        resp.setContentType(<span class="string">&quot;text/html; charset=UTF-8&quot;</span>);</span><br><span class="line">        PrintWriter writer = resp.getWriter();</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;!DOCTYPE html&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;html lang=\&quot;en\&quot;&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;head&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;  &lt;meta charset=\&quot;UTF-8\&quot;&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;  &lt;title&gt;Title&lt;/title&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;/head&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;body&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;  这里是要动态显示在页面的数据，html是静态页面，数据是写死的\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;/body&gt;\r\n&quot;</span>);</span><br><span class="line">        writer.write(<span class="string">&quot;&lt;/html&gt;\r\n&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">servlet</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>printHtmlServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-class</span>&gt;</span>com.letere.jsp.servlet.PrintHtmlServlet<span class="tag">&lt;/<span class="name">servlet-class</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">servlet-mapping</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">servlet-name</span>&gt;</span>printHtmlServlet<span class="tag">&lt;/<span class="name">servlet-name</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">url-pattern</span>&gt;</span>/printHtml<span class="tag">&lt;/<span class="name">url-pattern</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">servlet-mapping</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li>由此例子可知，用servlet动态返回页面数据，十分麻烦，因此引入JSP来返回动态数据页面</li>
+</ul>
+<hr>
+<h4 id="1-3-JSP本质"><a href="#1-3-JSP本质" class="headerlink" title="1.3 JSP本质"></a>1.3 JSP本质</h4><ul>
+<li><strong>JSP页面本质是一个Servlet程序</strong></li>
+</ul>
+<ul>
+<li>（1）在我们访问jsp页面时，会自动生成一个jsp的java文件，以及其编译class文件</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png" class="">
+
+
+<ul>
+<li>（2）查看源码发现<code>index_jsp.java</code>继承<code>HttpJspBase</code>，而<code>HttpJspBase</code>继承<code>HttpServlet</code></li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png" class="">
+
+
+<ul>
+<li>（3）简单查看index_jsp.java源码，跟上面演示的servlet程序写法类似</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png" class="">
+
+
+<ul>
+<li>综上所述：JSP的本质就是一个servlet程序</li>
+</ul>
+<hr>
+<h3 id="2-Page指令"><a href="#2-Page指令" class="headerlink" title="2 Page指令"></a>2 Page指令</h3><figure class="highlight jsp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;%@ page <span class="keyword">import</span>=<span class="string">&quot;java.util.*&quot;</span> %&gt;</span><br><span class="line">&lt;%@ page contentType=<span class="string">&quot;text/html;charset=UTF-8&quot;</span> </span><br><span class="line">         language=<span class="string">&quot;java&quot;</span> </span><br><span class="line">         pageEncoding=<span class="string">&quot;UTF-8&quot;</span> </span><br><span class="line">         autoFlush=<span class="string">&quot;true&quot;</span> </span><br><span class="line">         buffer=<span class="string">&quot;8kb&quot;</span> </span><br><span class="line">         errorPage=<span class="string">&quot;/errorPage.html&quot;</span> </span><br><span class="line">         isErrorPage=<span class="string">&quot;false&quot;</span> </span><br><span class="line">         session=<span class="string">&quot;true&quot;</span> </span><br><span class="line">         extends=<span class="string">&quot;java.util.List&quot;</span> %&gt;</span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>属性介绍</strong></li>
+<li><code>import</code>：跟java一样，导入包，类</li>
+<li><code>contentType</code>：jsp返回的数据类型，即源码中response.setContentType()的参数值</li>
+<li><code>language</code>：jsp翻译后的语言文件，目前只支持java</li>
+<li><code>autoFlush</code>：out输出流缓冲区满后是否自动刷新，默认true</li>
+<li><code>buffer</code>：缓冲区大小，默认8kb</li>
+<li><code>errorPage</code>：设置页面报错后跳转错误页面位置，<code>/</code>即以web目录开头的相对路径</li>
+<li><code>isErrorPage</code>：当前页面是否错误页面，默认false。true源代码多出一个Execption类</li>
+<li><code>session</code>：访问页面时，是否创建HttpSession对象，默认true</li>
+<li><code>extends</code>：生成的java文件默认继承的类，不建议修改</li>
+</ul>
+<hr>
+<h3 id="3-脚本"><a href="#3-脚本" class="headerlink" title="3 脚本"></a>3 脚本</h3><h4 id="3-1-声明脚本"><a href="#3-1-声明脚本" class="headerlink" title="3.1 声明脚本"></a>3.1 声明脚本</h4><ul>
+<li><strong>语法</strong>：<code>&lt;%! 声明的java代码 %&gt;</code></li>
+<li><strong>作用</strong>：jsp可以翻译出java定义的类属性、静态代码块，方法和内部类</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%!</span><br><span class="line">        <span class="comment">// 声明类属性</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> String name;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明静态代码块</span></span><br><span class="line">        <span class="keyword">static</span> &#123;</span><br><span class="line">            name = <span class="string">&quot;你好&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明类方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明内部类</span></span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InnerClass</span> </span>&#123;</span><br><span class="line">            <span class="keyword">public</span> String sex;</span><br><span class="line">        &#125;</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png" class="">
+
+<ul>
+<li>声明脚本会将代码填写到jsp生成的java文件中，仅做声明，不执行</li>
+</ul>
+<hr>
+<h4 id="3-2-表达式脚本"><a href="#3-2-表达式脚本" class="headerlink" title="3.2 表达式脚本"></a>3.2 表达式脚本</h4><ul>
+<li><strong>语法</strong>：<code>&lt;%=表达式%&gt;</code></li>
+<li><strong>作用</strong>：在Jsp页面上输出数据，数据可以是一个变量或对象</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%!<span class="keyword">public</span> String name = <span class="string">&quot;456&quot;</span>;%&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;%= <span class="number">123</span> %&gt;</span><br><span class="line">    &lt;%= name %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png" class="">
+
+<ul>
+<li>表达式脚本最主要的作用还是能够输出变量</li>
+<li>注意表达式脚本不能以<code>;</code>，否则翻译出的代码为<code>out.print(xxx;);</code>，在java是错误语法</li>
+</ul>
+<hr>
+<h4 id="3-3-代码脚本"><a href="#3-3-代码脚本" class="headerlink" title="3.3 代码脚本"></a>3.3 代码脚本</h4><ul>
+<li><strong>语法</strong>：<code>&lt;%可执行代码%&gt;</code></li>
+<li><strong>作用</strong>：Jsp页面刷新时，执行代码脚本中的代码</li>
+</ul>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        Integer sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">            sum += i;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(sum);</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png" class="">
+
+
+<ul>
+<li>翻译后的java代码在out.write()附近，所以当页面打印数据的时候，会调用代码脚本写的代码</li>
+<li>一个完整的Java语句，支持多个代码脚本拼接成一个完整Java语句</li>
+</ul>
+<hr>
+<h3 id="4-JSP九大内置对象"><a href="#4-JSP九大内置对象" class="headerlink" title="4 JSP九大内置对象"></a>4 JSP九大内置对象</h3><ul>
+<li><p><strong>依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- https://mvnrepository.com/artifact/javax.servlet.jsp/javax.servlet.jsp-api --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>javax.servlet.jsp<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>javax.servlet.jsp-api<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.3.3<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">scope</span>&gt;</span>provided<span class="tag">&lt;/<span class="name">scope</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>JSP翻译成Servlet的类中，内置了9个可用的对象</p>
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png" class="">
+
+<ul>
+<li><code>request</code>：请求</li>
+<li><code>response</code>：响应</li>
+<li><code>pageContext</code>：jsp上下文对象</li>
+<li><code>session</code>：HttpSession对象</li>
+<li><code>exception</code>：异常对象</li>
+<li><code>application</code>：ServletContext对象</li>
+<li><code>config</code>：ServletConfig对象</li>
+<li><code>out</code>：Jsp输出流对象</li>
+<li><code>page</code>：指向当前JSP的对象</li>
+</ul>
+<hr>
+<h3 id="5-JSP四大域对象"><a href="#5-JSP四大域对象" class="headerlink" title="5 JSP四大域对象"></a>5 JSP四大域对象</h3><ul>
+<li>在JSP九个内置对象中，有4个位域对象</li>
+<li>域对象就是像Map一样，可以存储和取出数据</li>
+</ul>
+<ul>
+<li><code>PageContextImpl pageContext</code>：范围 - 当前JSP页面内</li>
+<li><code>HttpServletRequest request</code>：范围 - 一次请求内</li>
+<li><code>HttpSession session</code>：范围 - 一次会话内（打开浏览器访问服务器 ~ 关闭浏览器 之间）</li>
+<li><code>ServletContext application</code>：范围 - 整个web工程内</li>
+</ul>
+<hr>
+<h3 id="6-输出流"><a href="#6-输出流" class="headerlink" title="6 输出流"></a>6 输出流</h3><h4 id="6-1-JSP的out和response-getWriter"><a href="#6-1-JSP的out和response-getWriter" class="headerlink" title="6.1 JSP的out和response.getWriter"></a>6.1 JSP的out和response.getWriter</h4><ul>
+<li><strong>示例1</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        out.write(<span class="string">&quot;out输出1 &lt;br/&gt;&quot;</span>);</span><br><span class="line">        out.write(<span class="string">&quot;out输出2 &lt;br/&gt;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        response.getWriter().write(<span class="string">&quot;response输出1 &lt;br/&gt;&quot;</span>);</span><br><span class="line">        response.getWriter().write(<span class="string">&quot;response输出2 &lt;br/&gt;&quot;</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png" class="">
+
+<ul>
+<li><strong>说明</strong>：原本先执行的out输出，结果在末尾输出。out和response都有各自的缓存区，jsp在向页面输出内容前，会执行<code>out.flush()</code>方法，把out缓存区的内容加入到response缓存区的末尾，然后通过response向浏览器输出数据</li>
+</ul>
+<ul>
+<li><strong>示例2</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        out.write(<span class="string">&quot;out输出1 &lt;br/&gt;&quot;</span>);</span><br><span class="line">        out.flush(); <span class="comment">// 手动将out缓存区内容加入到response缓存区</span></span><br><span class="line">        </span><br><span class="line">        out.write(<span class="string">&quot;out输出2 &lt;br/&gt;&quot;</span>);</span><br><span class="line"></span><br><span class="line">        response.getWriter().write(<span class="string">&quot;response输出1 &lt;br/&gt;&quot;</span>);</span><br><span class="line">        response.getWriter().write(<span class="string">&quot;response输出2 &lt;br/&gt;&quot;</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png" class="">
+
+<hr>
+<h4 id="6-2-out-print-和out-write"><a href="#6-2-out-print-和out-write" class="headerlink" title="6.2 out.print()和out.write()"></a>6.2 out.print()和out.write()</h4><ul>
+<li><strong>示例</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        out.write(<span class="string">&quot;这是write字符串 &lt;br/&gt;&quot;</span>);</span><br><span class="line">        out.print(<span class="string">&quot;这是print字符串 &lt;br/&gt;&quot;</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">    &lt;br/&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        out.write(<span class="number">1</span>);</span><br><span class="line">        out.write(<span class="string">&quot;&lt;br/&gt;&quot;</span>);</span><br><span class="line">        out.print(<span class="number">1</span>);</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png" class="">
+
+
+<ul>
+<li><strong>说明</strong>：print和write方法，在输出字符串时不会出现问题，而在输出数字时会出现乱码。是因为write方法会将int转成char然后再输出</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png" class="">
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png" class="">
+
+<hr>
+<h3 id="7-JSP常用标签"><a href="#7-JSP常用标签" class="headerlink" title="7 JSP常用标签"></a>7 JSP常用标签</h3><h4 id="7-1-静态包含"><a href="#7-1-静态包含" class="headerlink" title="7.1 静态包含"></a>7.1 静态包含</h4><ul>
+<li>将多个JSP共用的内容提取为一个单独的JSP页面，通过静态包含引入单独的JSP页面，模块化处理，减少维护成本</li>
+</ul>
+<ul>
+<li><strong>语法</strong>：<code>&lt;%@include file=&quot;共用的JSP页面路径&quot;%&gt;</code></li>
+</ul>
+<ul>
+<li><strong>示例</strong>：<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;%-- 主JSP页面 --%&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    以下内容为引入的内容：&lt;br/&gt;</span><br><span class="line">    &lt;%<span class="meta">@include</span> file=<span class="string">&quot;/include/sub/sub.jsp&quot;</span>%&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;%-- 次JSP页面 --%&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    这里是被引入的内容啊！</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
+
+<hr>
+<h4 id="7-2-动态包含"><a href="#7-2-动态包含" class="headerlink" title="7.2 动态包含"></a>7.2 动态包含</h4><ul>
+<li>动态包含的效果和静态包含的类似，但底层实现的逻辑不一样</li>
+</ul>
+<ul>
+<li><strong>语法</strong>：<code>&lt;jsp:include page=&quot;路径&quot;&gt;&lt;/jsp:include&gt;</code></li>
+</ul>
+<ul>
+<li><strong>示例</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- 主JSP --&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    动态包含：&lt;br/&gt;</span><br><span class="line">    &lt;jsp:include page=<span class="string">&quot;/include/sub/sub.jsp&quot;</span>&gt;</span><br><span class="line">        &lt;jsp:param name=<span class="string">&quot;myParam&quot;</span> value=<span class="string">&quot;你好啊&quot;</span>/&gt;</span><br><span class="line">    &lt;/jsp:include&gt;</span><br><span class="line">&lt;/body&gt;</span><br><span class="line"></span><br><span class="line">&lt;!-- 次JSP --&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">    这里是动态包含的内容！&lt;br/&gt;</span><br><span class="line">    这是接受到的参数：&lt;%=request.getParameter(<span class="string">&quot;myParam&quot;</span>)%&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
+
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
+
+
+<ul>
+<li><strong>动态包含特点</strong><ul>
+<li>会把包含的Jsp页面也翻译成Java代码</li>
+<li>调用方法去获取包含页面的输出信息，而不是直接将内容复制</li>
+<li>动态包含可以进行参数传递</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="7-3-请求转发"><a href="#7-3-请求转发" class="headerlink" title="7.3 请求转发"></a>7.3 请求转发</h4><ul>
+<li><strong>语法</strong>：<code>&lt;jsp:forward page=&quot;转发路径&quot;&gt;&lt;/jsp:forward&gt;</code></li>
+</ul>
+<ul>
+<li><strong>示例</strong><figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;jsp:forward page=<span class="string">&quot;/include/sub/sub.jsp&quot;</span>/&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png" class="">
+
+<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png" class="">
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2021/10/26/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%88%E5%B0%9A%E7%A1%85%E8%B0%B7%EF%BC%89/" rel="prev" title="【面试】Java高频面试题（尚硅谷）">
+      <i class="fa fa-chevron-left"></i> 【面试】Java高频面试题（尚硅谷）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="【JavaWeb】EL表达式">
+      【JavaWeb】EL表达式 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%8B%E7%BB%8D"><span class="nav-text">1 介绍</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E5%9F%BA%E6%9C%AC%E4%BB%8B%E7%BB%8D"><span class="nav-text">1.1 基本介绍</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-servlet%E5%9B%9E%E4%BC%A0%E9%A1%B5%E9%9D%A2%E6%95%B0%E6%8D%AE"><span class="nav-text">1.2 servlet回传页面数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-JSP%E6%9C%AC%E8%B4%A8"><span class="nav-text">1.3 JSP本质</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Page%E6%8C%87%E4%BB%A4"><span class="nav-text">2 Page指令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%84%9A%E6%9C%AC"><span class="nav-text">3 脚本</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC"><span class="nav-text">3.1 声明脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC"><span class="nav-text">3.2 表达式脚本</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC"><span class="nav-text">3.3 代码脚本</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-JSP%E4%B9%9D%E5%A4%A7%E5%86%85%E7%BD%AE%E5%AF%B9%E8%B1%A1"><span class="nav-text">4 JSP九大内置对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-JSP%E5%9B%9B%E5%A4%A7%E5%9F%9F%E5%AF%B9%E8%B1%A1"><span class="nav-text">5 JSP四大域对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E8%BE%93%E5%87%BA%E6%B5%81"><span class="nav-text">6 输出流</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#6-1-JSP%E7%9A%84out%E5%92%8Cresponse-getWriter"><span class="nav-text">6.1 JSP的out和response.getWriter</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#6-2-out-print-%E5%92%8Cout-write"><span class="nav-text">6.2 out.print()和out.write()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-JSP%E5%B8%B8%E7%94%A8%E6%A0%87%E7%AD%BE"><span class="nav-text">7 JSP常用标签</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#7-1-%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB"><span class="nav-text">7.1 静态包含</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-2-%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB"><span class="nav-text">7.2 动态包含</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#7-3-%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91"><span class="nav-text">7.3 请求转发</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">199</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">30</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
