@@ -5,45 +5,45 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="关于rabbitmq的介绍和安装">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【RabbitMQ】RabbitMQ入门">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="关于rabbitmq的介绍和安装">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/MQ%E6%A6%82%E5%BF%B5.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/erlang%E4%B8%8B%E8%BD%BD.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E4%B8%8B%E8%BD%BD.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/%E5%AE%89%E8%A3%85%E6%8A%A5%E9%94%99.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/ip%E5%9C%B0%E5%9D%80.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/MQ%E6%A6%82%E5%BF%B5.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/erlang%E4%B8%8B%E8%BD%BD.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E4%B8%8B%E8%BD%BD.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/%E5%AE%89%E8%A3%85%E6%8A%A5%E9%94%99.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/ip%E5%9C%B0%E5%9D%80.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web2.png">
 <meta property="article:published_time" content="2021-07-31T04:07:08.000Z">
 <meta property="article:modified_time" content="2021-07-31T08:21:03.486Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/">
 
 
 <script id="page-configurations">
@@ -105,7 +105,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -125,12 +125,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -161,10 +161,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -193,7 +193,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
+                  <a href="/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
                 </span>
             </span>
 
@@ -259,7 +259,7 @@
 <li>RabbitMQ是基于<code>AMOP</code>协议，erlang语言开发，是部署最广泛的开源消息中间件，是最受欢迎的开源消息中间件之一</li>
 <li><code>AMOP</code>（advanced message queuing protocol），模型如下：</li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/AMOP%E6%A8%A1%E5%9E%8B.png" class="">
 
 
 <ul>
@@ -283,7 +283,7 @@
 <li><strong>（4）消费者</strong></li>
 <li>处理消息的程序</li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/MQ%E6%A6%82%E5%BF%B5.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/MQ%E6%A6%82%E5%BF%B5.png" class="">
 
 <h4 id="2-3-下载和安装"><a href="#2-3-下载和安装" class="headerlink" title="2.3 下载和安装"></a>2.3 下载和安装</h4><p><strong>本次安装使用虚拟机CentOS8.3.2011</strong></p>
 <ul>
@@ -291,9 +291,9 @@
 <li><strong>erlang下载地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/rabbitmq/erlang-rpm/releases/tag">https://github.com/rabbitmq/erlang-rpm/releases/tag</a> （github外网，可能打不开）</li>
 <li><strong>RabbitMQ下载地址</strong>：<a target="_blank" rel="noopener" href="https://rabbitmq.com/install-rpm.html#downloads">https://rabbitmq.com/install-rpm.html#downloads</a></li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/erlang%E4%B8%8B%E8%BD%BD.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/erlang%E4%B8%8B%E8%BD%BD.png" class="">
 
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E4%B8%8B%E8%BD%BD.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E4%B8%8B%E8%BD%BD.png" class="">
 
 
 <ul>
@@ -305,7 +305,7 @@
 <ul>
 <li><strong>（3）报错解决</strong></li>
 <li>安装rabbitmq报错<ul>
-<li>命令<code>vim /usr/lib/tmpfiles.d/rabbitmq-server.conf</code>，将<code>/var/run/rabbitmq</code>改为<code>/run/rabbitmq</code><img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/%E5%AE%89%E8%A3%85%E6%8A%A5%E9%94%99.png" class="">
+<li>命令<code>vim /usr/lib/tmpfiles.d/rabbitmq-server.conf</code>，将<code>/var/run/rabbitmq</code>改为<code>/run/rabbitmq</code><img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/%E5%AE%89%E8%A3%85%E6%8A%A5%E9%94%99.png" class="">
 
 
 </li>
@@ -317,9 +317,9 @@
 
 </li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8.png" class="">
 
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq%E5%90%AF%E5%8A%A8%E7%8A%B6%E6%80%81.png" class="">
 
 <h4 id="2-4-rabbitmq-web管理"><a href="#2-4-rabbitmq-web管理" class="headerlink" title="2.4 rabbitmq-web管理"></a>2.4 rabbitmq-web管理</h4><ul>
 <li><strong>（1）插件安装</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># web插件安装</span></span><br><span class="line">rabbitmq-plugins <span class="built_in">enable</span> rabbitmq_management</span><br></pre></td></tr></table></figure>
@@ -346,7 +346,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/ip%E5%9C%B0%E5%9D%80.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/ip%E5%9C%B0%E5%9D%80.png" class="">
 
 
 <ul>
@@ -355,9 +355,9 @@
 <li>非虚拟机浏览器输入地址：<code>ip地址:15672</code></li>
 <li>默认用户名、密码都为<code>guest</code></li>
 </ul>
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web.png" class="">
 
-<img src="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web2.png" class="">
+<img src="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%85%A5%E9%97%A8/rabbitmq-web2.png" class="">
 
     </div>
 
@@ -373,11 +373,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/07/26/%E3%80%90Nginx%E3%80%91Nginx%E5%8E%9F%E7%90%86/" rel="prev" title="【Nginx】Nginx原理">
+    <a href="/2021/07/26/%E3%80%90Nginx%E3%80%91Nginx%E5%8E%9F%E7%90%86/" rel="prev" title="【Nginx】Nginx原理">
       <i class="fa fa-chevron-left"></i> 【Nginx】Nginx原理
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/" rel="next" title="【RabbitMQ】RabbitMQ快速开始">
+    <a href="/2021/07/31/%E3%80%90RabbitMQ%E3%80%91RabbitMQ%E5%BF%AB%E9%80%9F%E5%BC%80%E5%A7%8B/" rel="next" title="【RabbitMQ】RabbitMQ快速开始">
       【RabbitMQ】RabbitMQ快速开始 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -445,21 +445,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -519,19 +519,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

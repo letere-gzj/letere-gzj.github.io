@@ -5,51 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="这是关于我搭建博客过程，以及遇到问题的解决">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【教程】手动搭建hexo博客">
-<meta property="og:url" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="这是关于我搭建博客过程，以及遇到问题的解决">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Git.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/cmd.jpg">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_create.jpg">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step1.jpg">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/hexo.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse3.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/login.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/password.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/fix_css.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_update.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Git.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/cmd.jpg">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_create.jpg">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step1.jpg">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/hexo.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse3.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/login.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/password.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/fix_css.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_update.png">
 <meta property="article:published_time" content="2020-08-13T16:11:42.000Z">
 <meta property="article:modified_time" content="2020-09-18T04:03:20.981Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/">
+<link rel="canonical" href="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/">
 
 
 <script id="page-configurations">
@@ -111,7 +111,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -131,12 +131,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -167,10 +167,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -205,7 +205,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                  <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
                 </span>
             </span>
 
@@ -224,21 +224,21 @@
 <a id="more"></a>
 <h1 id="搭建hexo博客"><a href="#搭建hexo博客" class="headerlink" title="搭建hexo博客"></a>搭建hexo博客</h1><h2 id="一、环境准备"><a href="#一、环境准备" class="headerlink" title="一、环境准备"></a>一、环境准备</h2><h3 id="1-1-安装Nodejs"><a href="#1-1-安装Nodejs" class="headerlink" title="1.1 安装Nodejs"></a>1.1 安装Nodejs</h3><ul>
 <li>‘Nodejs’官网：<a target="_blank" rel="noopener" href="https://nodejs.org/zh-cn/">https://nodejs.org/zh-cn/</a> （免费）<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Nodejs.png" class=""></li>
 <li>默认安装即可</li>
 </ul>
 </li>
 </ul>
 <h3 id="1-2-安装Git"><a href="#1-2-安装Git" class="headerlink" title="1.2 安装Git"></a>1.2 安装Git</h3><ul>
 <li>‘Git’官网：<a target="_blank" rel="noopener" href="https://git-scm.com/">https://git-scm.com/</a> （免费）<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Git.png" class="" width="600" height="400"></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/Git.png" class="" width="600" height="400"></li>
 <li>默认安装即可</li>
 </ul>
 </li>
 </ul>
 <h3 id="1-3-安装Hexo"><a href="#1-3-安装Hexo" class="headerlink" title="1.3 安装Hexo"></a>1.3 安装Hexo</h3><p><strong>（1）启动命令行cmd（管理员模式），检查环境</strong>  </p>
 <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/cmd.jpg" class="">  
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/cmd.jpg" class="">  
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">node</span> <span class="title">-v</span>  <span class="comment">#检测node 版本</span></span><br><span class="line"></span><br><span class="line">npm -v  <span class="comment">#检测npm 版本</span></span><br><span class="line"></span><br><span class="line">git <span class="keyword">version</span>  检测Git 版本</span><br></pre></td></tr></table></figure>
 &emsp;&emsp;显示版本号证明安装成功</li>
 </ul>
@@ -250,7 +250,7 @@
 <hr>
 <h2 id="二、搭建博客"><a href="#二、搭建博客" class="headerlink" title="二、搭建博客"></a>二、搭建博客</h2><h3 id="2-1-创建项目文件夹（blog）"><a href="#2-1-创建项目文件夹（blog）" class="headerlink" title="2.1 创建项目文件夹（blog）"></a>2.1 创建项目文件夹（blog）</h3><ul>
 <li>博客的所有资源都在里面，博客创建有问题，把文件夹删了重来就是了<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_create.jpg" class="">  
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_create.jpg" class="">  
 
 </li>
 </ul>
@@ -273,14 +273,14 @@
 <li><p>hexo整体框架：<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-starter">https://github.com/hexojs/hexo-starter</a>  </p>
 <ul>
 <li>解压内容放在/blog文件夹下  </li>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step1.jpg" class="">
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step1.jpg" class="">
 </li>
 </ul>
 </li>
 <li><p>hexo默认主题landspace：<a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo-theme-landscape">https://github.com/hexojs/hexo-theme-landscape</a>  </p>
 <ul>
 <li>解压内容放在./blog/theme/landspace文件夹下</li>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step2.png" class="">
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/blog_step2.png" class="">
 
 </li>
 </ul>
@@ -294,7 +294,7 @@
 
 <ul>
 <li>浏览器输入<a target="_blank" rel="noopener" href="http://localhost:4000/">http://localhost:4000</a>打开本地博客  <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/hexo.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/hexo.png" class=""></li>
 <li>见到这画面说明搭建成功</li>
 </ul>
 </li>
@@ -303,19 +303,19 @@
 <h2 id="三、部署博客"><a href="#三、部署博客" class="headerlink" title="三、部署博客"></a>三、部署博客</h2><h3 id="3-1-注册gitee，并登陆"><a href="#3-1-注册gitee，并登陆" class="headerlink" title="3.1 注册gitee，并登陆"></a>3.1 注册gitee，并登陆</h3><p>Gitee官网：<a target="_blank" rel="noopener" href="https://gitee.com/">https://gitee.com</a></p>
 <h3 id="3-2-创建仓库"><a href="#3-2-创建仓库" class="headerlink" title="3.2 创建仓库"></a>3.2 创建仓库</h3><p><strong>(1)新建仓库</strong>    </p>
 <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse.png" class="">  
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse.png" class="">  
 
 </li>
 </ul>
 <p><strong>(2)参数设置</strong>    </p>
 <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse2.png" class="">  
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse2.png" class="">  
 
 </li>
 </ul>
 <p><strong>(3)记住/复制仓库地址</strong>    </p>
 <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse3.png" class="">  
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/create_warehouse3.png" class="">  
 
 </li>
 </ul>
@@ -334,11 +334,11 @@
 <figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">hexo</span> d  <span class="comment">#上传文件到仓</span></span><br></pre></td></tr></table></figure>
 <ul>
 <li>第一次上传会出现gitee的登录验证，输入gitee账号、密码即可  <ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/login.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/login.png" class=""></li>
 </ul>
 </li>
 <li>若账号密码输错，可以在’控制面板\用户帐户\凭据管理器’进行修改<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/password.png" class=""> 
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/password.png" class=""> 
 
 </li>
 </ul>
@@ -347,11 +347,11 @@
 <p><strong>（2）开启服务</strong>  </p>
 <ul>
 <li>回到仓库，发现多了很多东西，这时可以去“服务”—&gt;“Gitee Pages”<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open1.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open1.png" class=""></li>
 </ul>
 </li>
 <li>点击启动，会生成你博客的地址，这时博客已经部署到网络上了<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open2.png" class="">
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_open2.png" class="">
 
 </li>
 </ul>
@@ -360,7 +360,7 @@
 <p><strong>（3）重新修改__config.yml</strong>  </p>
 <ul>
 <li>打开博客发现与预想的不一样，缺少了字体样式<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/fix_css.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/fix_css.png" class=""></li>
 </ul>
 </li>
 <li>重新修改_config.yml，找到以下内容进行修改<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"># URL</span><br><span class="line">## <span class="keyword">If</span> your site <span class="keyword">is</span> put <span class="keyword">in</span> a subdirectory, <span class="keyword">set</span> url <span class="keyword">as</span> <span class="string">&#x27;http://yoursite.com/child&#x27;</span> <span class="keyword">and</span> root <span class="keyword">as</span> <span class="string">&#x27;/child/&#x27;</span></span><br><span class="line"></span><br><span class="line">url: http:<span class="comment">//letere.gitee.io/myblog  #博客网址</span></span><br><span class="line">root: /myblog/ #博客网址最后一小部分</span><br><span class="line"></span><br><span class="line">permalink: :year/:month/:day/:title/</span><br><span class="line">permalink_defaults:</span><br><span class="line">pretty_urls:</span><br><span class="line">  trailing_index: <span class="keyword">true</span> # <span class="keyword">Set</span> <span class="keyword">to</span> <span class="keyword">false</span> <span class="keyword">to</span> <span class="keyword">remove</span> trailing <span class="string">&#x27;index.html&#x27;</span> <span class="keyword">from</span> permalinks</span><br><span class="line">  trailing_html: <span class="keyword">true</span> # <span class="keyword">Set</span> <span class="keyword">to</span> <span class="keyword">false</span> <span class="keyword">to</span> <span class="keyword">remove</span> trailing <span class="string">&#x27;.html&#x27;</span> <span class="keyword">from</span> permalinks</span><br></pre></td></tr></table></figure></li>
@@ -369,7 +369,7 @@
 <ul>
 <li>在blog文件夹内cmd敲以下命令<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="attribute">hexo</span> clean  <span class="comment">#清空生成的资源</span></span><br><span class="line"></span><br><span class="line">hexo g  <span class="comment">#生成资源</span></span><br><span class="line"></span><br><span class="line">hexo d  <span class="comment">#上传到仓库</span></span><br></pre></td></tr></table></figure></li>
 <li>会到仓库Gitee pages上，点击更新<ul>
-<li><img src="/blog/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_update.png" class=""></li>
+<li><img src="/2020/08/14/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E6%89%8B%E5%8A%A8%E6%90%AD%E5%BB%BAhexo%E5%8D%9A%E5%AE%A2/page_update.png" class=""></li>
 <li>点进博客，恢复正常</li>
 </ul>
 </li>
@@ -390,7 +390,7 @@
     <div class="post-nav">
       <div class="post-nav-item"></div>
       <div class="post-nav-item">
-    <a href="/blog/2020/09/05/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="next" title="【Java基础】异常处理">
+    <a href="/2020/09/05/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="next" title="【Java基础】异常处理">
       【Java基础】异常处理 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -458,21 +458,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -532,19 +532,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

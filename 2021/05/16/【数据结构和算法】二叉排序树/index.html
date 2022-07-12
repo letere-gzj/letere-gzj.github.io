@@ -5,43 +5,43 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="数据结构之二叉排序树的介绍和代码实现">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【数据结构和算法】二叉排序树">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="数据结构之二叉排序树的介绍和代码实现">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E7%BB%93%E6%9E%9C.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B92.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B93.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A41.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A42.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E7%BB%93%E6%9E%9C.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B92.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B93.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A41.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A42.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E7%BB%93%E6%9E%9C.png">
 <meta property="article:published_time" content="2021-05-16T08:18:19.000Z">
 <meta property="article:modified_time" content="2021-05-18T02:10:34.551Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/">
 
 
 <script id="page-configurations">
@@ -103,7 +103,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -123,12 +123,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -159,10 +159,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -197,7 +197,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
+                  <a href="/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95/" itemprop="url" rel="index"><span itemprop="name">数据结构和算法</span></a>
                 </span>
             </span>
 
@@ -219,7 +219,7 @@
 <h3 id="1-二叉排序树"><a href="#1-二叉排序树" class="headerlink" title="1 二叉排序树"></a>1 二叉排序树</h3><h4 id="1-1-介绍"><a href="#1-1-介绍" class="headerlink" title="1.1 介绍"></a>1.1 介绍</h4><blockquote>
 <p><strong>二叉排序树：</strong> BST（Binary Sort(Search) Tree），对于二叉排序树的任何一个非叶子节点，要求左子节点的值比当前节点的值小，右子节点的值比当前节点的值大，若拥有相同值，则随意放左子节点或右子节点</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91.png" class="">
 
 
 <blockquote>
@@ -236,7 +236,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E7%BB%93%E6%9E%9C.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E7%BB%93%E6%9E%9C.png" class="">
 
 <hr>
 <h3 id="2-二叉排序树-删除"><a href="#2-二叉排序树-删除" class="headerlink" title="2 二叉排序树-删除"></a>2 二叉排序树-删除</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><blockquote>
@@ -245,19 +245,19 @@
 <h4 id="2-2-删除基本思路"><a href="#2-2-删除基本思路" class="headerlink" title="2.2 删除基本思路"></a>2.2 删除基本思路</h4><blockquote>
 <p><strong>（1）删除叶子节点</strong><br>找到该叶子节点的父节点，将其父节点的左/右子节点赋值为null</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B9.png" class="">
 
 
 <blockquote>
 <p><strong>（2）删除只有一个子节点的节点</strong><br>找到该删除节点的父节点，将其父节点的对应的删除子节点 = 该删除节点的唯一子节点</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B92.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B92.png" class="">
 
 
 <blockquote>
 <p><strong>（3）删除拥有两个子节点的节点</strong><br>找删除的节点的<code>左子树中最大的值</code> / <code>右子树中最小的值</code>，记录最小/最大值，再对该最小/最大值节点进行删除，将要删除的节点的值修改为记录的最小/大值</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B93.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E8%8A%82%E7%82%B93.png" class="">
 
 <h4 id="2-3-根节点特殊处理"><a href="#2-3-根节点特殊处理" class="headerlink" title="2.3 根节点特殊处理"></a>2.3 根节点特殊处理</h4><ul>
 <li>上面的思路中删除叶子节点，以及删除只有一个子节点的节点都利用了<strong>目标节点的父节点</strong>，如果目标节点为<strong>根节点，那其父节点为null</strong>，会出现空指针异常，需要特殊处理</li>
@@ -265,13 +265,13 @@
 <blockquote>
 <p><strong>（1）删除的根节点为叶子节点</strong><br>当删除的根节点为叶子节点，即整棵树只有根节点，直接将根节点设置为null即可</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A41.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A41.png" class="">
 
 
 <blockquote>
 <p><strong>（2）删除的根节点为只有一个子节点的节点</strong><br>当删除的根节点为只有一个子节点的节点，直接将根节点设置为该唯一的子节点</p>
 </blockquote>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A42.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E6%A0%B9%E8%8A%82%E7%82%B9%E5%88%A0%E9%99%A42.png" class="">
 
 <h4 id="2-4-代码"><a href="#2-4-代码" class="headerlink" title="2.4 代码"></a>2.4 代码</h4><ul>
 <li><strong>（1）代码实现【在之前写的树基础上，新增以下方法】</strong><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 删除节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value 删除值</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">delete</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//获取目标节点 和 其父节点</span></span><br><span class="line">	Map&lt;String, Node&gt; data = search(value);</span><br><span class="line">	Node parent = data.get(<span class="string">&quot;parent&quot;</span>);</span><br><span class="line">	Node target = data.get(<span class="string">&quot;target&quot;</span>);</span><br><span class="line"></span><br><span class="line">	<span class="comment">//（1）目标节点是叶子节点</span></span><br><span class="line">	<span class="keyword">if</span> (target.left == <span class="keyword">null</span> &amp;&amp; target.right == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="comment">//叶子节点为根节点</span></span><br><span class="line">		<span class="keyword">if</span> (parent == <span class="keyword">null</span>) &#123;</span><br><span class="line">			root = <span class="keyword">null</span>;</span><br><span class="line">			<span class="keyword">return</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//通过父节点设置子节点为null</span></span><br><span class="line">		<span class="keyword">if</span> (parent.left == target) &#123;</span><br><span class="line">			parent.left = <span class="keyword">null</span>;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			parent.right = <span class="keyword">null</span>;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//（2）目标节点拥有两个子节点</span></span><br><span class="line">	&#125;<span class="keyword">else</span> <span class="keyword">if</span> (target.left != <span class="keyword">null</span> &amp;&amp; target.right != <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="comment">//删除右子树最小值节点，并获取返回值</span></span><br><span class="line">		<span class="keyword">int</span> smallest = delRightSmallest(target.right);</span><br><span class="line">		target.value = smallest;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//（3）目标节点只有一个子节点</span></span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//获取目标节点子节点</span></span><br><span class="line">		Node temp;</span><br><span class="line">		<span class="keyword">if</span>(target.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">			<span class="comment">//目标节点为根节点</span></span><br><span class="line">			<span class="keyword">if</span> (parent == <span class="keyword">null</span>) &#123;</span><br><span class="line">				root = target.left;</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			temp = target.left;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="comment">//目标节点为根节点</span></span><br><span class="line">			<span class="keyword">if</span> (parent == <span class="keyword">null</span>) &#123;</span><br><span class="line">				root = target.right;</span><br><span class="line">				<span class="keyword">return</span>;</span><br><span class="line">			&#125;</span><br><span class="line">			temp = target.right;</span><br><span class="line">		&#125;</span><br><span class="line"></span><br><span class="line">		<span class="comment">//父节点指向目标节点的子节点</span></span><br><span class="line">		<span class="keyword">if</span> (parent.left == target) &#123;</span><br><span class="line">			parent.left = temp;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			parent.right = temp;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 查找目标节点和其父节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value 目标节点值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Node</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Map&lt;String, Node&gt; <span class="title">search</span><span class="params">(<span class="keyword">int</span> value)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">if</span> (root == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;树为空！&quot;</span>);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//目标节点为root，父节点为null</span></span><br><span class="line">	<span class="keyword">if</span> (root.value == value) &#123;</span><br><span class="line">		Map&lt;String, Node&gt; data = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">		data.put(<span class="string">&quot;parent&quot;</span>, <span class="keyword">null</span>);</span><br><span class="line">		data.put(<span class="string">&quot;target&quot;</span>, root);</span><br><span class="line">		<span class="keyword">return</span> data;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//递归寻找目标节点和其父节点</span></span><br><span class="line">	<span class="keyword">return</span> searchRecursion(value, root);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 查找目标节点和其父节点 - 递归本体</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> value 目标节点值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> Map&lt;String, Node&gt;</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> Map&lt;String, Node&gt; <span class="title">searchRecursion</span><span class="params">(<span class="keyword">int</span> value, Node node)</span> </span>&#123;</span><br><span class="line">	Node temp;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//目标值 &gt; 节点值 （向右子节点找）</span></span><br><span class="line">	<span class="keyword">if</span> (node.value &lt; value) &#123;</span><br><span class="line">		temp = node.right;</span><br><span class="line">	<span class="comment">//目标值 &lt; 节点值 （向左子节点找）</span></span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		temp = node.left;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//左/右子节点为null，删除节点不存在，抛出异常</span></span><br><span class="line">	<span class="keyword">if</span> (temp == <span class="keyword">null</span>) &#123;</span><br><span class="line">		<span class="keyword">throw</span> <span class="keyword">new</span> RuntimeException(<span class="string">&quot;该删除值不存在！&quot;</span>);</span><br><span class="line">	&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">		<span class="comment">//判断左/右子节点是否删除节点，是直接返回当前节点和目标节点（Map封装），否则递归寻找</span></span><br><span class="line">		<span class="keyword">if</span> (temp.value == value) &#123;</span><br><span class="line">			Map&lt;String, Node&gt; data = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">			data.put(<span class="string">&quot;parent&quot;</span>, node);</span><br><span class="line">			data.put(<span class="string">&quot;target&quot;</span>, temp);</span><br><span class="line">			<span class="keyword">return</span> data;</span><br><span class="line">		&#125;<span class="keyword">else</span> &#123;</span><br><span class="line">			<span class="keyword">return</span> searchRecursion(value, temp);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * 删除右子树最小节点，并返回最小值</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@param</span> node 右子树根节点</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@return</span> int</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">int</span> <span class="title">delRightSmallest</span><span class="params">(Node node)</span> </span>&#123;</span><br><span class="line">	Node temp = node;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//循环向左寻找最小值</span></span><br><span class="line">	<span class="keyword">while</span> (temp.left != <span class="keyword">null</span>) &#123;</span><br><span class="line">		temp = temp.left;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="comment">//调用写好的删除节点方法</span></span><br><span class="line">	delete(temp.value);</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> temp.value;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -284,7 +284,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E7%BB%93%E6%9E%9C.png" class="">
+<img src="/2021/05/16/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E4%BA%8C%E5%8F%89%E6%8E%92%E5%BA%8F%E6%A0%91/%E5%88%A0%E9%99%A4%E7%BB%93%E6%9E%9C.png" class="">
     </div>
 
     
@@ -299,11 +299,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/" rel="prev" title="【数据结构和算法】赫夫曼编码">
+    <a href="/2021/05/12/%E3%80%90%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%92%8C%E7%AE%97%E6%B3%95%E3%80%91%E8%B5%AB%E5%A4%AB%E6%9B%BC%E7%BC%96%E7%A0%81/" rel="prev" title="【数据结构和算法】赫夫曼编码">
       <i class="fa fa-chevron-left"></i> 【数据结构和算法】赫夫曼编码
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/05/18/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91Word%E5%A4%84%E7%90%86-FreeMarker/" rel="next" title="【工作技能】Word处理-FreeMarker">
+    <a href="/2021/05/18/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91Word%E5%A4%84%E7%90%86-FreeMarker/" rel="next" title="【工作技能】Word处理-FreeMarker">
       【工作技能】Word处理-FreeMarker <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -371,21 +371,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -445,19 +445,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

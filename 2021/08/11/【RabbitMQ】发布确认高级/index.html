@@ -5,38 +5,38 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="此篇为发布确认的知识补充，对在springboot实现发布确认，以及发布失败如何进行消息的重新发送的介绍">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【RabbitMQ】发布确认高级">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="此篇为发布确认的知识补充，对在springboot实现发布确认，以及发布失败如何进行消息的重新发送的介绍">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E6%B6%88%E6%81%AF%E5%9B%9E%E9%80%80.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E5%A4%87%E4%BB%BD%E4%BA%A4%E6%8D%A2%E6%9C%BA.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E6%B6%88%E6%81%AF%E5%9B%9E%E9%80%80.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E5%A4%87%E4%BB%BD%E4%BA%A4%E6%8D%A2%E6%9C%BA.png">
 <meta property="article:published_time" content="2021-08-11T00:53:54.000Z">
 <meta property="article:modified_time" content="2021-08-11T12:15:19.392Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/">
 
 
 <script id="page-configurations">
@@ -98,7 +98,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -118,12 +118,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -154,10 +154,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -186,7 +186,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
+                  <a href="/categories/RabbitMQ/" itemprop="url" rel="index"><span itemprop="name">RabbitMQ</span></a>
                 </span>
             </span>
 
@@ -242,7 +242,7 @@
 <h4 id="2-2-测试"><a href="#2-2-测试" class="headerlink" title="2.2 测试"></a>2.2 测试</h4><ul>
 <li>项目启动，浏览器输入地址：<code>http://localhost:8080/confirm/sendMessage?message=交换机消息发布确认</code></li>
 </ul>
-<img src="/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png" class="">
+<img src="/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E4%BA%A4%E6%8D%A2%E6%9C%BA%E6%B6%88%E6%81%AF%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4.png" class="">
 
 <hr>
 <h3 id="3-消息回退"><a href="#3-消息回退" class="headerlink" title="3 消息回退"></a>3 消息回退</h3><p>上面的发布确认能保证消息发送到交换机没有问题，但不能保证消息从交换机发送到队列没有问题，而消息回退在消息发送到队列出现问题时，会调用消息回退函数，进行处理</p>
@@ -261,7 +261,7 @@
 <h4 id="3-2-测试"><a href="#3-2-测试" class="headerlink" title="3.2 测试"></a>3.2 测试</h4><ul>
 <li>在发送消息时，修改发送消息的routingkey，来故意让消息发送不到队列中，来检测消息回退是否触发</li>
 </ul>
-<img src="/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E6%B6%88%E6%81%AF%E5%9B%9E%E9%80%80.png" class="">
+<img src="/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E6%B6%88%E6%81%AF%E5%9B%9E%E9%80%80.png" class="">
 
 <hr>
 <h3 id="4-备份交换机"><a href="#4-备份交换机" class="headerlink" title="4 备份交换机"></a>4 备份交换机</h3><p>当发送消息给队列无法接收时，除了可以设置消息回退外，还可以设置备份交换机。交换机会自动将无法接收的消息，转发到备份交换机，交给备份交换机处理。【备份交换机优先级大于消息回退】</p>
@@ -280,7 +280,7 @@
 <h4 id="4-2-测试"><a href="#4-2-测试" class="headerlink" title="4.2 测试"></a>4.2 测试</h4><ul>
 <li>还是和前面的消息回退一样，故意填写错routingKey，测试交换机是否将消息转发到备份交换机</li>
 </ul>
-<img src="/blog/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E5%A4%87%E4%BB%BD%E4%BA%A4%E6%8D%A2%E6%9C%BA.png" class="">
+<img src="/2021/08/11/%E3%80%90RabbitMQ%E3%80%91%E5%8F%91%E5%B8%83%E7%A1%AE%E8%AE%A4%E9%AB%98%E7%BA%A7/%E5%A4%87%E4%BB%BD%E4%BA%A4%E6%8D%A2%E6%9C%BA.png" class="">
 
 <hr>
 
@@ -298,11 +298,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/08/09/%E3%80%90RabbitMQ%E3%80%91%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97/" rel="prev" title="【RabbitMQ】延迟队列">
+    <a href="/2021/08/09/%E3%80%90RabbitMQ%E3%80%91%E5%BB%B6%E8%BF%9F%E9%98%9F%E5%88%97/" rel="prev" title="【RabbitMQ】延迟队列">
       <i class="fa fa-chevron-left"></i> 【RabbitMQ】延迟队列
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/08/12/%E3%80%90RabbitMQ%E3%80%91%E5%85%B6%E4%BB%96%E7%9F%A5%E8%AF%86%E7%82%B9/" rel="next" title="【RabbitMQ】其他知识点">
+    <a href="/2021/08/12/%E3%80%90RabbitMQ%E3%80%91%E5%85%B6%E4%BB%96%E7%9F%A5%E8%AF%86%E7%82%B9/" rel="next" title="【RabbitMQ】其他知识点">
       【RabbitMQ】其他知识点 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -370,21 +370,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -444,19 +444,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

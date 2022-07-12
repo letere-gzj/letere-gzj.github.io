@@ -5,60 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="简单用个实例来加深SpringBoot的使用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【SpringBoot】项目实例：员工管理系统">
-<meta property="og:url" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="简单用个实例来加深SpringBoot的使用">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png">
 <meta property="article:published_time" content="2020-11-02T13:11:41.000Z">
 <meta property="article:modified_time" content="2020-11-04T13:49:44.004Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+<link rel="canonical" href="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
 
 
 <script id="page-configurations">
@@ -120,7 +120,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -140,12 +140,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -176,10 +176,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -214,7 +214,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
+                  <a href="/categories/SpringBoot/" itemprop="url" rel="index"><span itemprop="name">SpringBoot</span></a>
                 </span>
             </span>
 
@@ -237,7 +237,7 @@
 </ul>
 <figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.projectlombok<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>lombok<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
 <p>在SpringBoot中导入lombok依赖不能使用，还要进行插件安装<br>“Settings” –&gt; “Plugins” –&gt; 搜索”lomnok” –&gt; 安装</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/installLombok.png" class="">
 <ul>
 <li>（2）Department类</li>
 </ul>
@@ -281,7 +281,7 @@
 <ul>
 <li>修改方法如下</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/indexFix.png" class="">
 
 <p>也顺便把其他页面的本地资源位置重新按照thymeleaf方式修改</p>
 <hr>
@@ -295,7 +295,7 @@
 <ul>
 <li>（3）添加网页中需要语言的参数，IDEA中有便捷方式快速添加</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/i18n-1.png" class="">
 
 <h4 id="3-2-配置信息"><a href="#3-2-配置信息" class="headerlink" title="3.2 配置信息"></a>3.2 配置信息</h4><ul>
 <li>（1）源码分析</li>
@@ -307,7 +307,7 @@
 </ul>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">messages:</span></span><br><span class="line">    <span class="attr">basename:</span> <span class="string">i18n.login</span> <span class="comment">#信息位置</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="3-3-修改主页提取信息"><a href="#3-3-修改主页提取信息" class="headerlink" title="3.3 修改主页提取信息"></a>3.3 修改主页提取信息</h4><img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png" class="">
+<h4 id="3-3-修改主页提取信息"><a href="#3-3-修改主页提取信息" class="headerlink" title="3.3 修改主页提取信息"></a>3.3 修改主页提取信息</h4><img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/language1.png" class="">
 
 <h4 id="3-4-语言切换设置"><a href="#3-4-语言切换设置" class="headerlink" title="3.4 语言切换设置"></a>3.4 语言切换设置</h4><ul>
 <li>（1）源码分析</li>
@@ -320,7 +320,7 @@
 </ul>
 </li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/localeResolver-1.png" class="">
 
 <ul>
 <li>（3）自定义localeResolver（地区分解器）</li>
@@ -332,18 +332,18 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//注入地区分解器</span></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> LocaleResolver <span class="title">localeResolver</span><span class="params">()</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> MyLocaleResolver();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png" class=""> 
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-1.png" class=""> 
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/page-2.png" class="">
 
 <hr>
-<h3 id="四、编写登录后的页面"><a href="#四、编写登录后的页面" class="headerlink" title="四、编写登录后的页面"></a>四、编写登录后的页面</h3><h4 id="4-1-编写主页"><a href="#4-1-编写主页" class="headerlink" title="4.1 编写主页"></a>4.1 编写主页</h4><img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png" class="">
+<h3 id="四、编写登录后的页面"><a href="#四、编写登录后的页面" class="headerlink" title="四、编写登录后的页面"></a>四、编写登录后的页面</h3><h4 id="4-1-编写主页"><a href="#4-1-编写主页" class="headerlink" title="4.1 编写主页"></a>4.1 编写主页</h4><img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-0.png" class="">
 
 <h4 id="4-2-编写Controller跳转"><a href="#4-2-编写Controller跳转" class="headerlink" title="4.2 编写Controller跳转"></a>4.2 编写Controller跳转</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LoginController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model model)</span></span>&#123;</span><br><span class="line">        <span class="comment">//具体的业务逻辑判端，瞎写</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;莱特雷&quot;</span>.equals(username) &amp;&amp; <span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;dashboard&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码出现错误&quot;</span>); <span class="comment">//登录失败，向前端发送消息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h4 id="4-3-隐藏账号密码"><a href="#4-3-隐藏账号密码" class="headerlink" title="4.3 隐藏账号密码"></a>4.3 隐藏账号密码</h4><ul>
 <li>（1）模拟登录出现问题</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-1.png" class="">
 
 <ul>
 <li>（2）解决问题<ul>
@@ -355,7 +355,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Controller修改</span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/login&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">login</span><span class="params">(<span class="meta">@RequestParam(&quot;username&quot;)</span> String username, <span class="meta">@RequestParam(&quot;password&quot;)</span> String password, Model modeln)</span></span>&#123;</span><br><span class="line">        <span class="comment">//具体的业务逻辑判端，瞎写</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="string">&quot;莱特雷&quot;</span>.equals(username) &amp;&amp; <span class="string">&quot;123&quot;</span>.equals(password))&#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="string">&quot;redirect:/main.html&quot;</span>; <span class="comment">//将页面跳转到/main.html（作为一个中间跳转）</span></span><br><span class="line">        &#125;</span><br><span class="line">        model.addAttribute(<span class="string">&quot;msg&quot;</span>, <span class="string">&quot;用户名或密码出现错误&quot;</span>); <span class="comment">//登录失败，向前端发送消息</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;index&quot;</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">WebMvc配置页面跳转</span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">WebMvcConfig</span> <span class="keyword">implements</span> <span class="title">WebMvcConfigurer</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//视图控制器：控制网页跳转</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">addViewControllers</span><span class="params">(ViewControllerRegistry registry)</span></span>&#123;</span><br><span class="line">        <span class="comment">//跳转到首页</span></span><br><span class="line">        registry.addViewController(<span class="string">&quot;/&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/index.html&quot;</span>).setViewName(<span class="string">&quot;index&quot;</span>);</span><br><span class="line">        registry.addViewController(<span class="string">&quot;/main.html&quot;</span>).setViewName(<span class="string">&quot;dashboard&quot;</span>);<span class="comment">//隐藏登录后的用户密码</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/login-2.png" class="">
 
 <hr>
 <h3 id="五、添加拦截器"><a href="#五、添加拦截器" class="headerlink" title="五、添加拦截器"></a>五、添加拦截器</h3><p>添加中间跳转隐藏密码出现新的问题：直接页面输入localhost:8080/main.html会绕过登录界面，此时需要配置拦截器来拦截下来</p>
@@ -382,35 +382,35 @@
 <li>由于dashboard.html 和 list.html 有大量的重复代码（顶部导航栏、侧边栏）</li>
 <li>为了方便修改，将重复代码提取，进行统一修改</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment1.png" class="">
 
 <hr>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment2.png" class="">
 
 <p>（2）修改复用代码</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/fragment3.png" class="">
 
 <h4 id="6-3-解决高亮问题"><a href="#6-3-解决高亮问题" class="headerlink" title="6.3 解决高亮问题"></a>6.3 解决高亮问题</h4><p>点击页面时，总是首先那个按钮会发亮，点击员工管理没发亮</p>
 <ul>
 <li>（1）lsit页面，main页面修改</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png" class="">\
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-main.png" class="">\
 
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/active-list.png" class="">
 
 <ul>
 <li>（2）复用代码设置高亮</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/highLight.png" class="">
 
 <h4 id="6-4-员工表单"><a href="#6-4-员工表单" class="headerlink" title="6.4 员工表单"></a>6.4 员工表单</h4><p>修改list.html页面，将后端的数据提取出来，并放在一个表单中</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/table.png" class="">
 
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/employee-sample.png" class="">
 
 <hr>
 <h3 id="七、添加员工功能"><a href="#七、添加员工功能" class="headerlink" title="七、添加员工功能"></a>七、添加员工功能</h3><h4 id="7-1-添加按钮"><a href="#7-1-添加按钮" class="headerlink" title="7.1 添加按钮"></a>7.1 添加按钮</h4><p>修改list.html页面，增加一个“添加员工”按钮，并跳转Contoller进行业务处理</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-1.png" class="">
 
 <h4 id="7-2-添加员工页面"><a href="#7-2-添加员工页面" class="headerlink" title="7.2 添加员工页面"></a>7.2 添加员工页面</h4><p>复制list.html进行修改，变成add.html页面，把表内容删除，变成表单</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">main</span> <span class="attr">role</span>=<span class="string">&quot;main&quot;</span> <span class="attr">class</span>=<span class="string">&quot;col-md-9 ml-sm-auto col-lg-10 pt-3 px-4&quot;</span>&gt;</span></span><br><span class="line">	<span class="comment">&lt;!--表单--&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">form</span> <span class="attr">th:action</span>=<span class="string">&quot;@&#123;/emp/addEmp&#125;&quot;</span> <span class="attr">method</span>=<span class="string">&quot;post&quot;</span>&gt;</span> <span class="comment">&lt;!--页面跳转--&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>LastName<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;lastName&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;莱特雷&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Email<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;email&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;letere.com&quot;</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Gender<span class="tag">&lt;/<span class="name">label</span>&gt;</span><span class="tag">&lt;<span class="name">br</span>/&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-check form-check-inline&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;form-check-input&quot;</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">name</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;0&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">&quot;form-check-label&quot;</span>&gt;</span>男<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-check form-check-inline&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">input</span> <span class="attr">class</span>=<span class="string">&quot;form-check-input&quot;</span> <span class="attr">type</span>=<span class="string">&quot;radio&quot;</span> <span class="attr">name</span>=<span class="string">&quot;gender&quot;</span> <span class="attr">value</span>=<span class="string">&quot;1&quot;</span>&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">label</span> <span class="attr">class</span>=<span class="string">&quot;form-check-label&quot;</span>&gt;</span>女<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Department<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">select</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span> <span class="attr">name</span>=<span class="string">&quot;department.id&quot;</span>&gt;</span></span><br><span class="line">				<span class="comment">&lt;!--遍历departments集合，并添加value参数，来保证传递会后端的是部门ID--&gt;</span></span><br><span class="line">				<span class="tag">&lt;<span class="name">option</span> <span class="attr">th:each</span>=<span class="string">&quot;dpet:$&#123;departments&#125;&quot;</span> <span class="attr">th:text</span>=<span class="string">&quot;$&#123;dpet.getDepartmentName()&#125;&quot;</span> <span class="attr">th:value</span>=<span class="string">&quot;$&#123;dpet.getId()&#125;&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">option</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;/<span class="name">select</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">div</span> <span class="attr">class</span>=<span class="string">&quot;form-group&quot;</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">label</span>&gt;</span>Date<span class="tag">&lt;/<span class="name">label</span>&gt;</span></span><br><span class="line">			<span class="tag">&lt;<span class="name">input</span> <span class="attr">type</span>=<span class="string">&quot;text&quot;</span> <span class="attr">name</span>=<span class="string">&quot;date&quot;</span> <span class="attr">class</span>=<span class="string">&quot;form-control&quot;</span> <span class="attr">placeholder</span>=<span class="string">&quot;2020-12-01&quot;</span>&gt;</span></span><br><span class="line">			<span class="comment">&lt;!--注意日期格式为SpringBoot配置文件中设置，若没有设置，默认为yy/MM/dd --&gt;</span></span><br><span class="line">		<span class="tag">&lt;/<span class="name">div</span>&gt;</span></span><br><span class="line">		<span class="tag">&lt;<span class="name">button</span> <span class="attr">type</span>=<span class="string">&quot;submit&quot;</span> <span class="attr">class</span>=<span class="string">&quot;btn btn-sm btn-primary&quot;</span>&gt;</span>添加<span class="tag">&lt;/<span class="name">button</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;/<span class="name">form</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">main</span>&gt;</span></span><br></pre></td></tr></table></figure>
@@ -420,26 +420,26 @@
 <ul>
 <li>效果图</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/addEmployee-2.png" class="">
 
 <hr>
 <h3 id="八、修改员工功能"><a href="#八、修改员工功能" class="headerlink" title="八、修改员工功能"></a>八、修改员工功能</h3><h4 id="8-1-修改按钮"><a href="#8-1-修改按钮" class="headerlink" title="8.1 修改按钮"></a>8.1 修改按钮</h4><p>修改list.html，添加一个修改员工按钮</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-1.png" class="">
 
 <ul>
 <li>效果图</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-2.png" class="">
 
 <h4 id="8-2-创建修改页面"><a href="#8-2-创建修改页面" class="headerlink" title="8.2 创建修改页面"></a>8.2 创建修改页面</h4><p>复制add.html进行修改</p>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-3.png" class="">
 
 <h4 id="8-3-Controller创建相应业务"><a href="#8-3-Controller创建相应业务" class="headerlink" title="8.3 Controller创建相应业务"></a>8.3 Controller创建相应业务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//跳转到修改员工页面</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toUpdateEmp</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> Integer id, Model model)</span></span>&#123; <span class="comment">//接受前端传来的员工id</span></span><br><span class="line">        Employee employee = EmployeeDao.getEmployeeById(id);</span><br><span class="line">        Collection&lt;Department&gt; departments = DepartmentDao.getDepartMents();</span><br><span class="line"></span><br><span class="line">        model.addAttribute(<span class="string">&quot;emp&quot;</span>, employee);</span><br><span class="line">        model.addAttribute(<span class="string">&quot;departments&quot;</span>, departments); <span class="comment">//向前端传递员工信息作为默认值</span></span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;emp/update&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//后端接受数据，修改员工，并返回员工列表主页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/emp/updateEmp&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">updateEmp</span><span class="params">(Employee employee)</span></span>&#123;</span><br><span class="line">        EmployeeDao.addEmployee(employee, employee.getDepartment().getId());</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/emp/getEmps&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <ul>
 <li>效果图</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/updateEmployee-4.png" class="">
 
 <hr>
 <h3 id="九、删除员工功能和收尾"><a href="#九、删除员工功能和收尾" class="headerlink" title="九、删除员工功能和收尾"></a>九、删除员工功能和收尾</h3><h4 id="9-1-Controller添加删除员工业务"><a href="#9-1-Controller添加删除员工业务" class="headerlink" title="9.1 Controller添加删除员工业务"></a>9.1 Controller添加删除员工业务</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Controller</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">EmployeeController</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//删除员工并跳转回员工列表主页</span></span><br><span class="line">    <span class="meta">@RequestMapping(&quot;/delemp/&#123;id&#125;&quot;)</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">deleteEmp</span><span class="params">(<span class="meta">@PathVariable(&quot;id&quot;)</span> Integer id)</span></span>&#123;</span><br><span class="line">        EmployeeDao.delete(id);</span><br><span class="line">        <span class="keyword">return</span> <span class="string">&quot;redirect:/emp/getEmps&quot;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -450,7 +450,7 @@
 <h4 id="9-3-添加注销功能"><a href="#9-3-添加注销功能" class="headerlink" title="9.3 添加注销功能"></a>9.3 添加注销功能</h4><ul>
 <li>（1）修改commen.html页面</li>
 </ul>
-<img src="/blog/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png" class="">
+<img src="/2020/11/02/%E3%80%90SpringBoot%E3%80%91%E9%A1%B9%E7%9B%AE%E5%AE%9E%E4%BE%8B%EF%BC%9A%E5%91%98%E5%B7%A5%E7%AE%A1%E7%90%86%E7%B3%BB%E7%BB%9F/logout-1.png" class="">
 
 
 <ul>
@@ -471,11 +471,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBootWeb%E5%BC%80%E5%8F%91/" rel="prev" title="【SpringBoot】SpringBootWeb开发">
+    <a href="/2020/10/31/%E3%80%90SpringBoot%E3%80%91SpringBootWeb%E5%BC%80%E5%8F%91/" rel="prev" title="【SpringBoot】SpringBootWeb开发">
       <i class="fa fa-chevron-left"></i> 【SpringBoot】SpringBootWeb开发
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="【SpringBoot】整合数据库">
+    <a href="/2020/11/04/%E3%80%90SpringBoot%E3%80%91%E6%95%B4%E5%90%88%E6%95%B0%E6%8D%AE%E5%BA%93/" rel="next" title="【SpringBoot】整合数据库">
       【SpringBoot】整合数据库 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -543,21 +543,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -617,19 +617,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

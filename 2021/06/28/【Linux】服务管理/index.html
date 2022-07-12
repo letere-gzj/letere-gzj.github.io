@@ -5,47 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Linux关于服务如何进行管理">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Linux】服务管理">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="Linux关于服务如何进行管理">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%861.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%862.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%863.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E5%BC%80%E5%90%AFtelnet.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%951.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%952.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A71.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A72.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A73.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%861.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%862.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%863.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E5%BC%80%E5%90%AFtelnet.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%951.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%952.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A71.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A72.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A73.png">
 <meta property="article:published_time" content="2021-06-28T14:32:34.000Z">
 <meta property="article:modified_time" content="2021-06-28T15:36:30.137Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/">
 
 
 <script id="page-configurations">
@@ -107,7 +107,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -127,12 +127,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -163,10 +163,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -195,7 +195,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
                 </span>
             </span>
 
@@ -221,7 +221,7 @@
 <li>centos7以下：文件夹下 <strong>/etc/init.d/</strong> 下的文件名就是已启动的服务名</li>
 <li>centos7以上：指令 <strong>systemctl list-units –type=service</strong>查看已启动服务</li>
 </ul>
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9F%A5%E7%9C%8B%E6%9C%8D%E5%8A%A1.png" class="">
 
 <h4 id="1-3-管理指令"><a href="#1-3-管理指令" class="headerlink" title="1.3 管理指令"></a>1.3 管理指令</h4><ul>
 <li><strong>（1）Centos7.0前</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">service (服务名) start : 启动服务</span><br><span class="line">service (服务名) stop : 关闭服务</span><br><span class="line">service (服务名) restart : 重启服务</span><br><span class="line">service (服务名) reload : 重载服务</span><br><span class="line">service (服务名) status : 服务状态</span><br></pre></td></tr></table></figure>
@@ -234,11 +234,11 @@
 
 </li>
 </ul>
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%861.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%861.png" class="">
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%862.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%862.png" class="">
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%863.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%863.png" class="">
 
 <h4 id="1-4-自启动设置"><a href="#1-4-自启动设置" class="headerlink" title="1.4 自启动设置"></a>1.4 自启动设置</h4><ul>
 <li><p><strong>Centos7以前</strong></p>
@@ -249,33 +249,33 @@
 
 </li>
 </ul>
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF1.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF1.png" class="">
 
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF2.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E8%87%AA%E5%90%AF2.png" class="">
 
 <hr>
 <h3 id="2-端口测试"><a href="#2-端口测试" class="headerlink" title="2 端口测试"></a>2 端口测试</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><ul>
 <li>window自带的一个指令 <strong>telnet</strong> 来测试某服务的端口是否处于监听状态（启动状态）</li>
 <li>格式：<code>telnet ip地址 端口号</code></li>
 </ul>
-<h4 id="2-2-开启方法"><a href="#2-2-开启方法" class="headerlink" title="2.2 开启方法"></a>2.2 开启方法</h4><img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E5%BC%80%E5%90%AFtelnet.png" class="">
+<h4 id="2-2-开启方法"><a href="#2-2-开启方法" class="headerlink" title="2.2 开启方法"></a>2.2 开启方法</h4><img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E5%BC%80%E5%90%AFtelnet.png" class="">
 
 <h4 id="2-3-测试"><a href="#2-3-测试" class="headerlink" title="2.3 测试"></a>2.3 测试</h4><ul>
 <li>测试sshd端口22</li>
 </ul>
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%951.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%951.png" class="">
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%952.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/telnet%E6%B5%8B%E8%AF%952.png" class="">
 
 <hr>
 <h3 id="3-服务监控"><a href="#3-服务监控" class="headerlink" title="3 服务监控"></a>3 服务监控</h3><h4 id="3-1-指令"><a href="#3-1-指令" class="headerlink" title="3.1 指令"></a>3.1 指令</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">netstat : 监控服务（默认监控连接中的服务）</span><br><span class="line">netstat -a : 监控所有服务（包含监听中）</span><br><span class="line">netstat -n : 不解析服务名</span><br><span class="line">netstat -p : 显示服务的PID</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A71.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A71.png" class="">
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A72.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A72.png" class="">
 
-<img src="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A73.png" class="">
+<img src="/2021/06/28/%E3%80%90Linux%E3%80%91%E6%9C%8D%E5%8A%A1%E7%AE%A1%E7%90%86/%E6%9C%8D%E5%8A%A1%E7%9B%91%E6%8E%A73.png" class="">
 
     </div>
 
@@ -291,11 +291,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/06/28/%E3%80%90Linux%E3%80%91%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="prev" title="【Linux】进程管理">
+    <a href="/2021/06/28/%E3%80%90Linux%E3%80%91%E8%BF%9B%E7%A8%8B%E7%AE%A1%E7%90%86/" rel="prev" title="【Linux】进程管理">
       <i class="fa fa-chevron-left"></i> 【Linux】进程管理
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/06/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%94%9F%E6%88%90/" rel="next" title="【工作技能】二维码生成">
+    <a href="/2021/06/29/%E3%80%90%E5%B7%A5%E4%BD%9C%E6%8A%80%E8%83%BD%E3%80%91%E4%BA%8C%E7%BB%B4%E7%A0%81%E7%94%9F%E6%88%90/" rel="next" title="【工作技能】二维码生成">
       【工作技能】二维码生成 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -363,21 +363,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -437,19 +437,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

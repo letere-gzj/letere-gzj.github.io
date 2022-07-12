@@ -5,39 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="学习集合整理的学习笔记">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Java基础】集合">
-<meta property="og:url" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="学习集合整理的学习笔记">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Map.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Map.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet1.png">
 <meta property="article:published_time" content="2020-09-16T13:43:18.000Z">
 <meta property="article:modified_time" content="2020-09-18T04:02:14.261Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/">
+<link rel="canonical" href="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/">
 
 
 <script id="page-configurations">
@@ -99,7 +99,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -119,12 +119,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -155,10 +155,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -193,7 +193,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
+                  <a href="/categories/Java%E5%9F%BA%E7%A1%80/" itemprop="url" rel="index"><span itemprop="name">Java基础</span></a>
                 </span>
             </span>
 
@@ -247,14 +247,14 @@
 </ul>
 </li>
 </ul>
-<img src="/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png" class="">
+<img src="/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Collection.png" class="">
 <ul>
 <li><strong>Map接口：</strong> 双列数据，保存具有映射关系“key-value”的集合【类似python的字典】<ul>
 <li><strong>HashMap、LinkedHashMap、TreeMap、Hashtable、Properties</strong></li>
 </ul>
 </li>
 </ul>
-<img src="/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Map.png" class="">
+<img src="/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/Map.png" class="">
 
 <hr>
 <h4 id="1-3-Collection中定义的方法"><a href="#1-3-Collection中定义的方法" class="headerlink" title="1.3 Collection中定义的方法"></a>1.3 Collection中定义的方法</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">add(Object e)：集合里添加数据</span><br><span class="line"></span><br><span class="line">size()：返回一个<span class="keyword">int</span>型，获取集合里数据的个数</span><br><span class="line"></span><br><span class="line">addAll(Collection coll)：将一个集合的元素，全部添加到另一个集合里</span><br><span class="line"></span><br><span class="line">clear()：清空集合里的元素</span><br><span class="line"></span><br><span class="line">isEmpty()：返回一个<span class="keyword">boolean</span>型，判断当前集合是否为空</span><br><span class="line"></span><br><span class="line">contains(Object obj)：返回一个<span class="keyword">boolean</span>型，判断当前集合中是否包含obj</span><br><span class="line">注意:contains判断对象时，是调用该对象内equals方法，若此方法没重写，默认比较地址值。</span><br><span class="line"></span><br><span class="line">containsAll(Collection coll)：返回一个<span class="keyword">boolean</span>型，判断当前集合里的数据是否全部包含了另一个集合的数据</span><br><span class="line"></span><br><span class="line">remove(Object obj)：返回一个<span class="keyword">boolean</span>型，移除某个元素，移除成功<span class="keyword">true</span>，否者<span class="keyword">false</span></span><br><span class="line">	注意：remove也是调用该对象的equals方法进行匹配，相同就进行移除</span><br><span class="line"></span><br><span class="line">removeAll(Collection coll)：返回一个<span class="keyword">boolean</span>型，将一个集合里的元素从另一个集合里全部移除（差集）</span><br><span class="line"></span><br><span class="line">retainAll(Collection coll)：返回一个<span class="keyword">boolean</span>型，保留两个集合的共同数据（交集）</span><br><span class="line"></span><br><span class="line">equals(Object obj)：返回一个<span class="keyword">boolean</span>型，比较两个集合是否相同</span><br><span class="line"></span><br><span class="line">hashCode()：返回一个<span class="keyword">int</span>型，计算哈希值并返回</span><br><span class="line"></span><br><span class="line">toArray()：返回一个Object[]，将一个集合转变成数组</span><br><span class="line"></span><br><span class="line">额外拓展：</span><br><span class="line">	Arrays.asList(数组)：将一个数组变成一个集合</span><br></pre></td></tr></table></figure>
@@ -326,10 +326,10 @@
 <li>我们向HashSet中添加元素b，首先调用元素b所在类的hashCode()方法，计算元素b的哈希值</li>
 <li>此哈希值通过某种算法计算出HashSet底层数组中存放位置（即：索引位置），<strong>判断数组在此位置上是否已经有元素：</strong><ul>
 <li>如果此位置上没有其他元素，则元素b添加成功 （情况一）</li>
-<li><img src="/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet.png" class=""></li>
+<li><img src="/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet.png" class=""></li>
 <li>如果此位置上有其他元素b(或以链表形式存在多个元素)，则<strong>比较元素a与元素b的hash值</strong><ul>
 <li>如果hash值不相同，以链表的形式将元素b添加（情况二）</li>
-<li><img src="/blog/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet1.png" class=""></li>
+<li><img src="/2020/09/16/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E9%9B%86%E5%90%88/HashSet1.png" class=""></li>
 <li>如果hash只相同，进而需要<strong>调用元素b所在类的equals()方法</strong>：<ul>
 <li>equals()返回false，以链表的形式将元素b添加（情况三）</li>
 <li>equals()返回true，则元素b添加失败</li>
@@ -531,11 +531,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/" rel="prev" title="【Java基础】枚举类与注解">
+    <a href="/2020/09/15/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%9E%9A%E4%B8%BE%E7%B1%BB%E4%B8%8E%E6%B3%A8%E8%A7%A3/" rel="prev" title="【Java基础】枚举类与注解">
       <i class="fa fa-chevron-left"></i> 【Java基础】枚举类与注解
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2020/09/18/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%B3%9B%E5%9E%8B/" rel="next" title="【Java基础】泛型">
+    <a href="/2020/09/18/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E6%B3%9B%E5%9E%8B/" rel="next" title="【Java基础】泛型">
       【Java基础】泛型 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -603,21 +603,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -677,19 +677,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

@@ -5,41 +5,41 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="关于Vue+Springboot前后端分离的项目如何部署在服务器的教程">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【教程】Vue+Springboot项目部署">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="关于Vue+Springboot前后端分离的项目如何部署在服务器的教程">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%85.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%852.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%853.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/nginx%E9%85%8D%E7%BD%AE.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/%E9%98%BF%E9%87%8C%E4%BA%91%E7%AB%AF%E5%8F%A3%E5%BC%80%E6%94%BE.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%85.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%852.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%853.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/nginx%E9%85%8D%E7%BD%AE.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/%E9%98%BF%E9%87%8C%E4%BA%91%E7%AB%AF%E5%8F%A3%E5%BC%80%E6%94%BE.png">
 <meta property="article:published_time" content="2021-10-20T11:24:08.000Z">
 <meta property="article:modified_time" content="2021-10-20T16:54:45.179Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
 
 
 <script id="page-configurations">
@@ -101,7 +101,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -121,12 +121,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -157,10 +157,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -195,7 +195,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                  <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
                 </span>
             </span>
 
@@ -223,14 +223,14 @@
 </ul>
 <ul>
 <li><strong>安装nginx</strong></li>
-<li><a href="https://letere.gitee.io/blog/2021/07/19/%E3%80%90Nginx%E3%80%91Nginx%E5%85%A5%E9%97%A8">https://letere.gitee.io/blog/2021/07/19/【Nginx】Nginx入门</a></li>
+<li><a target="_blank" rel="noopener" href="https://letere.gitee.io/blog/2021/07/19/%E3%80%90Nginx%E3%80%91Nginx%E5%85%A5%E9%97%A8">https://letere.gitee.io/blog/2021/07/19/【Nginx】Nginx入门</a></li>
 </ul>
 <hr>
 <h3 id="2-项目打包"><a href="#2-项目打包" class="headerlink" title="2 项目打包"></a>2 项目打包</h3><h4 id="2-1-Vue项目"><a href="#2-1-Vue项目" class="headerlink" title="2.1 Vue项目"></a>2.1 Vue项目</h4><ul>
 <li>Vue项目在命令行（cmd）执行指令<strong>npm run build</strong>即可</li>
 <li>打包完成后会在项目中自动生成一个<strong>dist</strong>文件</li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/vue%E6%89%93%E5%8C%85.png" class="">
 
 <hr>
 <h4 id="2-2-Springboot项目"><a href="#2-2-Springboot项目" class="headerlink" title="2.2 Springboot项目"></a>2.2 Springboot项目</h4><ul>
@@ -241,13 +241,13 @@
 <li><strong>方式二：</strong></li>
 <li>通过IDEA整合的Maven打包，点开IDEA窗口最右侧的maven</li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%85.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%85.png" class="">
 
 
 <ul>
 <li>无论是方式一还是方式二，打包后的文件会在<strong>项目/target</strong>目录下</li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%852.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%852.png" class="">
 
 
 <ul>
@@ -262,7 +262,7 @@
 <li>打包后的jar如果配置文件（application.yaml 或 application.properties）不外放，修改一次参数就要重新打包，十分麻烦</li>
 <li>外放配置文件，只需将配置文件放在jar包同级目录，或创建config文件夹，将配置文件放在里面</li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%853.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/java%E6%89%93%E5%8C%853.png" class="">
 
 <hr>
 <h3 id="3-项目部署"><a href="#3-项目部署" class="headerlink" title="3 项目部署"></a>3 项目部署</h3><ul>
@@ -274,7 +274,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/nginx%E9%85%8D%E7%BD%AE.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/nginx%E9%85%8D%E7%BD%AE.png" class="">
 
 
 <ul>
@@ -287,7 +287,7 @@
 <li>若项目无法访问，查看防火墙是否开启，若开启则需要将项目端口开放，或关闭防火墙</li>
 <li>阿里云的话，liunx中的防火墙是关闭的，但在外面套了一个阿里的防火墙，需要在那里开放端口</li>
 </ul>
-<img src="/blog/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/%E9%98%BF%E9%87%8C%E4%BA%91%E7%AB%AF%E5%8F%A3%E5%BC%80%E6%94%BE.png" class="">
+<img src="/2021/10/20/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91Vue-Springboot%E9%A1%B9%E7%9B%AE%E9%83%A8%E7%BD%B2/%E9%98%BF%E9%87%8C%E4%BA%91%E7%AB%AF%E5%8F%A3%E5%BC%80%E6%94%BE.png" class="">
 
 <hr>
 <h4 id="3-2-Springboot项目部署"><a href="#3-2-Springboot项目部署" class="headerlink" title="3.2 Springboot项目部署"></a>3.2 Springboot项目部署</h4><ul>
@@ -309,11 +309,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/10/19/%E3%80%90MySQL%E3%80%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" rel="prev" title="【MySQL】常见问题解决">
+    <a href="/2021/10/19/%E3%80%90MySQL%E3%80%91%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3/" rel="prev" title="【MySQL】常见问题解决">
       <i class="fa fa-chevron-left"></i> 【MySQL】常见问题解决
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/10/24/%E3%80%90JavaWeb%E3%80%91JQuery/" rel="next" title="【JavaWeb】JQuery">
+    <a href="/2021/10/24/%E3%80%90JavaWeb%E3%80%91JQuery/" rel="next" title="【JavaWeb】JQuery">
       【JavaWeb】JQuery <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -381,21 +381,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -455,19 +455,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

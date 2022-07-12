@@ -5,60 +5,60 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Linux中利用shell来实现编程效果">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Linux】shell编程">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="Linux中利用shell来实现编程效果">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A61.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A62.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A8.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A82.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/basename%E6%BC%94%E7%A4%BA.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/dirname%E6%BC%94%E7%A4%BA.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B02.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A61.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A62.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A8.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A82.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/basename%E6%BC%94%E7%A4%BA.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/dirname%E6%BC%94%E7%A4%BA.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B02.png">
 <meta property="article:published_time" content="2021-06-30T09:26:17.000Z">
 <meta property="article:modified_time" content="2021-07-19T07:20:01.175Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/">
 
 
 <script id="page-configurations">
@@ -120,7 +120,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -140,12 +140,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -176,10 +176,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -214,7 +214,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
+                  <a href="/categories/Linux/" itemprop="url" rel="index"><span itemprop="name">Linux</span></a>
                 </span>
             </span>
 
@@ -259,7 +259,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%85%A5%E9%97%A8.png" class="">
 
 <hr>
 <h3 id="2-Shell变量"><a href="#2-Shell变量" class="headerlink" title="2 Shell变量"></a>2 Shell变量</h3><h4 id="2-1-介绍"><a href="#2-1-介绍" class="headerlink" title="2.1 介绍"></a>2.1 介绍</h4><ul>
@@ -281,9 +281,9 @@
 </ul>
 <h4 id="2-3-命令返回值用于赋值"><a href="#2-3-命令返回值用于赋值" class="headerlink" title="2.3 命令返回值用于赋值"></a>2.3 命令返回值用于赋值</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">变量=`命令`</span><br><span class="line"></span><br><span class="line">变量=$(命令)</span><br></pre></td></tr></table></figure>
 
-<h4 id="2-4-演示"><a href="#2-4-演示" class="headerlink" title="2.4 演示"></a>2.4 演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F1.png" class="">
+<h4 id="2-4-演示"><a href="#2-4-演示" class="headerlink" title="2.4 演示"></a>2.4 演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F1.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/shell%E5%8F%98%E9%87%8F2.png" class="">
 
 <hr>
 <h3 id="3-设置环境变量"><a href="#3-设置环境变量" class="headerlink" title="3 设置环境变量"></a>3 设置环境变量</h3><h4 id="3-1-介绍"><a href="#3-1-介绍" class="headerlink" title="3.1 介绍"></a>3.1 介绍</h4><ul>
@@ -294,14 +294,14 @@
 <h4 id="3-2-演示"><a href="#3-2-演示" class="headerlink" title="3.2 演示"></a>3.2 演示</h4><ul>
 <li><strong>（1）打开/etc/profile配置环境变量</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F1.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F1.png" class="">
 
 
 
 <ul>
 <li><strong>（2）echo打印一下环境变量（先要resource加载配置文件）</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F2.png" class="">
 
 <hr>
 <h3 id="4-位置参数变量"><a href="#4-位置参数变量" class="headerlink" title="4 位置参数变量"></a>4 位置参数变量</h3><h4 id="4-1-介绍"><a href="#4-1-介绍" class="headerlink" title="4.1 介绍"></a>4.1 介绍</h4><ul>
@@ -328,13 +328,13 @@
 <h4 id="4-2-演示"><a href="#4-2-演示" class="headerlink" title="4.2 演示"></a>4.2 演示</h4><ul>
 <li><strong>（1）创建test.sh</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F1.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F1.png" class="">
 
 
 <ul>
 <li><strong>（2）带参运行test.sh</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E4%BD%8D%E7%BD%AE%E5%8F%82%E6%95%B0%E5%8F%98%E9%87%8F2.png" class="">
 
 <hr>
 <h3 id="5-预定义变量"><a href="#5-预定义变量" class="headerlink" title="5 预定义变量"></a>5 预定义变量</h3><h4 id="5-1-介绍"><a href="#5-1-介绍" class="headerlink" title="5.1 介绍"></a>5.1 介绍</h4><ul>
@@ -355,20 +355,20 @@
 <h4 id="5-2-演示"><a href="#5-2-演示" class="headerlink" title="5.2 演示"></a>5.2 演示</h4><ul>
 <li><strong>（1）创建test.sh文件</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F1.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F1.png" class="">
 
 
 <ul>
 <li><strong>（2）运行test.sh文件</strong></li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E9%A2%84%E5%8F%98%E9%87%8F2.png" class="">
 
 <hr>
 <h3 id="6-运算符"><a href="#6-运算符" class="headerlink" title="6 运算符"></a>6 运算符</h3><h4 id="6-1-使用方式"><a href="#6-1-使用方式" class="headerlink" title="6.1 使用方式"></a>6.1 使用方式</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">（1）$((运算表达式))</span><br><span class="line"></span><br><span class="line">（2）$[运算表达式]</span><br><span class="line"></span><br><span class="line">（3）expr 运算表达式</span><br><span class="line"><span class="comment"># 注意：expr的算法表达式的运算符号间有空格</span></span><br><span class="line"><span class="comment"># 注意：用expr时乘法*需要用转译字符，即\*表示</span></span><br></pre></td></tr></table></figure>
 
-<h4 id="6-2-演示"><a href="#6-2-演示" class="headerlink" title="6.2 演示"></a>6.2 演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A61.png" class="">
+<h4 id="6-2-演示"><a href="#6-2-演示" class="headerlink" title="6.2 演示"></a>6.2 演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A61.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A62.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%BF%90%E7%AE%97%E7%AC%A62.png" class="">
 
 <hr>
 <h3 id="7-条件判断"><a href="#7-条件判断" class="headerlink" title="7 条件判断"></a>7 条件判断</h3><h4 id="7-1-判断条件"><a href="#7-1-判断条件" class="headerlink" title="7.1  判断条件"></a>7.1  判断条件</h4><ul>
@@ -405,9 +405,9 @@
 
 </li>
 </ul>
-<h4 id="7-3-演示"><a href="#7-3-演示" class="headerlink" title="7.3 演示"></a>7.3 演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD.png" class="">
+<h4 id="7-3-演示"><a href="#7-3-演示" class="headerlink" title="7.3 演示"></a>7.3 演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/if%E5%88%A4%E6%96%AD2.png" class="">
 
 <hr>
 <h3 id="8-分支控制"><a href="#8-分支控制" class="headerlink" title="8 分支控制"></a>8 分支控制</h3><h4 id="8-1-case分支控制语法"><a href="#8-1-case分支控制语法" class="headerlink" title="8.1 case分支控制语法"></a>8.1 case分支控制语法</h4><ul>
@@ -415,9 +415,9 @@
 
 </li>
 </ul>
-<h4 id="8-2-演示"><a href="#8-2-演示" class="headerlink" title="8.2 演示"></a>8.2 演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF.png" class="">
+<h4 id="8-2-演示"><a href="#8-2-演示" class="headerlink" title="8.2 演示"></a>8.2 演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/case%E5%88%86%E6%94%AF2.png" class="">
 
 <hr>
 <h3 id="9-循环遍历"><a href="#9-循环遍历" class="headerlink" title="9 循环遍历"></a>9 循环遍历</h3><h4 id="9-1-for循环语法"><a href="#9-1-for循环语法" class="headerlink" title="9.1 for循环语法"></a>9.1 for循环语法</h4><ul>
@@ -431,10 +431,10 @@
 
 </li>
 </ul>
-<h4 id="9-2-for循环演示"><a href="#9-2-for循环演示" class="headerlink" title="9.2 for循环演示"></a>9.2 for循环演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF.png" class="">
+<h4 id="9-2-for循环演示"><a href="#9-2-for循环演示" class="headerlink" title="9.2 for循环演示"></a>9.2 for循环演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF.png" class="">
 
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/for%E5%BE%AA%E7%8E%AF2.png" class="">
 
 
 <h4 id="9-3-while循环语法"><a href="#9-3-while循环语法" class="headerlink" title="9.3 while循环语法"></a>9.3 while循环语法</h4><ul>
@@ -442,9 +442,9 @@
 
 </li>
 </ul>
-<h4 id="9-4-while循环演示"><a href="#9-4-while循环演示" class="headerlink" title="9.4 while循环演示"></a>9.4 while循环演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF.png" class="">
+<h4 id="9-4-while循环演示"><a href="#9-4-while循环演示" class="headerlink" title="9.4 while循环演示"></a>9.4 while循环演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF2.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/while%E5%BE%AA%E7%8E%AF2.png" class="">
 
 <hr>
 <h3 id="10-读取控制台输入"><a href="#10-读取控制台输入" class="headerlink" title="10 读取控制台输入"></a>10 读取控制台输入</h3><ul>
@@ -452,9 +452,9 @@
 </ul>
 <h4 id="10-1-语法"><a href="#10-1-语法" class="headerlink" title="10.1 语法"></a>10.1 语法</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">read</span> (选项) (参数) 接收变量</span><br><span class="line"></span><br><span class="line">选项:</span><br><span class="line">    -p : 读取值时的提示符</span><br><span class="line">    -t : 读取值时的等待时间，超过等待时间，则自动往下执行</span><br></pre></td></tr></table></figure>
 
-<h4 id="10-2-演示"><a href="#10-2-演示" class="headerlink" title="10.2 演示"></a>10.2 演示</h4><img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A8.png" class="">
+<h4 id="10-2-演示"><a href="#10-2-演示" class="headerlink" title="10.2 演示"></a>10.2 演示</h4><img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A8.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A82.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/read%E4%BD%BF%E7%94%A82.png" class="">
 
 <hr>
 <h3 id="11-函数"><a href="#11-函数" class="headerlink" title="11 函数"></a>11 函数</h3><h4 id="11-1-系统函数"><a href="#11-1-系统函数" class="headerlink" title="11.1 系统函数"></a>11.1 系统函数</h4><ul>
@@ -462,7 +462,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/basename%E6%BC%94%E7%A4%BA.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/basename%E6%BC%94%E7%A4%BA.png" class="">
 
 
 <ul>
@@ -470,16 +470,16 @@
 
 </li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/dirname%E6%BC%94%E7%A4%BA.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/dirname%E6%BC%94%E7%A4%BA.png" class="">
 
 <h4 id="11-2-自定义函数"><a href="#11-2-自定义函数" class="headerlink" title="11.2 自定义函数"></a>11.2 自定义函数</h4><ul>
 <li><strong>函数自定义语法</strong><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> (函数名) () &#123;</span><br><span class="line">    代码逻辑</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment"># 注意：shell编程的函数不需要带形参</span></span><br></pre></td></tr></table></figure>
 
 </li>
 </ul>
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B0.png" class="">
 
-<img src="/blog/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B02.png" class="">
+<img src="/2021/06/30/%E3%80%90Linux%E3%80%91shell%E7%BC%96%E7%A8%8B/%E8%87%AA%E5%AE%9A%E4%B9%89%E5%87%BD%E6%95%B02.png" class="">
 
 
 
@@ -498,11 +498,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/06/29/%E3%80%90Linux%E3%80%91%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%AE%89%E8%A3%85/" rel="prev" title="【Linux】软件包安装">
+    <a href="/2021/06/29/%E3%80%90Linux%E3%80%91%E8%BD%AF%E4%BB%B6%E5%8C%85%E5%AE%89%E8%A3%85/" rel="prev" title="【Linux】软件包安装">
       <i class="fa fa-chevron-left"></i> 【Linux】软件包安装
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/07/14/%E3%80%90%E6%8B%93%E5%B1%95%E3%80%91%E5%89%8D%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92/" rel="next" title="【拓展】前后端数据交互">
+    <a href="/2021/07/14/%E3%80%90%E6%8B%93%E5%B1%95%E3%80%91%E5%89%8D%E5%90%8E%E7%AB%AF%E6%95%B0%E6%8D%AE%E4%BA%A4%E4%BA%92/" rel="next" title="【拓展】前后端数据交互">
       【拓展】前后端数据交互 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -570,21 +570,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -644,19 +644,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

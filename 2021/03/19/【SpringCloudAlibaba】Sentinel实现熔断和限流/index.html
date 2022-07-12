@@ -5,50 +5,50 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="Sentinel用于服务降级，熔断，限流，类似Hsytrix">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【SpringCloudAlibaba】Sentinel实现熔断和限流">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="Sentinel用于服务降级，熔断，限流，类似Hsytrix">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-show.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/flow-limit-rule.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/QPS-%E7%9B%B4%E6%8E%A5%E5%A4%B1%E8%B4%A5.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%85%B3%E8%81%94.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/warm-up.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%8E%92%E9%98%9F%E7%AD%89%E5%BE%85.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%85%A2%E8%B0%83%E7%94%A8%E6%AF%94%E4%BE%8B.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%AF%94%E4%BE%8B.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%95%B0.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E8%A7%84%E5%88%99%E5%8F%82%E6%95%B0.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9p1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E4%BE%8B%E5%A4%96%E9%A1%B9.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-%E7%B3%BB%E7%BB%9F%E8%A7%84%E5%88%99.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-show.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/flow-limit-rule.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/QPS-%E7%9B%B4%E6%8E%A5%E5%A4%B1%E8%B4%A5.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%85%B3%E8%81%94.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/warm-up.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%8E%92%E9%98%9F%E7%AD%89%E5%BE%85.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%85%A2%E8%B0%83%E7%94%A8%E6%AF%94%E4%BE%8B.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%AF%94%E4%BE%8B.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%95%B0.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E8%A7%84%E5%88%99%E5%8F%82%E6%95%B0.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9p1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E4%BE%8B%E5%A4%96%E9%A1%B9.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-%E7%B3%BB%E7%BB%9F%E8%A7%84%E5%88%99.png">
 <meta property="article:published_time" content="2021-03-19T03:28:23.000Z">
 <meta property="article:modified_time" content="2021-03-19T09:46:02.897Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/">
 
 
 <script id="page-configurations">
@@ -110,7 +110,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -130,12 +130,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -166,10 +166,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -198,7 +198,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/SpringCloudAlibaba/" itemprop="url" rel="index"><span itemprop="name">SpringCloudAlibaba</span></a>
+                  <a href="/categories/SpringCloudAlibaba/" itemprop="url" rel="index"><span itemprop="name">SpringCloudAlibaba</span></a>
                 </span>
             </span>
 
@@ -236,7 +236,7 @@
 <ul>
 <li>访问：<a target="_blank" rel="noopener" href="http://localhost:8080/">http://localhost:8080</a> ，进入后台界面，登录名密码都为sentinel</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-web.png" class="">
 
 <h4 id="1-3-使用"><a href="#1-3-使用" class="headerlink" title="1.3 使用"></a>1.3 使用</h4><ul>
 <li>spring官网使用教程：<a target="_blank" rel="noopener" href="https://spring-cloud-alibaba-group.github.io/github-pages/hoxton/en-us/index.html#_spring_cloud_alibaba_sentinel">https://spring-cloud-alibaba-group.github.io/github-pages/hoxton/en-us/index.html#_spring_cloud_alibaba_sentinel</a></li>
@@ -275,10 +275,10 @@
 </ul>
 </li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-show.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-show.png" class="">
 
 <hr>
-<h3 id="3-流控规则"><a href="#3-流控规则" class="headerlink" title="3 流控规则"></a>3 流控规则</h3><h4 id="3-1-基本介绍"><a href="#3-1-基本介绍" class="headerlink" title="3.1 基本介绍"></a>3.1 基本介绍</h4><img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/flow-limit-rule.png" class="">
+<h3 id="3-流控规则"><a href="#3-流控规则" class="headerlink" title="3 流控规则"></a>3 流控规则</h3><h4 id="3-1-基本介绍"><a href="#3-1-基本介绍" class="headerlink" title="3.1 基本介绍"></a>3.1 基本介绍</h4><img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/flow-limit-rule.png" class="">
 
 
 <ul>
@@ -316,7 +316,7 @@
 <h4 id="3-2-流控模式"><a href="#3-2-流控模式" class="headerlink" title="3.2 流控模式"></a>3.2 流控模式</h4><ul>
 <li>（1）QPS-直接-快速失败（默认）</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/QPS-%E7%9B%B4%E6%8E%A5%E5%A4%B1%E8%B4%A5.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/QPS-%E7%9B%B4%E6%8E%A5%E5%A4%B1%E8%B4%A5.png" class="">
 
 
 
@@ -334,7 +334,7 @@
 </ul>
 </li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%85%B3%E8%81%94.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%85%B3%E8%81%94.png" class="">
 
 
 <ul>
@@ -355,7 +355,7 @@
 <li>公式：初始阈值：阈值/冷加载因子（默认3），一旦访问量达到预热启动值，在达到设置的预热时间后，阈值达到最大值</li>
 <li>效果：刚开始阈值为初始阈值，比较低，会出现报错。但系统也因此提高阈值，慢慢的阈值边到最大，就不会报错</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/warm-up.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/warm-up.png" class="">
 
 
 <ul>
@@ -363,7 +363,7 @@
 <li>阈值类型只能选择QPS</li>
 <li>控制请求通过的是渐渐间隔，避免突然一秒有大量请求，达到了阈值，只能直接报错。但排队不会直接报错，而是限定了当前秒内只能通过多少个请求，其余线程在后面稍等，当请求等待时间超过我们设置的时间，则返回限流信息</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%8E%92%E9%98%9F%E7%AD%89%E5%BE%85.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%8E%92%E9%98%9F%E7%AD%89%E5%BE%85.png" class="">
 
 <hr>
 <h3 id="4-降级规则"><a href="#4-降级规则" class="headerlink" title="4 降级规则"></a>4 降级规则</h3><h4 id="4-1-基本介绍"><a href="#4-1-基本介绍" class="headerlink" title="4.1 基本介绍"></a>4.1 基本介绍</h4>
@@ -381,19 +381,19 @@
 <li><strong>异常数（分钟级）</strong>：</li>
 <li>异常数（分钟统计）超过阈值，触发降级（熔断）；时间窗口（熔断时长）结束后，进入半开放阶段，若请求成功，关闭降级（熔断），否则继续</li>
 </ul>
-<h4 id="4-2-慢调用比例"><a href="#4-2-慢调用比例" class="headerlink" title="4.2 慢调用比例"></a>4.2 慢调用比例</h4><img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%85%A2%E8%B0%83%E7%94%A8%E6%AF%94%E4%BE%8B.png" class="">
+<h4 id="4-2-慢调用比例"><a href="#4-2-慢调用比例" class="headerlink" title="4.2 慢调用比例"></a>4.2 慢调用比例</h4><img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E6%85%A2%E8%B0%83%E7%94%A8%E6%AF%94%E4%BE%8B.png" class="">
 
-<h4 id="4-3-异常比例"><a href="#4-3-异常比例" class="headerlink" title="4.3 异常比例"></a>4.3 异常比例</h4><img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%AF%94%E4%BE%8B.png" class="">
+<h4 id="4-3-异常比例"><a href="#4-3-异常比例" class="headerlink" title="4.3 异常比例"></a>4.3 异常比例</h4><img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%AF%94%E4%BE%8B.png" class="">
 
-<h4 id="4-4-异常数"><a href="#4-4-异常数" class="headerlink" title="4.4 异常数"></a>4.4 异常数</h4><img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%95%B0.png" class="">
+<h4 id="4-4-异常数"><a href="#4-4-异常数" class="headerlink" title="4.4 异常数"></a>4.4 异常数</h4><img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E5%BC%82%E5%B8%B8%E6%95%B0.png" class="">
 
 <hr>
 <h3 id="5-热点规则"><a href="#5-热点规则" class="headerlink" title="5 热点规则"></a>5 热点规则</h3><h4 id="5-1-基本介绍"><a href="#5-1-基本介绍" class="headerlink" title="5.1 基本介绍"></a>5.1 基本介绍</h4><ul>
 <li>热点参数限流，会统计请求中传入的参数，若此参数为热点参数，则对此请求进行限流</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9.png" class="">
 
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E8%A7%84%E5%88%99%E5%8F%82%E6%95%B0.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E8%A7%84%E5%88%99%E5%8F%82%E6%95%B0.png" class="">
 
 <h4 id="5-2-代码演示"><a href="#5-2-代码演示" class="headerlink" title="5.2 代码演示"></a>5.2 代码演示</h4><ul>
 <li>（1）Controller层<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@GetMapping(&quot;/hotKey&quot;)</span></span><br><span class="line"><span class="meta">@SentinelResource(value = &quot;hotKey&quot;, blockHandler = &quot;deal_hotKey&quot;)</span> <span class="comment">//value: 唯一标识，一般与路径相同，blockHandler：服务降级方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">hotKetTest</span><span class="params">(<span class="meta">@RequestParam(value = &quot;p1&quot;, required = false)</span> String p1,</span></span></span><br><span class="line"><span class="function"><span class="params">						 <span class="meta">@RequestParam(value = &quot;p2&quot;, required = false)</span> String p2)</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;--- hot-key-test&quot;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">deal_hotKey</span><span class="params">(String p1, String p2, BlockException blockException)</span> </span>&#123; <span class="comment">//参数要一致，并且需要BlockException参数</span></span><br><span class="line">	<span class="keyword">return</span> <span class="string">&quot;你正在访问的是热点资源，请稍后访问！&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -404,7 +404,7 @@
 <ul>
 <li>（2）配置热点</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9p1.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9p1.png" class="">
 
 
 <ul>
@@ -413,7 +413,7 @@
 <h4 id="5-3-参数例外项"><a href="#5-3-参数例外项" class="headerlink" title="5.3 参数例外项"></a>5.3 参数例外项</h4><ul>
 <li>有时候，我们希望热点参数的特定值，可以有不同的阈值，来进行分配</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E4%BE%8B%E5%A4%96%E9%A1%B9.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/%E7%83%AD%E7%82%B9%E5%8F%82%E6%95%B0%E4%BE%8B%E5%A4%96%E9%A1%B9.png" class="">
 
 <h4 id="5-4-问题提出"><a href="#5-4-问题提出" class="headerlink" title="5.4 问题提出"></a>5.4 问题提出</h4><ul>
 <li><code>@SentinelResource</code> 的服务降级方法，仅对于sentinel-web界面配置的内容进行服务降级，例如QPS是否达到阈值之类；但不会对Java运行异常进行服务降级，后面会教如何解决</li>
@@ -422,7 +422,7 @@
 <h3 id="6-系统规则"><a href="#6-系统规则" class="headerlink" title="6 系统规则"></a>6 系统规则</h3><ul>
 <li>Sentinel系统自适应限流从整体维度对应用入口流量进行控制</li>
 </ul>
-<img src="/blog/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-%E7%B3%BB%E7%BB%9F%E8%A7%84%E5%88%99.png" class="">
+<img src="/2021/03/19/%E3%80%90SpringCloudAlibaba%E3%80%91Sentinel%E5%AE%9E%E7%8E%B0%E7%86%94%E6%96%AD%E5%92%8C%E9%99%90%E6%B5%81/sentinel-%E7%B3%BB%E7%BB%9F%E8%A7%84%E5%88%99.png" class="">
 
 <table>
 <thead>
@@ -552,11 +552,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" rel="prev" title="【SpringCloudAlibaba】Nacos服务注册和配置中心">
+    <a href="/2021/03/17/%E3%80%90SpringCloudAlibaba%E3%80%91Nacos%E6%9C%8D%E5%8A%A1%E6%B3%A8%E5%86%8C%E5%92%8C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" rel="prev" title="【SpringCloudAlibaba】Nacos服务注册和配置中心">
       <i class="fa fa-chevron-left"></i> 【SpringCloudAlibaba】Nacos服务注册和配置中心
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/" rel="next" title="【MySQL】MySQL入门">
+    <a href="/2021/04/03/%E3%80%90MySQL%E3%80%91MySQL%E5%85%A5%E9%97%A8/" rel="next" title="【MySQL】MySQL入门">
       【MySQL】MySQL入门 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -624,21 +624,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -698,19 +698,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

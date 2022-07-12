@@ -5,47 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="关于Servlet的学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【JavaWeb】Servlet">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="关于Servlet的学习">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar3.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/helloservlet.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/idea%E7%94%9F%E6%88%90servlet.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/servlet%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%821.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%822.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%821.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%822.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%823.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E7%9B%AE%E5%BD%95.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar3.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/helloservlet.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/idea%E7%94%9F%E6%88%90servlet.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/servlet%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%821.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%822.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%821.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%822.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%823.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E7%9B%AE%E5%BD%95.png">
 <meta property="article:published_time" content="2021-10-25T14:13:35.000Z">
 <meta property="article:modified_time" content="2022-01-09T07:01:51.371Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/">
 
 
 <script id="page-configurations">
@@ -107,7 +107,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -127,12 +127,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -163,10 +163,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -201,7 +201,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                  <a href="/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
                 </span>
             </span>
 
@@ -248,18 +248,18 @@
 <li><strong>（4）tomcat启动引入依赖</strong></li>
 <li>tomcat启动默认不带有jar包，需要自己设置</li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar1.png" class="">
 
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar2.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar2.png" class="">
 
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar3.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/tomcat%E9%85%8D%E7%BD%AEjar3.png" class="">
 
 
 <ul>
 <li><strong>（5）启动测试</strong></li>
 <li>访问配置的servlet路由地址，查看后台打印记录</li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/helloservlet.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/helloservlet.png" class="">
 
 <hr>
 <h3 id="2-Servlet生命周期"><a href="#2-Servlet生命周期" class="headerlink" title="2 Servlet生命周期"></a>2 Servlet生命周期</h3><ul>
@@ -284,10 +284,10 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">HelloServlet2</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// get请求处理 ...</span></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doPost</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// post请求处理 ...</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <hr>
-<h4 id="3-2-idea自动生成servlet"><a href="#3-2-idea自动生成servlet" class="headerlink" title="3.2 idea自动生成servlet"></a>3.2 idea自动生成servlet</h4><img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/idea%E7%94%9F%E6%88%90servlet.png" class="">
+<h4 id="3-2-idea自动生成servlet"><a href="#3-2-idea自动生成servlet" class="headerlink" title="3.2 idea自动生成servlet"></a>3.2 idea自动生成servlet</h4><img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/idea%E7%94%9F%E6%88%90servlet.png" class="">
 
 <hr>
-<h3 id="4-Servlet继承体系"><a href="#4-Servlet继承体系" class="headerlink" title="4 Servlet继承体系"></a>4 Servlet继承体系</h3><img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/servlet%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png" class="">
+<h3 id="4-Servlet继承体系"><a href="#4-Servlet继承体系" class="headerlink" title="4 Servlet继承体系"></a>4 Servlet继承体系</h3><img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/servlet%E7%BB%A7%E6%89%BF%E4%BD%93%E7%B3%BB.png" class="">
 
 <hr>
 <h3 id="5-ServletConfig类"><a href="#5-ServletConfig类" class="headerlink" title="5 ServletConfig类"></a>5 ServletConfig类</h3><ul>
@@ -336,31 +336,31 @@
 <h4 id="7-1-GET请求"><a href="#7-1-GET请求" class="headerlink" title="7.1 GET请求"></a>7.1 GET请求</h4><ul>
 <li><strong>（1）常规（请求行）</strong></li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%821.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%821.png" class="">
 
 
 <ul>
 <li><strong>（2）请求头</strong></li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%822.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/get%E8%AF%B7%E6%B1%822.png" class="">
 
 <hr>
 <h4 id="7-2-POST请求"><a href="#7-2-POST请求" class="headerlink" title="7.2 POST请求"></a>7.2 POST请求</h4><ul>
 <li><strong>（1）常规（请求行）</strong></li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%821.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%821.png" class="">
 
 
 <ul>
 <li><strong>（2）请求头</strong></li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%822.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%822.png" class="">
 
 
 <ul>
 <li><strong>（3）请求体</strong></li>
 </ul>
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%823.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/post%E8%AF%B7%E6%B1%823.png" class="">
 
 <hr>
 <h4 id="7-3-常见响应码"><a href="#7-3-常见响应码" class="headerlink" title="7.3 常见响应码"></a>7.3 常见响应码</h4><ul>
@@ -502,7 +502,7 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForwardServlet1</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        <span class="comment">// 请求转发</span></span><br><span class="line">        <span class="comment">// （1）转发到servlet</span></span><br><span class="line">        req.getRequestDispatcher(<span class="string">&quot;/forward2&quot;</span>).forward(req, resp);</span><br><span class="line">        <span class="comment">// （2）转发到资源文件【WEB-INF是不允许外部链接直接访问】</span></span><br><span class="line">        req.getRequestDispatcher(<span class="string">&quot;/WEB-INF/头像.jpg&quot;</span>).forward(req, resp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ForwardServlet2</span> <span class="keyword">extends</span> <span class="title">HttpServlet</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">doGet</span><span class="params">(HttpServletRequest req, HttpServletResponse resp)</span> <span class="keyword">throws</span> ServletException, IOException </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">&quot;这里是forwardServlet2&quot;</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E7%9B%AE%E5%BD%95.png" class="">
+<img src="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Servlet/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%91%E7%9B%AE%E5%BD%95.png" class="">
 
 <hr>
 <h3 id="9-HttpServletResponse类"><a href="#9-HttpServletResponse类" class="headerlink" title="9 HttpServletResponse类"></a>9 HttpServletResponse类</h3><ul>
@@ -560,11 +560,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/" rel="prev" title="【JavaWeb】Tomcat">
+    <a href="/2021/10/25/%E3%80%90JavaWeb%E3%80%91Tomcat/" rel="prev" title="【JavaWeb】Tomcat">
       <i class="fa fa-chevron-left"></i> 【JavaWeb】Tomcat
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2021/10/26/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%88%E5%B0%9A%E7%A1%85%E8%B0%B7%EF%BC%89/" rel="next" title="【面试】Java高频面试题（尚硅谷）">
+    <a href="/2021/10/26/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%88%E5%B0%9A%E7%A1%85%E8%B0%B7%EF%BC%89/" rel="next" title="【面试】Java高频面试题（尚硅谷）">
       【面试】Java高频面试题（尚硅谷） <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -632,21 +632,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -706,19 +706,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

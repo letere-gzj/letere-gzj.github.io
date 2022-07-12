@@ -5,58 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="关于Java常用编程软件IDEA的一些个人设置，帮助更快上手IDEA编程软件。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【教程】快速上手IDEA编程软件">
-<meta property="og:url" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="关于Java常用编程软件IDEA的一些个人设置，帮助更快上手IDEA编程软件。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install2.jpg">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/optimize.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/model.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/theme.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/Keymap.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/mouseChangeSize.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoImport.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/showSeparators.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/ignoreCase.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/cancleOneRow.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeFont.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/codeTheme.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeColor.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeHeader.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeDecode.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoBuild.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template3.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install2.jpg">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/optimize.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/model.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/theme.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/Keymap.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/mouseChangeSize.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoImport.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/showSeparators.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/ignoreCase.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/cancleOneRow.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeFont.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/codeTheme.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeColor.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeHeader.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeDecode.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoBuild.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template3.png">
 <meta property="article:published_time" content="2020-09-08T17:17:46.000Z">
 <meta property="article:modified_time" content="2020-09-18T04:03:31.444Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/">
+<link rel="canonical" href="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/">
 
 
 <script id="page-configurations">
@@ -118,7 +118,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -138,12 +138,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -174,10 +174,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -212,7 +212,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
+                  <a href="/categories/%E6%95%99%E7%A8%8B/" itemprop="url" rel="index"><span itemprop="name">教程</span></a>
                 </span>
             </span>
 
@@ -235,17 +235,17 @@
 <h3 id="一、IDEA下载和基础了解"><a href="#一、IDEA下载和基础了解" class="headerlink" title="一、IDEA下载和基础了解"></a>一、IDEA下载和基础了解</h3><h4 id="1-1下载"><a href="#1-1下载" class="headerlink" title="1.1下载"></a>1.1下载</h4><ul>
 <li>官网位置：<a target="_blank" rel="noopener" href="https://www.jetbrains.com/idea/download/#section=windows">https://www.jetbrains.com/idea/download/#section=windows</a></li>
 <li>建议直接下载最终版，到时网上找破解补丁即可，但下载的版本不要太新，可能还没破解</li>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png" class="">
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/download.png" class="">
 
 </li>
 </ul>
 <h4 id="1-2-安装"><a href="#1-2-安装" class="headerlink" title="1.2 安装"></a>1.2 安装</h4><ul>
 <li>安装路径自己选择<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install1.png" class=""> </li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install1.png" class=""> </li>
 </ul>
 </li>
 <li>设置安装选择相应系统位数即可<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install2.jpg" class=""> </li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/IDEA_install2.jpg" class=""> </li>
 </ul>
 </li>
 <li>其余默认安装  </li>
@@ -255,7 +255,7 @@
 <li>（1）-Xms128m 修改为：-Xms512m 【初始内存数，提高启动Java程序的速度】</li>
 <li>（2）-Xmx750m 修改为：-Xmx1500m 【最大内存数，减少内存Garage收集频率，提高性能】</li>
 <li>（3）-XX：ReservedCodeCacheSize=240m 修改为：-XX：ReservedCodeCacheSize=500m 【提高保留代码占用内存的容量】</li>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/optimize.png" class="">   
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/optimize.png" class="">   
 
 </li>
 </ul>
@@ -263,15 +263,15 @@
 </ul>
 <h4 id="1-4-工作空间-Workspace-、项目-Project-、模块-Model-介绍"><a href="#1-4-工作空间-Workspace-、项目-Project-、模块-Model-介绍" class="headerlink" title="1.4 工作空间(Workspace)、项目(Project)、模块(Model)介绍"></a>1.4 工作空间(Workspace)、项目(Project)、模块(Model)介绍</h4><ul>
 <li>IDEA新建一个项目 约等于 Eclipse新建一个工作空间<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction1.png" class=""> </li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction1.png" class=""> </li>
 </ul>
 </li>
 <li>IDEA新建一个模块 约等于 Eclipse新建一个项目<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction2.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/distinction2.png" class=""></li>
 </ul>
 </li>
 <li>区别：Eclipse一个窗口可以管理多个项目；IDEA一个窗口只能管理一个项目，但可以通过多个模块来弥补<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/model.png" class="">  
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/model.png" class="">  
 
 </li>
 </ul>
@@ -281,55 +281,55 @@
 <h3 id="二、IDEA便利设置"><a href="#二、IDEA便利设置" class="headerlink" title="二、IDEA便利设置"></a>二、IDEA便利设置</h3><p><strong>前提：本人版本为2020.1，不同版本设置位置可能不同，可能需要自行百度</strong></p>
 <ul>
 <li>（1）界面主题修改 (Appearance&amp;Behavior -&gt; Appearance)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/theme.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/theme.png" class=""></li>
 </ul>
 </li>
 <li>（2）快捷键 ，习惯用Eclipse可以调整，未用过其他编程软件的可以不用改(Keymap)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/Keymap.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/Keymap.png" class=""></li>
 </ul>
 </li>
 <li>（3）鼠标滚轮修改代码字体大小 (Editor -&gt; General)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/mouseChangeSize.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/mouseChangeSize.png" class=""></li>
 </ul>
 </li>
 <li>（4）自动导包 (Editor -&gt; General -&gt; Auto import)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoImport.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoImport.png" class=""></li>
 </ul>
 </li>
 <li>（5）方法之间有分割符，方便查看 (Editor -&gt; General -&gt; Appearance )<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/showSeparators.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/showSeparators.png" class=""></li>
 </ul>
 </li>
 <li>（6）忽略大小写，方便代码自动检索 (Editor -&gt; General -&gt; Code completion)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/ignoreCase.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/ignoreCase.png" class=""></li>
 </ul>
 </li>
 <li>（7）取消打开的文件只显示一行，可以防止打开的文件折叠隐藏 (Editor -&gt; General -&gt; Edtior Tabs)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/cancleOneRow.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/cancleOneRow.png" class=""></li>
 </ul>
 </li>
 <li>（8）修改代码字体类型，字体大小 (Editor -&gt; Font)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeFont.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeFont.png" class=""></li>
 </ul>
 </li>
 <li>（9）代码主题修改 (Editor -&gt; Color Scheme)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/codeTheme.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/codeTheme.png" class=""></li>
 </ul>
 </li>
 <li>（10）修改特定代码颜色，对于用惯Eclipse的我，不太习惯IDEA的灰色注释颜色(Edtior -&gt; Color Scheme -&gt; Language Defaults)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeColor.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeCodeColor.png" class=""></li>
 </ul>
 </li>
 <li>（11）添加头部注释内容，按自己喜好添加 (Editor -&gt; Code Style -&gt; File and Code Templates)<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeHeader.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeHeader.png" class=""></li>
 </ul>
 </li>
 <li>（12）修改编码方法，中文字符一般都是用UTF-8的了<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeDecode.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/changeDecode.png" class=""></li>
 </ul>
 </li>
 <li>（13）自动构建，代码修改后进行再运行时，运行新代码，而不是旧的<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoBuild.png" class="">  
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/autoBuild.png" class="">  
 
 </li>
 </ul>
@@ -339,12 +339,12 @@
 <h3 id="三、IDEA模板"><a href="#三、IDEA模板" class="headerlink" title="三、IDEA模板"></a>三、IDEA模板</h3><p><strong>所谓模板，就是输入特定的关键字，自动帮你生成相应的代码。熟练掌握模板使用，可以提高编码速度。</strong></p>
 <ul>
 <li>（1）查看IDEA默认模板<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template1.png" class=""></li>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template2.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template1.png" class=""></li>
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template2.png" class=""></li>
 </ul>
 </li>
 <li>（2）自定义模板，可以自己写一些常用的算法或其他的，存为自己的模板，可以快速调用不用重写。<ul>
-<li><img src="/blog/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template3.png" class="">
+<li><img src="/2020/09/09/%E3%80%90%E6%95%99%E7%A8%8B%E3%80%91%E5%BF%AB%E9%80%9F%E4%B8%8A%E6%89%8BIDEA%E7%BC%96%E7%A8%8B%E8%BD%AF%E4%BB%B6/template3.png" class="">
 
 </li>
 </ul>
@@ -365,11 +365,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2020/09/05/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="prev" title="【Java基础】异常处理">
+    <a href="/2020/09/05/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86/" rel="prev" title="【Java基础】异常处理">
       <i class="fa fa-chevron-left"></i> 【Java基础】异常处理
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2020/09/09/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="next" title="【Java基础】多线程">
+    <a href="/2020/09/09/%E3%80%90Java%E5%9F%BA%E7%A1%80%E3%80%91%E5%A4%9A%E7%BA%BF%E7%A8%8B/" rel="next" title="【Java基础】多线程">
       【Java基础】多线程 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -437,21 +437,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -511,19 +511,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 

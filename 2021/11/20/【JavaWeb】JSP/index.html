@@ -5,53 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
 <meta name="theme-color" content="#222">
 <meta name="generator" content="Hexo 5.2.0">
-  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
 
-<link rel="stylesheet" href="/blog/css/main.css">
+<link rel="stylesheet" href="/css/main.css">
 
 
-<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
   <meta name="description" content="JavaWeb关于JSP页面的学习">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【JavaWeb】JSP">
-<meta property="og:url" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/index.html">
+<meta property="og:url" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/index.html">
 <meta property="og:site_name" content="个人博客">
 <meta property="og:description" content="JavaWeb关于JSP页面的学习">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png">
-<meta property="og:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png">
 <meta property="article:published_time" content="2021-11-20T04:12:14.000Z">
 <meta property="article:modified_time" content="2022-01-16T15:03:48.173Z">
 <meta property="article:author" content="莱特雷">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png">
 
-<link rel="canonical" href="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
+<link rel="canonical" href="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
 
 
 <script id="page-configurations">
@@ -113,7 +113,7 @@
 
   <div class="site-meta">
 
-    <a href="/blog/" class="brand" rel="start">
+    <a href="/" class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
       <h1 class="site-title">个人博客</h1>
       <span class="logo-line-after"><i></i></span>
@@ -133,12 +133,12 @@
   <ul id="menu" class="main-menu menu">
         <li class="menu-item menu-item-home">
 
-    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
 
   </li>
         <li class="menu-item menu-item-archives">
 
-    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
 
   </li>
   </ul>
@@ -169,10 +169,10 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
       <meta itemprop="name" content="莱特雷">
       <meta itemprop="description" content="">
     </span>
@@ -207,7 +207,7 @@
               </span>
               <span class="post-meta-item-text">分类于</span>
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/blog/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
+                  <a href="/categories/JavaWeb/" itemprop="url" rel="index"><span itemprop="name">JavaWeb</span></a>
                 </span>
             </span>
 
@@ -249,19 +249,19 @@
 <ul>
 <li>（1）在我们访问jsp页面时，会自动生成一个jsp的java文件，以及其编译class文件</li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A81.png" class="">
 
 
 <ul>
 <li>（2）查看源码发现<code>index_jsp.java</code>继承<code>HttpJspBase</code>，而<code>HttpJspBase</code>继承<code>HttpServlet</code></li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A82.png" class="">
 
 
 <ul>
 <li>（3）简单查看index_jsp.java源码，跟上面演示的servlet程序写法类似</li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E6%9C%AC%E8%B4%A83.png" class="">
 
 
 <ul>
@@ -289,7 +289,7 @@
 </ul>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%!</span><br><span class="line">        <span class="comment">// 声明类属性</span></span><br><span class="line">        <span class="keyword">public</span> <span class="keyword">static</span> String name;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明静态代码块</span></span><br><span class="line">        <span class="keyword">static</span> &#123;</span><br><span class="line">            name = <span class="string">&quot;你好&quot;</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明类方法</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">hello</span><span class="params">()</span> </span>&#123;</span><br><span class="line">            System.out.println(<span class="string">&quot;Hello World!&quot;</span>);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">// 声明内部类</span></span><br><span class="line">        <span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InnerClass</span> </span>&#123;</span><br><span class="line">            <span class="keyword">public</span> String sex;</span><br><span class="line">        &#125;</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%A3%B0%E6%98%8E%E8%84%9A%E6%9C%AC.png" class="">
 
 <ul>
 <li>声明脚本会将代码填写到jsp生成的java文件中，仅做声明，不执行</li>
@@ -301,7 +301,7 @@
 </ul>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%!<span class="keyword">public</span> String name = <span class="string">&quot;456&quot;</span>;%&gt;</span><br><span class="line">    </span><br><span class="line">    &lt;%= <span class="number">123</span> %&gt;</span><br><span class="line">    &lt;%= name %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%A1%A8%E8%BE%BE%E5%BC%8F%E8%84%9A%E6%9C%AC.png" class="">
 
 <ul>
 <li>表达式脚本最主要的作用还是能够输出变量</li>
@@ -314,7 +314,7 @@
 </ul>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;body&gt;</span><br><span class="line">    &lt;%</span><br><span class="line">        Integer sum = <span class="number">0</span>;</span><br><span class="line">        <span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">0</span>; i&lt;<span class="number">10</span>; i++) &#123;</span><br><span class="line">            sum += i;</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(sum);</span><br><span class="line">    %&gt;</span><br><span class="line">&lt;/body&gt;</span><br></pre></td></tr></table></figure>
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E4%BB%A3%E7%A0%81%E8%84%9A%E6%9C%AC.png" class="">
 
 
 <ul>
@@ -329,7 +329,7 @@
 <li><p>JSP翻译成Servlet的类中，内置了9个可用的对象</p>
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/JSP%E4%B9%9D%E5%A4%A7%E5%AF%B9%E8%B1%A1.png" class="">
 
 <ul>
 <li><code>request</code>：请求</li>
@@ -359,7 +359,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%811.png" class="">
 
 <ul>
 <li><strong>说明</strong>：原本先执行的out输出，结果在末尾输出。out和response都有各自的缓存区，jsp在向页面输出内容前，会执行<code>out.flush()</code>方法，把out缓存区的内容加入到response缓存区的末尾，然后通过response向浏览器输出数据</li>
@@ -369,7 +369,7 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%812.png" class="">
 
 <hr>
 <h4 id="6-2-out-print-和out-write"><a href="#6-2-out-print-和out-write" class="headerlink" title="6.2 out.print()和out.write()"></a>6.2 out.print()和out.write()</h4><ul>
@@ -377,15 +377,15 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%815.png" class="">
 
 
 <ul>
 <li><strong>说明</strong>：print和write方法，在输出字符串时不会出现问题，而在输出数字时会出现乱码。是因为write方法会将int转成char然后再输出</li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%813.png" class="">
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%BE%93%E5%87%BA%E6%B5%814.png" class="">
 
 <hr>
 <h3 id="7-JSP常用标签"><a href="#7-JSP常用标签" class="headerlink" title="7 JSP常用标签"></a>7 JSP常用标签</h3><h4 id="7-1-静态包含"><a href="#7-1-静态包含" class="headerlink" title="7.1 静态包含"></a>7.1 静态包含</h4><ul>
@@ -399,9 +399,9 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E9%9D%99%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
 
 <hr>
 <h4 id="7-2-动态包含"><a href="#7-2-动态包含" class="headerlink" title="7.2 动态包含"></a>7.2 动态包含</h4><ul>
@@ -415,10 +415,10 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB1.png" class="">
 
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E5%8A%A8%E6%80%81%E5%8C%85%E5%90%AB2.png" class="">
 
 
 <ul>
@@ -438,9 +438,9 @@
 
 </li>
 </ul>
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%911.png" class="">
 
-<img src="/blog/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png" class="">
+<img src="/2021/11/20/%E3%80%90JavaWeb%E3%80%91JSP/%E8%AF%B7%E6%B1%82%E8%BD%AC%E5%8F%912.png" class="">
 
 <hr>
 
@@ -458,11 +458,11 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/blog/2021/10/26/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%88%E5%B0%9A%E7%A1%85%E8%B0%B7%EF%BC%89/" rel="prev" title="【面试】Java高频面试题（尚硅谷）">
+    <a href="/2021/10/26/%E3%80%90%E9%9D%A2%E8%AF%95%E3%80%91Java%E9%AB%98%E9%A2%91%E9%9D%A2%E8%AF%95%E9%A2%98%EF%BC%88%E5%B0%9A%E7%A1%85%E8%B0%B7%EF%BC%89/" rel="prev" title="【面试】Java高频面试题（尚硅谷）">
       <i class="fa fa-chevron-left"></i> 【面试】Java高频面试题（尚硅谷）
     </a></div>
       <div class="post-nav-item">
-    <a href="/blog/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="【JavaWeb】EL表达式">
+    <a href="/2022/01/09/%E3%80%90JavaWeb%E3%80%91EL%E8%A1%A8%E8%BE%BE%E5%BC%8F/" rel="next" title="【JavaWeb】EL表达式">
       【JavaWeb】EL表达式 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
@@ -530,21 +530,21 @@
       <div class="site-overview-wrap sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
     <img class="site-author-image" itemprop="image" alt="莱特雷"
-      src="/blog/uploads/avatar.jpg">
+      src="/uploads/avatar.jpg">
   <p class="site-author-name" itemprop="name">莱特雷</p>
   <div class="site-description" itemprop="description"></div>
 </div>
 <div class="site-state-wrap motion-element">
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
-          <a href="/blog/archives/">
+          <a href="/archives/">
         
           <span class="site-state-item-count">210</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
       <div class="site-state-item site-state-categories">
-            <a href="/blog/categories/">
+            <a href="/categories/">
         <span class="site-state-item-count">31</span>
         <span class="site-state-item-name">分类</span></a>
       </div>
@@ -604,19 +604,19 @@
   </div>
 
   
-  <script src="/blog/lib/anime.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.min.js"></script>
-  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
 
-<script src="/blog/js/utils.js"></script>
+<script src="/js/utils.js"></script>
 
-<script src="/blog/js/motion.js"></script>
-
-
-<script src="/blog/js/schemes/pisces.js"></script>
+<script src="/js/motion.js"></script>
 
 
-<script src="/blog/js/next-boot.js"></script>
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
 
 
 
