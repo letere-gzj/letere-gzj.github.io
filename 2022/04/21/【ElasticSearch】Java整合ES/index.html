@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/blog/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/blog/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/blog/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/blog/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/blog/css/main.css">
+
+
+<link rel="stylesheet" href="/blog/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere.gitee.io","root":"/blog/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="Java整合ES">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【ElasticSearch】Java整合ES">
+<meta property="og:url" content="http://letere.gitee.io/blog/2022/04/21/%E3%80%90ElasticSearch%E3%80%91Java%E6%95%B4%E5%90%88ES/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="Java整合ES">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-04-21T05:46:47.000Z">
+<meta property="article:modified_time" content="2022-04-25T02:03:18.819Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://letere.gitee.io/blog/2022/04/21/%E3%80%90ElasticSearch%E3%80%91Java%E6%95%B4%E5%90%88ES/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【ElasticSearch】Java整合ES | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/blog/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/blog/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/blog/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://letere.gitee.io/blog/2022/04/21/%E3%80%90ElasticSearch%E3%80%91Java%E6%95%B4%E5%90%88ES/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/blog/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【ElasticSearch】Java整合ES
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-04-21 13:46:47" itemprop="dateCreated datePublished" datetime="2022-04-21T13:46:47+08:00">2022-04-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-04-25 10:03:18" itemprop="dateModified" datetime="2022-04-25T10:03:18+08:00">2022-04-25</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/blog/categories/ElasticSearch/" itemprop="url" rel="index"><span itemprop="name">ElasticSearch</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>Java整合ES</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-环境准备"><a href="#1-环境准备" class="headerlink" title="1 环境准备"></a>1 环境准备</h3><h4 id="1-1-依赖"><a href="#1-1-依赖" class="headerlink" title="1.1 依赖"></a>1.1 依赖</h4><ul>
+<li>演示的ES版本为8.x版本，8.x版本抛弃了rest-high-level-client的依赖的使用，改用新的依赖，若ES版本为8.x之前的，查看rest-high-level-client对应的使用</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- es-java整合 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>co.elastic.clients<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>elasticsearch-java<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>8.1.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"><span class="comment">&lt;!-- jackson-json处理 --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.fasterxml.jackson.core<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>jackson-databind<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">version</span>&gt;</span>2.13.2.2<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<h4 id="1-2-连接ES"><a href="#1-2-连接ES" class="headerlink" title="1.2 连接ES"></a>1.2 连接ES</h4><ul>
+<li>因为连接ES比较常用，直接封装为工具类</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ESUtil</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 获取ES客户端</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> ElasticsearchClient <span class="title">getEsClient</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        RestClient restClient = RestClient.builder(</span><br><span class="line">                <span class="comment">// 地址, 端口, 通信协议（http/https）</span></span><br><span class="line">                <span class="keyword">new</span> HttpHost(<span class="string">&quot;localhost&quot;</span>, <span class="number">9200</span>, <span class="string">&quot;http&quot;</span>)</span><br><span class="line">        ).build();</span><br><span class="line">        RestClientTransport restClientTransport = <span class="keyword">new</span> RestClientTransport(restClient, <span class="keyword">new</span> JacksonJsonpMapper());</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> ElasticsearchClient(restClientTransport);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="2-索引使用"><a href="#2-索引使用" class="headerlink" title="2 索引使用"></a>2 索引使用</h3><h4 id="2-1-创建索引"><a href="#2-1-创建索引" class="headerlink" title="2.1 创建索引"></a>2.1 创建索引</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建索引</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createIndex</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    CreateIndexResponse createIndexResponse = esClient.indices().create(c -&gt; c.index(<span class="string">&quot;user&quot;</span>));</span><br><span class="line">    System.out.println(createIndexResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-2-查询索引"><a href="#2-2-查询索引" class="headerlink" title="2.2 查询索引"></a>2.2 查询索引</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询索引</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getIndex</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    GetIndexResponse getIndexResponse = esClient.indices().get(i -&gt; i.index(<span class="string">&quot;user&quot;</span>));</span><br><span class="line">    <span class="comment">// 获取响应数据</span></span><br><span class="line">    IndexState indexState = getIndexResponse.result().get(<span class="string">&quot;user&quot;</span>);</span><br><span class="line">    System.out.println(indexState);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-3-删除索引"><a href="#2-3-删除索引" class="headerlink" title="2.3 删除索引"></a>2.3 删除索引</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除索引</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteIndex</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    DeleteIndexResponse deleteIndexResponse = esClient.indices().delete(i -&gt; i.index(<span class="string">&quot;user&quot;</span>));</span><br><span class="line">    System.out.println(deleteIndexResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-文档使用"><a href="#3-文档使用" class="headerlink" title="3 文档使用"></a>3 文档使用</h3><ul>
+<li>创建一个<code>User</code>类，当作文档存储的数据</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 需要引入lombok依赖</span></span><br><span class="line"><span class="meta">@Data</span></span><br><span class="line"><span class="meta">@NoArgsConstructor</span></span><br><span class="line"><span class="meta">@AllArgsConstructor</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">User</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Integer id;</span><br><span class="line">    <span class="keyword">private</span> String name;</span><br><span class="line">    <span class="keyword">private</span> Integer age;</span><br><span class="line">    <span class="keyword">private</span> String sex;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="3-1-创建文档"><a href="#3-1-创建文档" class="headerlink" title="3.1 创建文档"></a>3.1 创建文档</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">createDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="number">1001</span>, <span class="string">&quot;letere&quot;</span>, <span class="number">18</span>, <span class="string">&quot;男&quot;</span>);</span><br><span class="line">    CreateResponse createResponse = esClient.create(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1002&quot;</span>).document(user));</span><br><span class="line">    System.out.println(createResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-2-更新文档"><a href="#3-2-更新文档" class="headerlink" title="3.2 更新文档"></a>3.2 更新文档</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 更新文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    User user = <span class="keyword">new</span> User(<span class="number">1001</span>, <span class="string">&quot;letere&quot;</span>, <span class="number">18</span>, <span class="string">&quot;女&quot;</span>);</span><br><span class="line">    UpdateResponse&lt;User&gt; updateResponse = esClient.update(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>).doc(user), User.class);</span><br><span class="line">    System.out.println(updateResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-3-查询文档"><a href="#3-3-查询文档" class="headerlink" title="3.3 查询文档"></a>3.3 查询文档</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 查询文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">getDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    GetResponse&lt;User&gt; getResponse = esClient.get(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>), User.class);</span><br><span class="line">    System.out.println(getResponse.source());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-4-删除文档"><a href="#3-4-删除文档" class="headerlink" title="3.4 删除文档"></a>3.4 删除文档</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 删除文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">deleteDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    DeleteResponse deleteResponse = esClient.delete(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).id(<span class="string">&quot;1001&quot;</span>));</span><br><span class="line">    System.out.println(deleteResponse);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-文档批量处理"><a href="#4-文档批量处理" class="headerlink" title="4 文档批量处理"></a>4 文档批量处理</h3><h4 id="4-1-批量创建"><a href="#4-1-批量创建" class="headerlink" title="4.1 批量创建"></a>4.1 批量创建</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 批量创建文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">batchCreateDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    List&lt;User&gt; users = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    users.add(<span class="keyword">new</span> User(<span class="number">1001</span>, <span class="string">&quot;letere&quot;</span>, <span class="number">18</span>, <span class="string">&quot;男&quot;</span>));</span><br><span class="line">    users.add(<span class="keyword">new</span> User(<span class="number">1002</span>, <span class="string">&quot;glucat&quot;</span>, <span class="number">22</span>, <span class="string">&quot;男&quot;</span>));</span><br><span class="line">    users.add(<span class="keyword">new</span> User(<span class="number">1003</span>, <span class="string">&quot;咕料&quot;</span>, <span class="number">30</span>, <span class="string">&quot;男&quot;</span>));</span><br><span class="line">    users.add(<span class="keyword">new</span> User(<span class="number">1004</span>, <span class="string">&quot;C酱&quot;</span>, <span class="number">28</span>, <span class="string">&quot;女&quot;</span>));</span><br><span class="line">    <span class="comment">// 转成List&lt;BulkOperation&gt;</span></span><br><span class="line">    List&lt;BulkOperation&gt; bulkOperations = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (User user : users) &#123;</span><br><span class="line">        bulkOperations.add(BulkOperation.of(</span><br><span class="line">                b -&gt; b.create(</span><br><span class="line">                        d -&gt; d.id(user.getId().toString()).document(user)</span><br><span class="line">                )</span><br><span class="line">        ));</span><br><span class="line">    &#125;</span><br><span class="line">    BulkResponse response = esClient.bulk(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).operations(bulkOperations));</span><br><span class="line">    System.out.println(response.items());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-2-批量删除"><a href="#4-2-批量删除" class="headerlink" title="4.2 批量删除"></a>4.2 批量删除</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 批量删除文档</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">batchDeleteDocument</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    String[] ids = <span class="keyword">new</span> String[]&#123;<span class="string">&quot;1001&quot;</span>, <span class="string">&quot;1002&quot;</span>&#125;;</span><br><span class="line">    <span class="comment">// 转成List&lt;BulkOperation&gt;</span></span><br><span class="line">    List&lt;BulkOperation&gt; bulkOperations = <span class="keyword">new</span> ArrayList&lt;&gt;();</span><br><span class="line">    <span class="keyword">for</span> (String id : ids) &#123;</span><br><span class="line">        bulkOperations.add(BulkOperation.of(</span><br><span class="line">                b -&gt; b.delete(</span><br><span class="line">                        d -&gt; d.id(id)</span><br><span class="line">                )</span><br><span class="line">        ));</span><br><span class="line">    &#125;</span><br><span class="line">    BulkResponse response = esClient.bulk(i -&gt; i.index(<span class="string">&quot;user&quot;</span>).operations(bulkOperations));</span><br><span class="line">    System.out.println(response.items());</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="5-文档进阶查询"><a href="#5-文档进阶查询" class="headerlink" title="5 文档进阶查询"></a>5 文档进阶查询</h3><h4 id="5-1-全量查询"><a href="#5-1-全量查询" class="headerlink" title="5.1 全量查询"></a>5.1 全量查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 全量查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">queryAll</span><span class="params">()</span> <span class="keyword">throws</span> Exception</span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .matchAll(m -&gt; m)),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-2-条件查询"><a href="#5-2-条件查询" class="headerlink" title="5.2 条件查询"></a>5.2 条件查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 条件查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">wrapperQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            <span class="comment">// term为完全匹配查询, match为分词匹配</span></span><br><span class="line">                            <span class="comment">// 查询的字段有中文时，field里填写&#x27;字段名.keyword&#x27;，例age.keyword</span></span><br><span class="line">                            .term(t -&gt; t</span><br><span class="line">                                    .field(<span class="string">&quot;age&quot;</span>)</span><br><span class="line">                                    .value(<span class="number">30</span>))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-3-组合条件查询"><a href="#5-3-组合条件查询" class="headerlink" title="5.3 组合条件查询"></a>5.3 组合条件查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 组合条件查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">boolQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .bool(b -&gt; b</span><br><span class="line">                                    <span class="comment">// must类似sql的and，should类似sql的or</span></span><br><span class="line">                                    .must(m -&gt; m</span><br><span class="line">                                            .term(t -&gt; t</span><br><span class="line">                                                    .field(<span class="string">&quot;sex.keyword&quot;</span>)</span><br><span class="line">                                                    .value(<span class="string">&quot;男&quot;</span>))</span><br><span class="line">                                    )</span><br><span class="line">                                    .must(m -&gt; m</span><br><span class="line">                                            .match(ma -&gt; ma</span><br><span class="line">                                                    .field(<span class="string">&quot;name&quot;</span>)</span><br><span class="line">                                                    .query(<span class="string">&quot;letere&quot;</span>))</span><br><span class="line">                                    ))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-4-范围查询"><a href="#5-4-范围查询" class="headerlink" title="5.4 范围查询"></a>5.4 范围查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 范围查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">rangeQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .range(r -&gt; r</span><br><span class="line">                                    .field(<span class="string">&quot;age&quot;</span>)</span><br><span class="line">                                    .gt(JsonData.of(<span class="number">20</span>))</span><br><span class="line">                                    .lt(JsonData.of(<span class="number">30</span>)))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-5-模糊查询"><a href="#5-5-模糊查询" class="headerlink" title="5.5 模糊查询"></a>5.5 模糊查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 模糊查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fuzzyQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .fuzzy(f -&gt; f</span><br><span class="line">                                    .field(<span class="string">&quot;name&quot;</span>)</span><br><span class="line">                                    .value(<span class="string">&quot;lete&quot;</span>)</span><br><span class="line">                                    .fuzziness(<span class="string">&quot;2&quot;</span>))), <span class="comment">// 偏差字符长度，偏差长度&lt;=2的，可以查询出来</span></span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-6-分页查询"><a href="#5-6-分页查询" class="headerlink" title="5.6 分页查询"></a>5.6 分页查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 分页查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">pageQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .matchAll(m -&gt; m))</span><br><span class="line">                    .from(<span class="number">0</span>)</span><br><span class="line">                    .size(<span class="number">2</span>),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-7-排序查询"><a href="#5-7-排序查询" class="headerlink" title="5.7 排序查询"></a>5.7 排序查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 排序查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sortQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .matchAll(m -&gt; m))</span><br><span class="line">                    .sort(so -&gt; so</span><br><span class="line">                            .field(f -&gt; f</span><br><span class="line">                                    .field(<span class="string">&quot;age&quot;</span>)</span><br><span class="line">                                    .order(SortOrder.Desc))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-8-指定字段查询"><a href="#5-8-指定字段查询" class="headerlink" title="5.8 指定字段查询"></a>5.8 指定字段查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 指定字段查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">fieldQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .matchAll(m -&gt; m))</span><br><span class="line">                    .source(so -&gt; so</span><br><span class="line">                            .filter(f -&gt; f</span><br><span class="line">                                    .includes(<span class="string">&quot;name&quot;</span>, <span class="string">&quot;age&quot;</span>, <span class="string">&quot;sex&quot;</span>)</span><br><span class="line">                                    .excludes(<span class="string">&quot;&quot;</span>))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.source());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-9-高亮查询"><a href="#5-9-高亮查询" class="headerlink" title="5.9 高亮查询"></a>5.9 高亮查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 高亮查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">highLightQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .query(q -&gt; q</span><br><span class="line">                            .term(t -&gt; t</span><br><span class="line">                                    .field(<span class="string">&quot;name.keyword&quot;</span>)</span><br><span class="line">                                    .value(<span class="string">&quot;咕料&quot;</span>)))</span><br><span class="line">                    .highlight(h -&gt; h</span><br><span class="line">                            .fields(<span class="string">&quot;name.keyword&quot;</span>, f -&gt; f</span><br><span class="line">                                    .preTags(<span class="string">&quot;&lt;font color=&#x27;red&#x27;&gt;&quot;</span>)</span><br><span class="line">                                    .postTags(<span class="string">&quot;&lt;/font&gt;&quot;</span>))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="keyword">for</span> (Hit&lt;User&gt; userHit : searchResponse.hits().hits()) &#123;</span><br><span class="line">        System.out.println(userHit.highlight());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="5-10-聚合查询"><a href="#5-10-聚合查询" class="headerlink" title="5.10 聚合查询"></a>5.10 聚合查询</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 聚合查询</span></span><br><span class="line"><span class="meta">@Test</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">groupQuery</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    ElasticsearchClient esClient = ESUtil.getEsClient();</span><br><span class="line">    SearchResponse&lt;User&gt; searchResponse = esClient.search(</span><br><span class="line">            s -&gt; s.index(<span class="string">&quot;user&quot;</span>)</span><br><span class="line">                    .aggregations(<span class="string">&quot;sexCount&quot;</span>, a -&gt; a.terms(t -&gt; t.field(<span class="string">&quot;sex.keyword&quot;</span>))),</span><br><span class="line">            User.class</span><br><span class="line">    );</span><br><span class="line">    <span class="comment">// 根据查询的字段数据类型选择对应的terms，string选择sterms，数字选择lterms</span></span><br><span class="line">    <span class="keyword">for</span> (StringTermsBucket stringTermsBucket : searchResponse.aggregations().get(<span class="string">&quot;sexCount&quot;</span>).sterms().buckets().array()) &#123;</span><br><span class="line">        System.out.println(stringTermsBucket.key() + <span class="string">&quot;:&quot;</span> + stringTermsBucket.docCount());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/blog/2022/04/19/%E3%80%90ElasticSearch%E3%80%91ES%E4%BD%BF%E7%94%A8/" rel="prev" title="【ElasticSearch】ES使用">
+      <i class="fa fa-chevron-left"></i> 【ElasticSearch】ES使用
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/blog/2022/04/25/%E3%80%90ElasticSearch%E3%80%91ES%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" rel="next" title="【ElasticSearch】ES环境搭建">
+      【ElasticSearch】ES环境搭建 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-text">1 环境准备</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E4%BE%9D%E8%B5%96"><span class="nav-text">1.1 依赖</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E8%BF%9E%E6%8E%A5ES"><span class="nav-text">1.2 连接ES</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E7%B4%A2%E5%BC%95%E4%BD%BF%E7%94%A8"><span class="nav-text">2 索引使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95"><span class="nav-text">2.1 创建索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E6%9F%A5%E8%AF%A2%E7%B4%A2%E5%BC%95"><span class="nav-text">2.2 查询索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E5%88%A0%E9%99%A4%E7%B4%A2%E5%BC%95"><span class="nav-text">2.3 删除索引</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E6%96%87%E6%A1%A3%E4%BD%BF%E7%94%A8"><span class="nav-text">3 文档使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E5%88%9B%E5%BB%BA%E6%96%87%E6%A1%A3"><span class="nav-text">3.1 创建文档</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E6%9B%B4%E6%96%B0%E6%96%87%E6%A1%A3"><span class="nav-text">3.2 更新文档</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E6%9F%A5%E8%AF%A2%E6%96%87%E6%A1%A3"><span class="nav-text">3.3 查询文档</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E5%88%A0%E9%99%A4%E6%96%87%E6%A1%A3"><span class="nav-text">3.4 删除文档</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%96%87%E6%A1%A3%E6%89%B9%E9%87%8F%E5%A4%84%E7%90%86"><span class="nav-text">4 文档批量处理</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%89%B9%E9%87%8F%E5%88%9B%E5%BB%BA"><span class="nav-text">4.1 批量创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E6%89%B9%E9%87%8F%E5%88%A0%E9%99%A4"><span class="nav-text">4.2 批量删除</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E6%96%87%E6%A1%A3%E8%BF%9B%E9%98%B6%E6%9F%A5%E8%AF%A2"><span class="nav-text">5 文档进阶查询</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E5%85%A8%E9%87%8F%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.1 全量查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-2-%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.2 条件查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-3-%E7%BB%84%E5%90%88%E6%9D%A1%E4%BB%B6%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.3 组合条件查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-4-%E8%8C%83%E5%9B%B4%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.4 范围查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-5-%E6%A8%A1%E7%B3%8A%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.5 模糊查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-6-%E5%88%86%E9%A1%B5%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.6 分页查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-7-%E6%8E%92%E5%BA%8F%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.7 排序查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-8-%E6%8C%87%E5%AE%9A%E5%AD%97%E6%AE%B5%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.8 指定字段查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-9-%E9%AB%98%E4%BA%AE%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.9 高亮查询</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#5-10-%E8%81%9A%E5%90%88%E6%9F%A5%E8%AF%A2"><span class="nav-text">5.10 聚合查询</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/blog/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/blog/archives/">
+        
+          <span class="site-state-item-count">210</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/blog/categories/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/blog/lib/anime.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.min.js"></script>
+  <script src="/blog/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/blog/js/utils.js"></script>
+
+<script src="/blog/js/motion.js"></script>
+
+
+<script src="/blog/js/schemes/pisces.js"></script>
+
+
+<script src="/blog/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
