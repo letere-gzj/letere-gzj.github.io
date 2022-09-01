@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SpringCache缓存框架简介与使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Spring】SpringCache缓存框架">
+<meta property="og:url" content="https://letere-gzj.github.io/2022/09/01/%E3%80%90Spring%E3%80%91SpringCache%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="SpringCache缓存框架简介与使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-08-31T16:14:25.000Z">
+<meta property="article:modified_time" content="2022-08-31T17:14:05.098Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://letere-gzj.github.io/2022/09/01/%E3%80%90Spring%E3%80%91SpringCache%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【Spring】SpringCache缓存框架 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2022/09/01/%E3%80%90Spring%E3%80%91SpringCache%E7%BC%93%E5%AD%98%E6%A1%86%E6%9E%B6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【Spring】SpringCache缓存框架
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2022-09-01 00:14:25 / 修改时间：01:14:05" itemprop="dateCreated datePublished" datetime="2022-09-01T00:14:25+08:00">2022-09-01</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/Spring/" itemprop="url" rel="index"><span itemprop="name">Spring</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>SpringCache缓存框架简介与使用</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-简介"><a href="#1-简介" class="headerlink" title="1 简介"></a>1 简介</h3><ul>
+<li>Spring从3.1开始，定义了<code>Cache</code>和<code>CacheManager</code>接口来统一管理不同的缓存</li>
+<li>通过注解的形式，来实现对缓存的读取，写入，删除操作，简化开发</li>
+<li>【<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache">SpringCache文档</a>】</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">注解</th>
+<th align="center">说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">@Cacheable</td>
+<td align="center">读取缓存。缓存存在，不执行方法直接返回缓存；若缓存不存在，执行方法，并将方法的返回值写入缓存</td>
+</tr>
+<tr>
+<td align="center">@CacheEvict</td>
+<td align="center">删除缓存</td>
+</tr>
+<tr>
+<td align="center">@CachePut</td>
+<td align="center">将方法的返回值写入缓存</td>
+</tr>
+<tr>
+<td align="center">@Caching</td>
+<td align="center">组合多个缓存注解操作</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="2-操作演示"><a href="#2-操作演示" class="headerlink" title="2 操作演示"></a>2 操作演示</h3><ul>
+<li>操作演示使用的是redis作为缓存，且使用springboot来演示，非spring</li>
+</ul>
+<hr>
+<h4 id="2-1-环境准备"><a href="#2-1-环境准备" class="headerlink" title="2.1 环境准备"></a>2.1 环境准备</h4><ul>
+<li><p>（1）<strong>依赖</strong></p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">&lt;!-- spring-cache --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-cache<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="comment">&lt;!-- redis --&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.boot<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-boot-starter-data-redis<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>（2）<strong>yaml配置</strong></p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">cache:</span></span><br><span class="line">    <span class="attr">type:</span> <span class="string">redis</span> <span class="comment"># 缓存类型：redis</span></span><br><span class="line">    <span class="attr">redis:</span></span><br><span class="line">      <span class="attr">time-to-live:</span> <span class="number">30000</span> <span class="comment"># 所有redis-key过期时间（单位：毫秒）</span></span><br><span class="line">      <span class="attr">cache-null-values:</span> <span class="literal">true</span> <span class="comment"># 缓存null值（解决缓存穿透）</span></span><br><span class="line">  <span class="attr">redis:</span></span><br><span class="line">    <span class="attr">host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line">    <span class="attr">port:</span> <span class="number">6379</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>（3）<strong>SpringBoot启动类添加<code>@EnableCaching</code></strong></p>
+</li>
+</ul>
+<hr>
+<h4 id="2-2-Cacheable"><a href="#2-2-Cacheable" class="headerlink" title="2.2 @Cacheable"></a>2.2 @Cacheable</h4><ul>
+<li>【<a target="_blank" rel="noopener" href="https://docs.spring.io/spring-framework/docs/current/reference/html/integration.html#cache-spel-context">SpEL表达式使用</a>】</li>
+</ul>
+<figure class="highlight reasonml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@<span class="constructor">Cacheable(<span class="params">value</span> = &#123;#Category&#125;, <span class="params">key</span> = <span class="string">&quot;#keyName&quot;</span>, <span class="params">sync</span> = #<span class="params">true</span><span class="operator">/</span><span class="params">false</span>)</span></span><br><span class="line"></span><br><span class="line">value: 缓存分类<span class="keyword">or</span>目录</span><br><span class="line">key: 缓存的key名(使用SpEl表达式)</span><br><span class="line">sync: 是否加本地锁(虽然不是分布式锁，但也是能降低缓存击穿问题)</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 【演示代码】</span></span><br><span class="line"><span class="meta">@Cacheable(value = &quot;test&quot;, key = &quot;&#x27;msg&#x27;&quot;, sync = true)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">getMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    System.out.println(<span class="string">&quot;log --- 调用了数据库，没命中缓存&quot;</span>);</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&quot;Hello World&quot;</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-3-CacheEvict-CachePut"><a href="#2-3-CacheEvict-CachePut" class="headerlink" title="2.3 @CacheEvict | @CachePut"></a>2.3 @CacheEvict | @CachePut</h4><ul>
+<li>@CacheEvict | @CachePut 两注解使用场景基本一致，用于维护<strong>缓存和数据库一致性</strong><ul>
+<li>@CacheEvict：先更新数据库，后删除缓存</li>
+<li>@CachePut:：先更新数据库，再更新缓存</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">@CacheEvict(<span class="built_in">value</span> = &#123;#category&#125;, <span class="built_in">key</span> = <span class="string">&quot;#keyName&quot;</span>, allEntries = #true/false)</span><br><span class="line"></span><br><span class="line"><span class="built_in">value</span>：缓存目录</span><br><span class="line"><span class="built_in">key</span>：缓存<span class="built_in">key</span>名</span><br><span class="line">allEntries：是否删除满足条件所有缓存（可以只填<span class="built_in">value</span>值，不填具体的<span class="built_in">key</span>值，就会将<span class="built_in">value</span>目录下的所有缓存删除）</span><br></pre></td></tr></table></figure>
+<figure class="highlight q"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@CachePut(<span class="built_in">value</span> = &#123;#category&#125;, <span class="built_in">key</span> = <span class="string">&quot;#keyName&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="built_in">value</span>：缓存目录</span><br><span class="line"><span class="built_in">key</span>：缓存<span class="built_in">key</span>名</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 【演示代码】</span></span><br><span class="line"><span class="comment">// 移除缓存（更新删除）</span></span><br><span class="line"><span class="meta">@CacheEvict(value = &quot;test&quot;, key = &quot;&#x27;msg&#x27;&quot;)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 更新数据库逻辑</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// ---</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 更新缓存（双写模式）</span></span><br><span class="line"><span class="meta">@CachePut(value = &quot;test&quot;, key = &quot;&#x27;msg&#x27;&quot;)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> String <span class="title">updateMsg</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 更新数据库逻辑，并将更新后的数据返回</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="2-4-Caching"><a href="#2-4-Caching" class="headerlink" title="2.4 @Caching"></a>2.4 @Caching</h4><figure class="highlight less"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="variable">@Caching</span>(cacheable = &#123;&#125;, put = &#123;&#125;, evict = &#123;&#125;)</span><br><span class="line"></span><br><span class="line">cachable：放入<span class="variable">@Cachable</span>注解</span><br><span class="line">put：放入<span class="variable">@CachePut</span>注解</span><br><span class="line">evict：放入<span class="variable">@CacheEvict</span>注解</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 【演示代码】</span></span><br><span class="line"><span class="comment">// 组合操作</span></span><br><span class="line"><span class="meta">@Caching(</span></span><br><span class="line"><span class="meta">        evict = &#123;</span></span><br><span class="line"><span class="meta">                @CacheEvict(value = &quot;test&quot;, key = &quot;&#x27;msg1&#x27;&quot;),</span></span><br><span class="line"><span class="meta">                @CacheEvict(value = &quot;test&quot;, key = &quot;&#x27;msg2&#x27;&quot;)</span></span><br><span class="line"><span class="meta">        &#125;</span></span><br><span class="line"><span class="meta">)</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">updateMsg2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 更新数据库数据</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="3-自定义配置类"><a href="#3-自定义配置类" class="headerlink" title="3 自定义配置类"></a>3 自定义配置类</h3><ul>
+<li>因为缓存存入redis中，value使用了<strong>jdk序列化</strong>的形式，不便于跨平台使用，建议使用json来序列化<ul>
+<li>因此需要自定一个配置类来解决问题</li>
+</ul>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@EnableConfigurationProperties(CacheProperties.class)</span> <span class="comment">// 使yaml中配置绑定的配置类放入ioc容器中</span></span><br><span class="line"><span class="meta">@EnableCaching</span></span><br><span class="line"><span class="meta">@Configuration</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyRedisCacheConfig</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Bean</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> RedisCacheConfiguration <span class="title">getRedisCacheConfiguration</span><span class="params">(CacheProperties cacheProperties)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// 修改value序列化方法，默认使用jdk序列化，改成json序列化</span></span><br><span class="line">        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig()</span><br><span class="line">                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(<span class="keyword">new</span> GenericJackson2JsonRedisSerializer()));</span><br><span class="line">        <span class="comment">// 其余照搬源码（org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration.createConfiguration()方法）</span></span><br><span class="line">        CacheProperties.Redis redisProperties = cacheProperties.getRedis();</span><br><span class="line">        <span class="keyword">if</span> (redisProperties.getTimeToLive() != <span class="keyword">null</span>) &#123;</span><br><span class="line">            config = config.entryTtl(redisProperties.getTimeToLive());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (redisProperties.getKeyPrefix() != <span class="keyword">null</span>) &#123;</span><br><span class="line">            config = config.prefixCacheNameWith(redisProperties.getKeyPrefix());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!redisProperties.isCacheNullValues()) &#123;</span><br><span class="line">            config = config.disableCachingNullValues();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (!redisProperties.isUseKeyPrefix()) &#123;</span><br><span class="line">            config = config.disableKeyPrefix();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> config;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="4-SpringCache的不足"><a href="#4-SpringCache的不足" class="headerlink" title="4 SpringCache的不足"></a>4 SpringCache的不足</h3><ul>
+<li>从缓存三大问题分析</li>
+<li><strong>缓存穿透</strong>：配置中有<code>spring.cache.redis.cache-null-values = true</code>，来存储null，可以完美解决缓存穿透问题</li>
+<li><strong>缓存击穿</strong>：<code>@Cacheable(sync = true)</code>，读取缓存可以使用本地同步锁，解决方法虽不如分布式锁，但一定程度上也算是解决缓存击穿问题</li>
+<li><strong>缓存雪崩</strong>：无法解决，所有缓存设置的过期时间都一致，有可能存在缓存雪崩问题</li>
+</ul>
+<hr>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/08/30/%E3%80%90Gradle%E3%80%91gradle%E5%85%A5%E9%97%A8/" rel="prev" title="【Gradle】gradle入门">
+      <i class="fa fa-chevron-left"></i> 【Gradle】gradle入门
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1 简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E6%93%8D%E4%BD%9C%E6%BC%94%E7%A4%BA"><span class="nav-text">2 操作演示</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="nav-text">2.1 环境准备</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-Cacheable"><span class="nav-text">2.2 @Cacheable</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-CacheEvict-CachePut"><span class="nav-text">2.3 @CacheEvict | @CachePut</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-Caching"><span class="nav-text">2.4 @Caching</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE%E7%B1%BB"><span class="nav-text">3 自定义配置类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-SpringCache%E7%9A%84%E4%B8%8D%E8%B6%B3"><span class="nav-text">4 SpringCache的不足</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">214</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
