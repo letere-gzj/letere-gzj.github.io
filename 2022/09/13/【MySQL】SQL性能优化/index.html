@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"letere-gzj.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="SQL性能优化：索引，B+树">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【MySQL】SQL性能优化">
+<meta property="og:url" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/index.html">
+<meta property="og:site_name" content="个人博客">
+<meta property="og:description" content="SQL性能优化：索引，B+树">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/hash%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/B-%E6%A0%91%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E4%B8%8A%E5%B1%82%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png">
+<meta property="og:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96%E6%AD%A5%E9%AA%A4.png">
+<meta property="article:published_time" content="2022-09-13T02:11:02.000Z">
+<meta property="article:modified_time" content="2022-09-20T15:09:53.611Z">
+<meta property="article:author" content="莱特雷">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/hash%E7%BB%93%E6%9E%84.png">
+
+<link rel="canonical" href="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>【MySQL】SQL性能优化 | 个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://letere-gzj.github.io/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/uploads/avatar.jpg">
+      <meta itemprop="name" content="莱特雷">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          【MySQL】SQL性能优化
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-09-13 10:11:02" itemprop="dateCreated datePublished" datetime="2022-09-13T10:11:02+08:00">2022-09-13</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2022-09-20 23:09:53" itemprop="dateModified" datetime="2022-09-20T23:09:53+08:00">2022-09-20</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/MySQL/" itemprop="url" rel="index"><span itemprop="name">MySQL</span></a>
+                </span>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>SQL性能优化：索引，B+树</p>
+<a id="more"></a>
+
+<hr>
+<h3 id="1-索引"><a href="#1-索引" class="headerlink" title="1 索引"></a>1 索引</h3><h4 id="1-1-简介"><a href="#1-1-简介" class="headerlink" title="1.1 简介"></a>1.1 简介</h4><ul>
+<li>索引是存储引擎用于快速找到数据记录的一种<strong>数据结构</strong>，类似于书本的目录。</li>
+<li>创建索引的目的，<strong>减少磁盘IO次数</strong>，提升查询速率</li>
+</ul>
+<ul>
+<li>索引的本质：<strong>排好序的快速查找数据结构</strong></li>
+<li>索引是在存储引擎中实现的，存储引擎不同，索引不一定相同（InnoDB中为B+树）</li>
+<li>每表最大支持16个索引，总索引长度不超256字节</li>
+</ul>
+<hr>
+<h4 id="1-2-优缺点"><a href="#1-2-优缺点" class="headerlink" title="1.2 优缺点"></a>1.2 优缺点</h4><ul>
+<li><strong>（1）优点：</strong></li>
+<li>1、降低数据库IO成本</li>
+<li>2、唯一索引，保证表中每一行数据的唯一性</li>
+<li>3、可以加速表与表之间的连接</li>
+<li>4、减少查询中<code>分组(grouby by)</code>和<code>排序(order by)</code>的时间</li>
+</ul>
+<ul>
+<li><strong>（2）缺点：</strong></li>
+<li>1、创建和维护索引耗费时间</li>
+<li>2、索引占用磁盘空间</li>
+<li>3、降低更新表的速度</li>
+</ul>
+<hr>
+<h4 id="1-3-索引推演"><a href="#1-3-索引推演" class="headerlink" title="1.3 索引推演"></a>1.3 索引推演</h4><ul>
+<li>以B+树为例，推演出索引的构建 <strong>（为了方便理解，构建方式并不是完全正确）</strong></li>
+</ul>
+<ul>
+<li><strong>基础概念</strong></li>
+<li>数据：表中的一行数据，称为数据</li>
+<li>数据页：由多个数据组成，页中数据按照索引字段进行排序，最大16kb</li>
+<li>目录项：记录数据页中的索引字段的最大值or最小值，方便定位数据页中的数据</li>
+</ul>
+<hr>
+<h4 id="1-4-索引分类"><a href="#1-4-索引分类" class="headerlink" title="1.4 索引分类"></a>1.4 索引分类</h4><h5 id="1-4-1-聚簇索引"><a href="#1-4-1-聚簇索引" class="headerlink" title="1.4.1 聚簇索引"></a>1.4.1 聚簇索引</h5><ul>
+<li><strong>聚簇索引</strong>：一种数据存储方式，即所有用户记录都存储在叶子节点<code>【聚簇索引在创建表的时候，会默认根据主键自动进行创建索引】</code></li>
+</ul>
+<ul>
+<li><strong>优点</strong>：<ul>
+<li>相较于（非聚簇索引），数据访问速度更快</li>
+<li>对主键的排序查找，范围查找速度更快</li>
+<li>节省IO操作</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>缺点</strong>：<ul>
+<li>插入速度严重依赖于插入顺序（所以尽量让主键为自增）</li>
+<li>更新主键的代价大</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>限制</strong>：<ul>
+<li>聚簇索引只有innodb有，myIsam没有聚簇索引</li>
+<li>表只有一个聚簇索引，一般为表的主键，若没有主键，则选择非空的唯一索引代替</li>
+<li>为了充分发挥聚簇索引的特性，建议<strong>主键自增</strong></li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="1-4-2-非聚簇索引"><a href="#1-4-2-非聚簇索引" class="headerlink" title="1.4.2 非聚簇索引"></a>1.4.2 非聚簇索引</h5><ul>
+<li><strong>非聚簇索引（二级索引）</strong>：以非主键的字段创建的索引，为非聚簇索引。<ul>
+<li>叶子节点保存的数据，不是完整的行数据，而是<strong>索引字段和主键字段</strong></li>
+<li>非叶子节点（目录节点），为了保证数据的唯一性，除了存储索引字段外，也会存储主键字段</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>回表</strong>：通过二级索引所查出来的主键字段，回到聚簇索引查找对应的数据，此操作称为回表</li>
+</ul>
+<hr>
+<h5 id="1-4-3-联合索引"><a href="#1-4-3-联合索引" class="headerlink" title="1.4.3 联合索引"></a>1.4.3 联合索引</h5><ul>
+<li>联合索引（属于非聚簇索引）：以多个字段来基准创建非聚簇索引</li>
+</ul>
+<hr>
+<h5 id="1-4-4-索引区别"><a href="#1-4-4-索引区别" class="headerlink" title="1.4.4 索引区别"></a>1.4.4 索引区别</h5><ul>
+<li>聚簇索引 与 非聚簇索引 区别<ul>
+<li>聚簇的叶子节点保存的是<code>数据记录</code>，非聚簇索引保存的是<code>数据位置</code></li>
+<li>聚簇索引只有一个，非聚簇索引可以有多个</li>
+<li>聚簇索引查询效率高，更新表操作比非聚簇索引慢</li>
+</ul>
+</li>
+</ul>
+<hr>
+<p>InnoDB B+树索引注意事项</p>
+<ul>
+<li><p>（1）根页面位置万年不变</p>
+</li>
+<li><p>创建表，添加数据的方式是自上而下的【节点下沉】</p>
+</li>
+<li><p>（2）内节点中目录项记录的唯一性</p>
+</li>
+<li><p>内节点（非叶子节点），若节点中索引字段的数据一致，不便于区分，阻碍数据的更新。真实情况是内节点也会保存主键字段进去</p>
+</li>
+<li><p>（3）一个页面最少存储两条记录</p>
+</li>
+</ul>
+<hr>
+<h4 id="1-5-存储引擎"><a href="#1-5-存储引擎" class="headerlink" title="1.5 存储引擎"></a>1.5 存储引擎</h4><h5 id="1-5-1-myisam"><a href="#1-5-1-myisam" class="headerlink" title="1.5.1 myisam"></a>1.5.1 myisam</h5><ul>
+<li>myisam中的索引数据结构为B-树（不是真的B-树，也是一个B+树）</li>
+<li>与innodb的B+树区别为：叶子节点保存的数据是<strong>数据记录的地址</strong></li>
+<li>因此myisam的索引为”非聚簇索引”</li>
+</ul>
+<hr>
+<h5 id="1-5-2-存储引擎区别"><a href="#1-5-2-存储引擎区别" class="headerlink" title="1.5.2 存储引擎区别"></a>1.5.2 存储引擎区别</h5><ul>
+<li>1、innodb中索引有一个聚簇索引，myisam中索引都基本上是“非聚簇索引”</li>
+<li>2、innodb中查询主键数据一次查找就能找到对应的记录，myisam无论查什么数据，都会进行回表</li>
+<li>3、innodb中非聚簇索引叶子节点数据存储的是主键数值，myisam存储的是数据的地址</li>
+<li>4、myisam回表操作直接通过地址偏移量寻找数据，比innodb中通过主键查找数据速度要快</li>
+<li>5、innodb要求表必须要有主键，myisam没有要求</li>
+</ul>
+<hr>
+<h5 id="1-5-3-优化思路"><a href="#1-5-3-优化思路" class="headerlink" title="1.5.3 优化思路"></a>1.5.3 优化思路</h5><ul>
+<li>1、innodb<strong>不建议使用过长字段作为主键</strong>，非聚簇索引会保存主键，过长的主键会令二级索引变得过大</li>
+<li>2、innodb中，尽量选择<strong>单调增的数据作为主键</strong>，减少聚簇索引的数据迁移</li>
+</ul>
+<hr>
+<h4 id="1-6-索引数据结构对比"><a href="#1-6-索引数据结构对比" class="headerlink" title="1.6 索引数据结构对比"></a>1.6 索引数据结构对比</h4><h5 id="1-6-1-hash"><a href="#1-6-1-hash" class="headerlink" title="1.6.1 hash"></a>1.6.1 hash</h5><ul>
+<li>hash：类似Java中的HashMap，有<code>数组+链表+红黑树</code>组成，对索引字段作为key</li>
+</ul>
+<img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/hash%E7%BB%93%E6%9E%84.png" class="">
+
+
+<ul>
+<li><strong>优点</strong>：<ul>
+<li>等值查找速度快</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>缺点</strong>：<ul>
+<li>1、hash索引只支持等于，不等于，In查询；范围查询时，时间复杂度会退化为O(n)</li>
+<li>2、hash索引数据无序，order by下还要重新排序</li>
+<li>3、hash联合索引时，将联合索引字段合并，计算出hash值，无法对单独一个键or几个索引进行查询</li>
+<li>4、索引列重复值很多时，单链表越长，效率会降低</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>限制</strong>：<ul>
+<li>1、hash索引支持Memory存储引擎</li>
+<li>2、innodb不支持hash索引，但提供自适应hash索引（某个数据经常被访问到，就会将这个数据页地址存放到hash表中，当下次查询时，可以直接找到对应的数据页）</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="1-6-2-b-tree"><a href="#1-6-2-b-tree" class="headerlink" title="1.6.2 b-tree"></a>1.6.2 b-tree</h5><ul>
+<li>b-tree：是一个<code>多叉的平衡树</code>。最大的特点就是多叉，以及非叶子节点也会保存数据</li>
+</ul>
+<img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/B-%E6%A0%91%E7%BB%93%E6%9E%84.png" class="">
+
+<hr>
+<h3 id="2-innodb数据存储结构"><a href="#2-innodb数据存储结构" class="headerlink" title="2 innodb数据存储结构"></a>2 innodb数据存储结构</h3><h4 id="2-1-页结构"><a href="#2-1-页结构" class="headerlink" title="2.1 页结构"></a>2.1 页结构</h4><img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E7%BB%93%E6%9E%84.png" class="">
+
+<ul>
+<li>innodb将数据划分为若干个页，一个页大小<strong>16kb</strong>（<code>show variables like &#39;%innodb_page_size%&#39;</code>：查看页大小）</li>
+<li>数据库IO操作最小单位为页</li>
+<li>页中记录以单链表的形式连接</li>
+<li>页与页之间则是用双链表进行连接</li>
+</ul>
+<hr>
+<h4 id="2-2-页上层结构"><a href="#2-2-页上层结构" class="headerlink" title="2.2 页上层结构"></a>2.2 页上层结构</h4><img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E4%B8%8A%E5%B1%82%E7%BB%93%E6%9E%84.png" class="">
+
+<ul>
+<li>**区(Extent)**：一个区分配64个连续的页，一个区的大小为1MB</li>
+<li>**段(Segment)**：由一个或多个区组成，段时数据库中的分配单位，不同类型的数据库对象以不同的段形式存在（创建表会有表段，创建索引会有索引段）</li>
+<li>**表空间(Tablespace)**：一个逻辑容器，用于存储段。可以划分为”系统表空间”、”用户表空间”、”撤销表空间”、”临时表空间”等</li>
+</ul>
+<hr>
+<h4 id="2-3-页内部结构"><a href="#2-3-页内部结构" class="headerlink" title="2.3 页内部结构"></a>2.3 页内部结构</h4><img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E9%A1%B5%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84.png" class="">
+
+<ul>
+<li><strong>（1）FileHeader(文件头)</strong></li>
+<li>描述各种页的通用信息</li>
+<li><code>FIL_PAGE_OFFSET</code>：记录每一个页的单独编号</li>
+<li><code>FIL_PAGE_TYPE</code>：记录页的类型，例如索引组成的页，类型为”索引页”</li>
+<li><code>FIL_PAGE_PREV</code>：上一页</li>
+<li><code>FIL_PAGE_NEXT</code>：下一页</li>
+<li><code>FIL_PAGE_SPACE_OR_CHKSUM</code>：校验和，类似hashcode，通过特殊算法计算出来的值，用于判断是否相等</li>
+<li><code>FIL_PAGE_SLN</code>：页面最后被修改时对应的日志序列位置</li>
+</ul>
+<ul>
+<li><strong>（2）FileTrailer（文件尾部）</strong></li>
+<li>校验数据是否完整</li>
+<li><code>FIL_PAGE_SPACE_OR_CHKSUM</code>：校验和，类似hashcode，通过特殊算法计算出来的值，用于判断是否相等</li>
+<li><code>FIL_PAGE_SLN</code>：页面最后被修改时对应的日志序列位置</li>
+</ul>
+<ul>
+<li><strong>（3）FreeSpace（空闲空间）</strong></li>
+<li>每当插入一条数据时，会从空闲空间中划分一条记录大小到UserRecords中</li>
+</ul>
+<ul>
+<li><strong>（4）UserRecords（用户记录）</strong></li>
+<li>记录按照指定行格式摆放，形成单链表</li>
+</ul>
+<ul>
+<li><strong>（5）Infimum（最小记录）&amp;Supremum（最大记录）</strong></li>
+<li>记录单链表中数据的最大最小值，用于排序比较</li>
+</ul>
+<ul>
+<li><strong>（6）PageDirectory（页目录）</strong></li>
+<li>数组形式用于快速查找数据</li>
+<li>将记录数据进行分组，每组记录最大值数据，形成一个数组</li>
+</ul>
+<ul>
+<li><strong>（7）PageHeader（页面头部）</strong></li>
+<li><code>PAGE_DIRECTION</code>：记录插入的方向</li>
+<li><code>PAGE_N_DIRECTION</code>：记录连续N次都插入同一个方式，此值为N</li>
+</ul>
+<p>。。。。。。</p>
+<hr>
+<h3 id="3-索引创建于设计原则"><a href="#3-索引创建于设计原则" class="headerlink" title="3 索引创建于设计原则"></a>3 索引创建于设计原则</h3><h4 id="3-1-索引分类（功能）"><a href="#3-1-索引分类（功能）" class="headerlink" title="3.1 索引分类（功能）"></a>3.1 索引分类（功能）</h4><ul>
+<li><strong>（1）普通索引（normal）</strong></li>
+<li>不附加任何限制条件，可以创建在任何数据类型上</li>
+</ul>
+<ul>
+<li><strong>（2）唯一性索引（unique）</strong></li>
+<li>要求索引的字段具有唯一性，但允许字段可以为null值</li>
+</ul>
+<ul>
+<li><strong>（3）主键索引</strong></li>
+<li>由主键组成的索引，具有唯一性，且字段值不能为null（主键索引只能有一个）</li>
+</ul>
+<ul>
+<li><strong>（4）全文索引（fulltext）</strong></li>
+<li>利用分词技术等算法，分析出文本中关键词的频率和重要性。查询数据量较大的字符串类型的字段时，全文索引可以提高查询速度</li>
+</ul>
+<ul>
+<li><strong>（5）空间索引</strong></li>
+<li>空间索引只能简历空间数据类型上（GEOMETRY、POINT、LINSTRING、POLYGON），目前只有myisam支持空间索引，且空间索引字段不能为null</li>
+</ul>
+<hr>
+<h4 id="3-2-索引创建"><a href="#3-2-索引创建" class="headerlink" title="3.2 索引创建"></a>3.2 索引创建</h4><ul>
+<li><strong>（1）隐式创建</strong>：创建表时，主键约束，唯一约束，外键；都会自动创建索引</li>
+</ul>
+<ul>
+<li><strong>（2）建表时创建索引</strong><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">create</span> <span class="keyword">table</span> table_name(</span><br><span class="line">字段<span class="number">1</span>,</span><br><span class="line">字段<span class="number">2</span>,</span><br><span class="line">...</span><br><span class="line">[<span class="keyword">UNIQUE</span> | FULLTEXT | SPATIAL] [<span class="keyword">INDEX</span> | <span class="keyword">KEY</span>] [index_name](colname[<span class="keyword">length</span>] [<span class="keyword">ASC</span> | <span class="keyword">DESC</span>]) </span><br><span class="line">);</span><br></pre></td></tr></table></figure>
+
+
+</li>
+</ul>
+<ul>
+<li><strong>（3）创建索引</strong><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name addd [<span class="keyword">UNIQUE</span> | FULLTEXT | SPATIAL] [<span class="keyword">INDEX</span> | <span class="keyword">KEY</span>] [index_name](col_name[<span class="keyword">length</span>] [<span class="keyword">ASC</span> | <span class="keyword">DESC</span>]) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">create</span> [<span class="keyword">UNIQUE</span> | FULLTEXT | SPATIAL] <span class="keyword">index</span> idx_name <span class="keyword">on</span> table_name (col_name[<span class="keyword">length</span>] [<span class="keyword">ASC</span> | <span class="keyword">DESC</span>]) </span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h4 id="3-3-索引删除"><a href="#3-3-索引删除" class="headerlink" title="3.3 索引删除"></a>3.3 索引删除</h4><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">alter</span> <span class="keyword">table</span> table_name <span class="keyword">drop</span> <span class="keyword">index</span> idx_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 或</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">drop</span> <span class="keyword">index</span> idx_name <span class="keyword">on</span> table_name</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="3-4-适合创建索引情况"><a href="#3-4-适合创建索引情况" class="headerlink" title="3.4 适合创建索引情况"></a>3.4 适合创建索引情况</h4><ul>
+<li><strong>（1）字段数组有唯一性限制</strong><ul>
+<li>业务上具有唯一特性的字段，即使时组合字段，也必须建成唯一索引</li>
+</ul>
+</li>
+<li><strong>（2）频繁作为where查询条件的字段</strong></li>
+<li><strong>（3）经常groupBy或orderBy的列</strong><ul>
+<li>多字段优先设置联合索引</li>
+</ul>
+</li>
+<li><strong>（4）update、delete的where条件列</strong></li>
+<li><strong>（5）distanct字段</strong></li>
+<li><strong>（6）join表的连接条件</strong></li>
+<li><strong>（7）类型小的使用列</strong><ul>
+<li>如：tinyint</li>
+</ul>
+</li>
+<li><strong>（8）字符串索引使用前缀进行创建</strong><ul>
+<li>varchar创建索引时，必须指定索引长度，没必要对全字段创建索引（建议取前20）</li>
+<li>前缀索引不支持排序，会直接变成文件排序</li>
+</ul>
+</li>
+<li><strong>（9）区分度高的列作为索引</strong><ul>
+<li>性别之类的不适合索引</li>
+</ul>
+</li>
+<li><strong>（10）使用最频繁的列放在联合索引的左侧</strong><ul>
+<li>最左匹配</li>
+</ul>
+</li>
+<li><strong>（11）多个字段创建索引时，联合索引优于单值索引</strong><ul>
+<li>单表创建索引，建议不超过6个</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="3-5-不适合创建索引的情况"><a href="#3-5-不适合创建索引的情况" class="headerlink" title="3.5 不适合创建索引的情况"></a>3.5 不适合创建索引的情况</h4><ul>
+<li><strong>（1）where使用不到的字段</strong></li>
+<li><strong>（2）数据量少的表</strong><ul>
+<li>例如：目录类（树形结构）</li>
+</ul>
+</li>
+<li><strong>（3）区分度低的列</strong><ul>
+<li>数据重复度高于10%，不建议添加索引</li>
+</ul>
+</li>
+<li><strong>（4）频繁更新的字段or表</strong></li>
+<li><strong>（5）字段的值为无序</strong><ul>
+<li>例如：UUID，会经常发生数据转移</li>
+</ul>
+</li>
+<li><strong>（6）删除不再使用或使用少的索引</strong></li>
+<li><strong>（7）不要定义冗余或重复的索引</strong></li>
+</ul>
+<hr>
+<h3 id="4-性能分析"><a href="#4-性能分析" class="headerlink" title="4 性能分析"></a>4 性能分析</h3><h4 id="4-1-数据库优化步骤"><a href="#4-1-数据库优化步骤" class="headerlink" title="4.1 数据库优化步骤"></a>4.1 数据库优化步骤</h4><img src="/2022/09/13/%E3%80%90MySQL%E3%80%91SQL%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96%E6%AD%A5%E9%AA%A4.png" class="">
+
+<hr>
+<h4 id="4-2-查看系统性能参数"><a href="#4-2-查看系统性能参数" class="headerlink" title="4.2 查看系统性能参数"></a>4.2 查看系统性能参数</h4><ul>
+<li><code>show status like &#39;参数&#39;</code></li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">参数名</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">Connections</td>
+<td align="center">连接MySQL服务器的次数</td>
+</tr>
+<tr>
+<td align="center">Uptime</td>
+<td align="center">MySQL服务器上线时间</td>
+</tr>
+<tr>
+<td align="center">Slow_queries</td>
+<td align="center">慢查询次数</td>
+</tr>
+<tr>
+<td align="center">Innodb_rows_read</td>
+<td align="center">select查询返回的行数</td>
+</tr>
+<tr>
+<td align="center">Innodb_rows_inserted</td>
+<td align="center">执行insert操作插入的行数</td>
+</tr>
+<tr>
+<td align="center">Innodb_rows_updated</td>
+<td align="center">执行update操作更新的行数</td>
+</tr>
+<tr>
+<td align="center">Innodb_rows_deleted</td>
+<td align="center">执行delete操作删除的行数</td>
+</tr>
+<tr>
+<td align="center">Com_select</td>
+<td align="center">查询操作的次数</td>
+</tr>
+<tr>
+<td align="center">Com_update</td>
+<td align="center">更新操作的次数</td>
+</tr>
+<tr>
+<td align="center">Com_delete</td>
+<td align="center">删除操作的次数</td>
+</tr>
+</tbody></table>
+<hr>
+<h4 id="4-3-慢查询日志"><a href="#4-3-慢查询日志" class="headerlink" title="4.3 慢查询日志"></a>4.3 慢查询日志</h4><ul>
+<li>参数<code>long_query_time</code>，默认为10，即查询时间超过10s，认为该SQL为慢查询SQL</li>
+</ul>
+<h5 id="4-3-1-开启慢查询日志"><a href="#4-3-1-开启慢查询日志" class="headerlink" title="4.3.1 开启慢查询日志"></a>4.3.1 开启慢查询日志</h5><ul>
+<li><p>MySQL默认不开始慢查询日志，因为写日志会影响性能，建议在数据调优时再开启</p>
+</li>
+<li><p><strong>（1）通过参数配置</strong></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 查看慢查询日志是否开启</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">&#x27;slow_query_log&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 开启or关闭慢查询日志</span></span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> slow_query_log = [<span class="keyword">on</span> | <span class="keyword">off</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看慢查询日志文件位置</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">&#x27;slow_query_log_file&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 查看慢查询阈值</span></span><br><span class="line"><span class="keyword">show</span> <span class="keyword">variables</span> <span class="keyword">like</span> <span class="string">&#x27;long_query_time&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 修改慢查询阈值</span></span><br><span class="line"><span class="keyword">set</span> <span class="keyword">global</span> long_query_time = [数值(单位:s)]</span><br></pre></td></tr></table></figure>
+</li>
+<li><p><strong>（2）通过配置文件(要重启服务器)</strong></p>
+<figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="section">[mysqld]</span></span><br><span class="line"><span class="attr">slow_query_log</span>=<span class="literal">ON</span></span><br><span class="line"><span class="attr">slow_query_log_file</span>=/var/lib/mysql/slow.log</span><br><span class="line"><span class="attr">long_query_time</span>=<span class="number">3</span></span><br><span class="line"><span class="attr">log_output</span>=FILE</span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<hr>
+<h5 id="4-3-2-查看慢查询SQL"><a href="#4-3-2-查看慢查询SQL" class="headerlink" title="4.3.2 查看慢查询SQL"></a>4.3.2 查看慢查询SQL</h5><ul>
+<li><code>mysqldumpslow -a -s t -t 5 [日志文件位置]</code></li>
+<li>cmd命令，暂支持linux，window要自行上网查询使用方法</li>
+</ul>
+<hr>
+<h4 id="4-4-分析查询语句explain"><a href="#4-4-分析查询语句explain" class="headerlink" title="4.4 分析查询语句explain"></a>4.4 分析查询语句explain</h4><p>explain分析支持select、update、delete语句</p>
+<h5 id="4-4-1-explain字段"><a href="#4-4-1-explain字段" class="headerlink" title="4.4.1 explain字段"></a>4.4.1 explain字段</h5><table>
+<thead>
+<tr>
+<th align="center">字段名</th>
+<th align="center">含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">id</td>
+<td align="center">唯一id</td>
+</tr>
+<tr>
+<td align="center">select_type</td>
+<td align="center">select关键字对应哪个查询类型</td>
+</tr>
+<tr>
+<td align="center">table</td>
+<td align="center">表名</td>
+</tr>
+<tr>
+<td align="center">partitions</td>
+<td align="center">匹配的分区信息</td>
+</tr>
+<tr>
+<td align="center">type</td>
+<td align="center">针对单表的访问方法</td>
+</tr>
+<tr>
+<td align="center">possible_keys</td>
+<td align="center">可能用到的索引</td>
+</tr>
+<tr>
+<td align="center">key</td>
+<td align="center">实际上使用的索引</td>
+</tr>
+<tr>
+<td align="center">key_len</td>
+<td align="center">实际使用到的索引长度</td>
+</tr>
+<tr>
+<td align="center">ref</td>
+<td align="center">当使用索引列等值查询时，与索引列进行等值匹配对象的信息</td>
+</tr>
+<tr>
+<td align="center">rows</td>
+<td align="center">预估需要读取的记录条数</td>
+</tr>
+<tr>
+<td align="center">filtered</td>
+<td align="center">某个表经过搜索条件过滤后剩余记录条数的百分比</td>
+</tr>
+<tr>
+<td align="center">extra</td>
+<td align="center">一些额外信息</td>
+</tr>
+</tbody></table>
+<ul>
+<li><strong>（1）type</strong></li>
+<li>执行查询的访问方法</li>
+<li>System &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; All （越前效率越好）</li>
+<li><code>const</code>：根据主键or唯一索引与常数进行等值匹配</li>
+<li><code>eq_ref</code>：join时，被驱动表通过主键or唯一索引进行等值匹配访问</li>
+<li><code>ref</code>：普通二级索引与常量进行等值匹配</li>
+<li><code>range</code>：使用索引获取某些<em>范围区间</em>的记录</li>
+<li><code>index</code>：存在可使用的索引，但需要扫描全部的索引记录</li>
+<li><code>all</code>：全表扫描</li>
+</ul>
+<ul>
+<li><strong>（2）Extra</strong></li>
+<li>更加准确理解MySQL到底如何执行给定的查询语句</li>
+<li><code>No tables used</code>：查询语句没有使用from</li>
+<li><code>Impossible WHERE</code>：where条件永远为false</li>
+<li><code>Using where</code>：使用全表扫描时</li>
+<li><code>No matching min/max row</code>：使用min()或max()聚合函数，但where条件没有匹配上</li>
+<li><code>Using index condition</code>：命中索引</li>
+<li><code>Using index</code>：命中索引，且为覆盖索引</li>
+<li><code>Using join buffer</code>：join时，被驱动表没有索引命中时，会分配join buffer内存快加快查询速度</li>
+<li><code>Using filesort</code>：非索引字段进行排序</li>
+<li><code>Using temporary</code>：使用临时表，去重情况上常见</li>
+</ul>
+<hr>
+<h5 id="4-4-2-explain输出格式"><a href="#4-4-2-explain输出格式" class="headerlink" title="4.4.2 explain输出格式"></a>4.4.2 explain输出格式</h5><ul>
+<li><strong>传统格式</strong></li>
+<li><strong>JSON格式</strong>：<code>explain format=json [查询语句]</code></li>
+<li><strong>Tree格式</strong>：<code>explain format=tree [查询语句]</code></li>
+<li><strong>可视化输出</strong>：官方SQL工具</li>
+</ul>
+<hr>
+<h3 id="5-索引优化与查询优化"><a href="#5-索引优化与查询优化" class="headerlink" title="5 索引优化与查询优化"></a>5 索引优化与查询优化</h3><ul>
+<li><strong>数据库调优：</strong></li>
+<li>索引建立</li>
+<li>SQL优化</li>
+<li>调整my.cnf | my.ini</li>
+<li>分库分表</li>
+</ul>
+<h4 id="5-1-索引失效"><a href="#5-1-索引失效" class="headerlink" title="5.1 索引失效"></a>5.1 索引失效</h4><ul>
+<li><strong>（1）全值匹配</strong><ul>
+<li>当SQL为等值匹配时，创建联合索引，为每一个字段都添加进索引</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（2）最左前缀法则</strong><ul>
+<li>过滤条件使用索引，必须按照索引建立的顺序，依次满足。一旦跳过某个字段，索引的后续字段无法被使用（不一定要按顺序书写，优化器可以重新排序）</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（3）主键插入顺序</strong><ul>
+<li>由于聚簇索引，因此主键自增，能避免索引数据移动</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（4）计算、函数、类型转换导致索引失效</strong><ul>
+<li>where的字段使用了计算，函数，类型转换的话，该字段会导致索引失效</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（5）范围条件右边的字段索引失效</strong><ul>
+<li>索引字段A B C，where条件A=1, B&gt;2, C=1，此时索引生效只有A和B，C是范围条件的后边，索引不生效</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（6）不等于条件导致索引失效</strong></li>
+</ul>
+<ul>
+<li><strong>（7）is null 可以使用索引，is not null 不能使用索引</strong></li>
+</ul>
+<ul>
+<li><strong>（8）以通配符%开头，索引失效</strong></li>
+</ul>
+<ul>
+<li><strong>（9）or 前后存在非索引的列，索引失效</strong></li>
+</ul>
+<ul>
+<li><strong>（10）数据库和表的字符集同一使用utf8mb4</strong><ul>
+<li>数据库和表的字符集要统一，不同字符集进行比较会造成索引失效</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="4-2-查询优化"><a href="#4-2-查询优化" class="headerlink" title="4.2 查询优化"></a>4.2 查询优化</h4><h5 id="4-2-1-join优化"><a href="#4-2-1-join优化" class="headerlink" title="4.2.1 join优化"></a>4.2.1 join优化</h5><ul>
+<li><strong>（1）左外连接</strong><ul>
+<li>给on的连接条件创建索引，优先给被驱动表创建索引</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（2）内连接</strong><ul>
+<li>若都有或无索引，小的结果集驱动大的结果集（小表驱动大表）</li>
+<li>其中一个表有索引，有索引的表作为被驱动表</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="4-2-2-子查询优化"><a href="#4-2-2-子查询优化" class="headerlink" title="4.2.2 子查询优化"></a>4.2.2 子查询优化</h5><ul>
+<li>子查询可以通过一个SQL语句实现比较复杂的查询，但执行效率不高</li>
+<li>子查询会产生临时表，消耗CPU和IO，且临时表无法构建索引</li>
+<li><strong>优化思路：将子查询改造为join</strong></li>
+</ul>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">not in 和 not exists </span><br><span class="line">改造为：</span><br><span class="line">left join xxx on xxx where xxx is null</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h5 id="4-2-3-排序优化"><a href="#4-2-3-排序优化" class="headerlink" title="4.2.3 排序优化"></a>4.2.3 排序优化</h5><ul>
+<li><p>orderby 中使用索引，避免出现filesort</p>
+</li>
+<li><p><strong>（1）数据量大时，添加limit xx可以走索引</strong></p>
+<ul>
+<li>数据量过大时，mysql认为直接全表扫描，比走索引进行回表操作更快</li>
+<li>索引可以添加limit，让排序可以走索引</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（2）数据量大时，查询字段覆盖索引，会走索引</strong><ul>
+<li>索引创建的字段，刚好时查询的字段，就不会进行回表操作</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>（3）排序字段顺序错误，方法相反，都不会走索引</strong></li>
+</ul>
+<ul>
+<li>filesort算法：双路排序和单路排序</li>
+<li><strong>双路排序（慢）</strong>：<ul>
+<li>进行两次磁盘扫描；从磁盘取出排序字段，进行排序，排完序后在从磁盘获取其他字段数据</li>
+</ul>
+</li>
+<li><strong>单路排序（快）</strong>：<ul>
+<li>一次性从磁盘中获取所有列的数据，按照指定字段进行排序</li>
+</ul>
+</li>
+<li><strong>总结</strong>：<ul>
+<li>单路排序虽然效率高，但比较占用内存空间。一旦取出的数据超出<code>sort_buffer</code>的话，就会创建tmp文件，并多路IO</li>
+<li>（1）提高<code>sort_buffer_size</code><ul>
+<li><code>show variables like &#39;%sort_buffer_size%&#39;</code>：查看大小</li>
+</ul>
+</li>
+<li>（2）提高<code>max_length_for_sort_data</code><ul>
+<li>查询字段的大小超出此值时，会选择双路排序，否则会选择单路排序，尽量不要select *</li>
+<li><code>show variables like &#39;%max_length_for_sort_data%&#39;</code>：查看大小</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h5 id="4-2-4-分组优化"><a href="#4-2-4-分组优化" class="headerlink" title="4.2.4 分组优化"></a>4.2.4 分组优化</h5><ul>
+<li><p>group by 和 order by 基本一致</p>
+</li>
+<li><p>无法使用索引调高<code>sort_buffer_size</code>和<code>max_length_for_sort_data</code></p>
+</li>
+</ul>
+<ul>
+<li>where 效率高于 having ，能用where过滤就用where过滤</li>
+</ul>
+<ul>
+<li>尽量减少order by，group by，distinct语句，这些语句都非常耗费CPU；要用也尽量保持在1000行内</li>
+</ul>
+<hr>
+<h5 id="4-2-5-分页优化"><a href="#4-2-5-分页优化" class="headerlink" title="4.2.5 分页优化"></a>4.2.5 分页优化</h5><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> [<span class="keyword">table</span>] <span class="keyword">limit</span> <span class="number">20000</span>, <span class="number">10</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment"># 优化：在索引上完成分页操作，最后根据主键关联回原来表所需的其他内容</span></span><br><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> [<span class="keyword">table</span>] t, (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> [<span class="keyword">table</span>] <span class="keyword">limit</span> <span class="number">20000</span>, <span class="number">10</span>) a</span><br><span class="line"><span class="keyword">where</span> t.id = a.id</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="4-3-覆盖索引"><a href="#4-3-覆盖索引" class="headerlink" title="4.3 覆盖索引"></a>4.3 覆盖索引</h4><ul>
+<li>查询的字段，索引本身就存在，直接在索引中取数据，无需进行回表操作</li>
+<li>会导致一些不走索引的操作，也会走索引</li>
+</ul>
+<ul>
+<li><strong>例如</strong>：<ul>
+<li>（1）数据量大时进行orderby，会进行走索引</li>
+<li>（2）where条件为<code>!=</code>时，会走索引</li>
+<li>（3）where左模糊匹配，会走索引</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li><strong>好处</strong><ul>
+<li>（1）避免回表操作，提高效率</li>
+<li>（2）可以把随机IO变成顺序IO，提高效率</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h4 id="4-4-索引条件下推（ICP）"><a href="#4-4-索引条件下推（ICP）" class="headerlink" title="4.4 索引条件下推（ICP）"></a>4.4 索引条件下推（ICP）</h4><ul>
+<li><strong>索引条件下推（Index Condition Pushdown）</strong>：数据过滤的优化方法。当where条件的字段在索引中存在时，就算未命中索引（如：左模糊），会直接在索引中进行数据过滤，然后再进行回表，减少回表IO次数</li>
+</ul>
+<ul>
+<li><strong>好处</strong>：减少存储引起访问基表的次数和MySQL服务器访问存储引擎的次数</li>
+</ul>
+<hr>
+<h4 id="4-5-其他优化策略"><a href="#4-5-其他优化策略" class="headerlink" title="4.5 其他优化策略"></a>4.5 其他优化策略</h4><ul>
+<li><strong>（1）exist和in区分</strong></li>
+<li>in ：<code>SELECT * FROM A WHERE cc IN (SELECT cc FROM B)</code></li>
+<li>exists ：<code>SELECT * FROM A WHERE cc EXISTS (SELECT cc FROM B WHERE B.cc = A.cc)</code></li>
+<li>当A表的结果集小于B表时，用exists</li>
+<li>当A表的结果集小于B表时，用in</li>
+</ul>
+<ul>
+<li><strong>（2）<code>count(*)</code>与<code>count(具体字段)</code>与<code>count(1)</code>效率</strong></li>
+<li><code>count(*)</code>和<code>count(1)</code>基本上没有区别，效率相等</li>
+<li><code>count(具体字段)</code>尽量选择二级索引，加载数据比较少。</li>
+<li><code>count(*)</code>和<code>count(1)</code>会自动采用空间最小的二级索引进行统计</li>
+</ul>
+<ul>
+<li>**（3）关于<code>select *</code> **</li>
+<li>mysql解析时，会查数据字典，转换成具体列明，耗费时间</li>
+<li>无法使用覆盖索引</li>
+</ul>
+<ul>
+<li><strong>（4）limit 1 优化</strong></li>
+<li>对于全表扫描，limit 1 可以加快查询速度</li>
+<li>如果对字段建立了唯一索引，无需加上limit 1</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/09/04/%E3%80%90SpringCloudAlibaba%E3%80%91Seata-%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/" rel="prev" title="【SpringCloudAlibaba】Seata-分布式事务">
+      <i class="fa fa-chevron-left"></i> 【SpringCloudAlibaba】Seata-分布式事务
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E7%B4%A2%E5%BC%95"><span class="nav-text">1 索引</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-%E7%AE%80%E4%BB%8B"><span class="nav-text">1.1 简介</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-text">1.2 优缺点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-3-%E7%B4%A2%E5%BC%95%E6%8E%A8%E6%BC%94"><span class="nav-text">1.3 索引推演</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-4-%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB"><span class="nav-text">1.4 索引分类</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-1-%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="nav-text">1.4.1 聚簇索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-2-%E9%9D%9E%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95"><span class="nav-text">1.4.2 非聚簇索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-3-%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95"><span class="nav-text">1.4.3 联合索引</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-4-4-%E7%B4%A2%E5%BC%95%E5%8C%BA%E5%88%AB"><span class="nav-text">1.4.4 索引区别</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-5-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E"><span class="nav-text">1.5 存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5-1-myisam"><span class="nav-text">1.5.1 myisam</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5-2-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E5%8C%BA%E5%88%AB"><span class="nav-text">1.5.2 存储引擎区别</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-5-3-%E4%BC%98%E5%8C%96%E6%80%9D%E8%B7%AF"><span class="nav-text">1.5.3 优化思路</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-6-%E7%B4%A2%E5%BC%95%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E5%AF%B9%E6%AF%94"><span class="nav-text">1.6 索引数据结构对比</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#1-6-1-hash"><span class="nav-text">1.6.1 hash</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#1-6-2-b-tree"><span class="nav-text">1.6.2 b-tree</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-innodb%E6%95%B0%E6%8D%AE%E5%AD%98%E5%82%A8%E7%BB%93%E6%9E%84"><span class="nav-text">2 innodb数据存储结构</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-1-%E9%A1%B5%E7%BB%93%E6%9E%84"><span class="nav-text">2.1 页结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-2-%E9%A1%B5%E4%B8%8A%E5%B1%82%E7%BB%93%E6%9E%84"><span class="nav-text">2.2 页上层结构</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-3-%E9%A1%B5%E5%86%85%E9%83%A8%E7%BB%93%E6%9E%84"><span class="nav-text">2.3 页内部结构</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA%E4%BA%8E%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="nav-text">3 索引创建于设计原则</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-%E7%B4%A2%E5%BC%95%E5%88%86%E7%B1%BB%EF%BC%88%E5%8A%9F%E8%83%BD%EF%BC%89"><span class="nav-text">3.1 索引分类（功能）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-%E7%B4%A2%E5%BC%95%E5%88%9B%E5%BB%BA"><span class="nav-text">3.2 索引创建</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-%E7%B4%A2%E5%BC%95%E5%88%A0%E9%99%A4"><span class="nav-text">3.3 索引删除</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E6%83%85%E5%86%B5"><span class="nav-text">3.4 适合创建索引情况</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5-%E4%B8%8D%E9%80%82%E5%90%88%E5%88%9B%E5%BB%BA%E7%B4%A2%E5%BC%95%E7%9A%84%E6%83%85%E5%86%B5"><span class="nav-text">3.5 不适合创建索引的情况</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90"><span class="nav-text">4 性能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-%E6%95%B0%E6%8D%AE%E5%BA%93%E4%BC%98%E5%8C%96%E6%AD%A5%E9%AA%A4"><span class="nav-text">4.1 数据库优化步骤</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E6%9F%A5%E7%9C%8B%E7%B3%BB%E7%BB%9F%E6%80%A7%E8%83%BD%E5%8F%82%E6%95%B0"><span class="nav-text">4.2 查看系统性能参数</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97"><span class="nav-text">4.3 慢查询日志</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-1-%E5%BC%80%E5%90%AF%E6%85%A2%E6%9F%A5%E8%AF%A2%E6%97%A5%E5%BF%97"><span class="nav-text">4.3.1 开启慢查询日志</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-3-2-%E6%9F%A5%E7%9C%8B%E6%85%A2%E6%9F%A5%E8%AF%A2SQL"><span class="nav-text">4.3.2 查看慢查询SQL</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E5%88%86%E6%9E%90%E6%9F%A5%E8%AF%A2%E8%AF%AD%E5%8F%A5explain"><span class="nav-text">4.4 分析查询语句explain</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-1-explain%E5%AD%97%E6%AE%B5"><span class="nav-text">4.4.1 explain字段</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-2-explain%E8%BE%93%E5%87%BA%E6%A0%BC%E5%BC%8F"><span class="nav-text">4.4.2 explain输出格式</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%B4%A2%E5%BC%95%E4%BC%98%E5%8C%96%E4%B8%8E%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-text">5 索引优化与查询优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#5-1-%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88"><span class="nav-text">5.1 索引失效</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-text">4.2 查询优化</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-1-join%E4%BC%98%E5%8C%96"><span class="nav-text">4.2.1 join优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-2-%E5%AD%90%E6%9F%A5%E8%AF%A2%E4%BC%98%E5%8C%96"><span class="nav-text">4.2.2 子查询优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-3-%E6%8E%92%E5%BA%8F%E4%BC%98%E5%8C%96"><span class="nav-text">4.2.3 排序优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-4-%E5%88%86%E7%BB%84%E4%BC%98%E5%8C%96"><span class="nav-text">4.2.4 分组优化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-2-5-%E5%88%86%E9%A1%B5%E4%BC%98%E5%8C%96"><span class="nav-text">4.2.5 分页优化</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-%E8%A6%86%E7%9B%96%E7%B4%A2%E5%BC%95"><span class="nav-text">4.3 覆盖索引</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4-%E7%B4%A2%E5%BC%95%E6%9D%A1%E4%BB%B6%E4%B8%8B%E6%8E%A8%EF%BC%88ICP%EF%BC%89"><span class="nav-text">4.4 索引条件下推（ICP）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-5-%E5%85%B6%E4%BB%96%E4%BC%98%E5%8C%96%E7%AD%96%E7%95%A5"><span class="nav-text">4.5 其他优化策略</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="莱特雷"
+      src="/uploads/avatar.jpg">
+  <p class="site-author-name" itemprop="name">莱特雷</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">217</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+        <span class="site-state-item-count">31</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/402971365" title="bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;402971365" rel="noopener" target="_blank"><i class="fa fa-envelope fa-fw"></i>bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://gitee.com/letere" title="gitee → https:&#x2F;&#x2F;gitee.com&#x2F;letere" rel="noopener" target="_blank"><i class="fab fa-git fa-fw"></i>gitee</a>
+      </span>
+  </div>
+
+
+
+      </div>
+
+    </div>
+
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2022</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">莱特雷</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

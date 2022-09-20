@@ -266,7 +266,7 @@
 <li>（2）webpack安装<ul>
 <li>webpack安装利用node.js的npm来进行安装</li>
 <li>建议安装webpack3.6.0，使用的时vue cli2版本，可以看见各种各样的webpack配置。高版本使用vue cli3版本，隐藏了webpack的配置</li>
-<li>安装：打开命令行敲’npm install <a href="mailto:&#119;&#x65;&#x62;&#x70;&#97;&#x63;&#107;&#x40;&#x33;&#x2e;&#x36;&#46;&#48;">&#119;&#x65;&#x62;&#x70;&#97;&#x63;&#107;&#x40;&#x33;&#x2e;&#x36;&#46;&#48;</a> -g’进行安装</li>
+<li>安装：打开命令行敲’npm install <a href="mailto:&#x77;&#101;&#x62;&#112;&#97;&#x63;&#107;&#x40;&#51;&#46;&#x36;&#46;&#x30;">&#x77;&#101;&#x62;&#112;&#97;&#x63;&#107;&#x40;&#51;&#46;&#x36;&#46;&#x30;</a> -g’进行安装</li>
 <li>检查安装：命令行敲’webpack -version’查看，有版本号显示，安装成功</li>
 </ul>
 </li>
@@ -288,7 +288,7 @@
 
 <h4 id="5-2-使用局部webpack"><a href="#5-2-使用局部webpack" class="headerlink" title="5.2 使用局部webpack"></a>5.2 使用局部webpack</h4><ul>
 <li>（1）在项目敲’npm init’来创建一个package.json文件，除了文件名非中文外，其余默认即可</li>
-<li>（2）安装局部webpack，在项目的命令行下’npm install <a href="mailto:&#119;&#x65;&#98;&#x70;&#97;&#99;&#107;&#64;&#x33;&#x2e;&#x36;&#x2e;&#x30;">&#119;&#x65;&#98;&#x70;&#97;&#99;&#107;&#64;&#x33;&#x2e;&#x36;&#x2e;&#x30;</a>‘，因为webpack是开发时才使用的，发布时不使用，可以执行’npm install <a href="mailto:&#119;&#x65;&#x62;&#112;&#97;&#x63;&#x6b;&#x40;&#x33;&#46;&#x36;&#46;&#48;">&#119;&#x65;&#x62;&#112;&#97;&#x63;&#x6b;&#x40;&#x33;&#46;&#x36;&#46;&#48;</a> –save-dev’</li>
+<li>（2）安装局部webpack，在项目的命令行下’npm install <a href="mailto:&#x77;&#101;&#98;&#112;&#97;&#x63;&#x6b;&#64;&#x33;&#46;&#54;&#46;&#48;">&#x77;&#101;&#98;&#112;&#97;&#x63;&#x6b;&#64;&#x33;&#46;&#54;&#46;&#48;</a>‘，因为webpack是开发时才使用的，发布时不使用，可以执行’npm install <a href="mailto:&#x77;&#x65;&#x62;&#112;&#97;&#x63;&#x6b;&#x40;&#x33;&#x2e;&#54;&#x2e;&#48;">&#x77;&#x65;&#x62;&#112;&#97;&#x63;&#x6b;&#x40;&#x33;&#x2e;&#54;&#x2e;&#48;</a> –save-dev’</li>
 <li>（3）因为命令行使用webpack命令默认使用全局webpack的，但是可以利用npm的脚本，默认会先从本地寻找命令，在package.json中设置</li>
 </ul>
 <figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;scripts&quot;: &#123;</span><br><span class="line">  &quot;test&quot;: &quot;echo \&quot;Error: no test specified\&quot; &amp;&amp; exit 1&quot;,</span><br><span class="line">  &quot;build&quot;: &quot;webpack&quot; 添加脚本命令映射，执行&#x27;npm run build&#x27; == &#x27;webpack&#x27;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -330,7 +330,7 @@
 </ul>
 <h4 id="7-2-url-loader安装和配置"><a href="#7-2-url-loader安装和配置" class="headerlink" title="7.2 url-loader安装和配置"></a>7.2 url-loader安装和配置</h4><ul>
 <li>官方文档：<a target="_blank" rel="noopener" href="https://www.webpackjs.com/loaders/url-loader/">https://www.webpackjs.com/loaders/url-loader/</a></li>
-<li>步骤按官方文档即可，注意点webpack3.6.0版使用<a href="mailto:&#117;&#x72;&#x6c;&#45;&#108;&#x6f;&#97;&#100;&#x65;&#114;&#64;&#x31;&#46;&#x31;&#46;&#x32;">&#117;&#x72;&#x6c;&#45;&#108;&#x6f;&#97;&#100;&#x65;&#114;&#64;&#x31;&#46;&#x31;&#46;&#x32;</a>版本</li>
+<li>步骤按官方文档即可，注意点webpack3.6.0版使用<a href="mailto:&#117;&#114;&#108;&#45;&#108;&#x6f;&#97;&#x64;&#101;&#114;&#64;&#x31;&#46;&#x31;&#46;&#50;">&#117;&#114;&#108;&#45;&#108;&#x6f;&#97;&#x64;&#101;&#114;&#64;&#x31;&#46;&#x31;&#46;&#50;</a>版本</li>
 </ul>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev url-<span class="symbol">loader@</span><span class="number">1.1</span><span class="number">.2</span></span><br></pre></td></tr></table></figure>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">module</span>: &#123;</span><br><span class="line">    rules: [</span><br><span class="line">        <span class="comment">//配置图片文件</span></span><br><span class="line">      &#123;</span><br><span class="line">        test: <span class="regexp">/\.(png|jpg|gif)$/</span>,</span><br><span class="line">        use: [</span><br><span class="line">          &#123;</span><br><span class="line">            loader: <span class="string">&#x27;url-loader&#x27;</span>,</span><br><span class="line">            options: &#123;</span><br><span class="line">              limit: <span class="number">40000</span>,  <span class="comment">//限制图片大小，若图片小于限制，则会用base64编码来显示图片</span></span><br><span class="line">                            <span class="comment">//大于限制，需要使用file-loader，会生成一个hash编码图片到dist文件中，不需要配置</span></span><br><span class="line">            &#125;</span><br><span class="line">          &#125;</span><br><span class="line">        ]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
@@ -342,7 +342,7 @@
 
 <h4 id="7-3-file-loader安装"><a href="#7-3-file-loader安装" class="headerlink" title="7.3 file-loader安装"></a>7.3 file-loader安装</h4><ul>
 <li>当图片大小 &gt; 限制大小时，则需要安装file-loader才能打包图片</li>
-<li>由于<a href="mailto:&#119;&#101;&#98;&#x70;&#x61;&#99;&#x6b;&#64;&#x33;&#x2e;&#x36;&#x2e;&#48;">&#119;&#101;&#98;&#x70;&#x61;&#99;&#x6b;&#64;&#x33;&#x2e;&#x36;&#x2e;&#48;</a>版本原因，建议安装<a href="mailto:&#x66;&#105;&#108;&#x65;&#x2d;&#x6c;&#x6f;&#x61;&#100;&#101;&#x72;&#64;&#51;&#x2e;&#x30;&#x2e;&#x31;">&#x66;&#105;&#108;&#x65;&#x2d;&#x6c;&#x6f;&#x61;&#100;&#101;&#x72;&#64;&#51;&#x2e;&#x30;&#x2e;&#x31;</a></li>
+<li>由于<a href="mailto:&#119;&#101;&#98;&#x70;&#97;&#x63;&#x6b;&#x40;&#51;&#46;&#x36;&#x2e;&#x30;">&#119;&#101;&#98;&#x70;&#97;&#x63;&#x6b;&#x40;&#51;&#46;&#x36;&#x2e;&#x30;</a>版本原因，建议安装<a href="mailto:&#102;&#105;&#x6c;&#101;&#x2d;&#x6c;&#x6f;&#x61;&#100;&#x65;&#114;&#64;&#51;&#x2e;&#48;&#x2e;&#x31;">&#102;&#105;&#x6c;&#101;&#x2d;&#x6c;&#x6f;&#x61;&#100;&#x65;&#114;&#64;&#51;&#x2e;&#48;&#x2e;&#x31;</a></li>
 </ul>
 <figure class="highlight angelscript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install --save-dev file-<span class="symbol">loader@</span><span class="number">3.0</span><span class="number">.1</span></span><br></pre></td></tr></table></figure>
 
@@ -598,7 +598,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">216</span>
+          <span class="site-state-item-count">217</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
